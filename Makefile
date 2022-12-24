@@ -9,6 +9,21 @@ ROOT=$(PWD)
 all: jail_for_xvnc jail_for_git boot.snap
 
 #
+#	Help
+#
+help:
+	@echo Persona build and bootstrap
+	@echo
+	@echo Building
+	@echo all   - build from source
+	@echo clean - clean up
+	@echo 
+	@echo Bootstrapping
+	@echo setup_git_keys - paste in key to Git repo
+	@echo run_jails      - run the service jails
+	@echo stop_jails     - stop the service jails
+
+#
 #	Starting and stopping when built
 #
 
@@ -35,6 +50,17 @@ stop_jail_for_git:
 	jail -r jail_for_git
 	umount $(ROOT)/jail_for_git/dev
 	umount $(ROOT)/jail_for_git/opt/Persona
+
+#
+#	Setting up after build for GitHub
+#
+
+setup_git_keys:
+	@echo Enter SSH key for GitHub 
+	mkdir -p $(ROOT)/jail_for_git/root/.ssh
+	read -p "github key name: " b ; micro $(ROOT)/jail_for_git/root/.ssh/$$b ; chmod 600 $(ROOT)/jail_for_git/root/.ssh/$$b
+
+
 
 #
 #	For building 
