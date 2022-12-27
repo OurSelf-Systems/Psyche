@@ -6,7 +6,7 @@ ROOT=$(PWD)
 #	All is setup
 #
 
-all: jail_for_xvnc jail_for_git boot.snap
+all: jail_for_xvnc jail_for_git snapshot
 
 #
 #	Help
@@ -97,7 +97,7 @@ clean_jail_for_git:
 	touch jail_for_git && chflags -Rf noschg jail_for_git
 	rm -rf jail_for_git	
 
-boot.snap:
+snapshot:
 	echo "saveAs: 'snapshot'. quitNoSave" | $(SELF) -f $(BASE)/worldBuilder.self -b $(BASE) -f2 setup.self -o morphic 
 
 clean: clean_jail_for_xvnc clean_jail_for_git
