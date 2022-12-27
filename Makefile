@@ -75,7 +75,7 @@ jail_for_xvnc: base.txz
 	cp /etc/resolv.conf jail_for_xvnc/etc/
 	jail -cmr path=$(ROOT)/jail_for_xvnc name=jail_for_xvnc host.hostname=jail_for_xvnc ip4=inherit allow.raw_sockets mount.devfs command=/bin/sh /etc/rc
 	jexec jail_for_xvnc pkg install --quiet -y tigervnc-server ratpoison xlsfonts xorg-fonts terminus-font urwfonts xset daemonize
-    jexec jail_for_xvnc sysrc sendmail=NO
+	jexec jail_for_xvnc sysrc sendmail=NO
 	jail -r jail_for_xvnc
 	umount $(ROOT)/jail_for_xvnc/dev
 
