@@ -1,3 +1,6 @@
 [submodule "self"]
 	path = self
 	url = git@github.com:russellallen/self.git
+[submodule "transporter/TerminalEmulator"]
+	path = transporter/TerminalEmulator
+	url = git@github.com:OurSelf-Systems/TerminalEmulator.git
