@@ -3,8 +3,7 @@
 Copyright 2022 OurSelf-Systems.
 See the LICENSE,d file for license information.
 '
-[ 
-"prefileIn" self] value
+["preFileIn" self] value
 
 
  '-- Module body'
@@ -214,6 +213,16 @@ See the LICENSE,d file for license information.
             sh: 'jail -r ', n. 
             sh: 'umount ', pwd, '/', n, '/dev'.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'terminalEmulator' -> 'shellConnection' -> () From: ( | {
+         'Category: shell out\x7fModuleInfo: Module: persona InitialContents: FollowSlot'
+        
+         run: s = ( |
+             cmd.
+            | 
+            cmd: 'jexec jail_for_git ', s.
+            cmd:  os command: cmd. self).
         } | ) 
 
 
