@@ -1,10 +1,5 @@
 [
 
-"
-
-Persona must go last as it overrides part of terminalEmulator.
-
-"
 modules init
 
     registerTree: 'terminalEmulator'
@@ -15,11 +10,11 @@ modules init
 
 modules init
 
-    registerTree: 'persona'
-              At: 'transporter/persona'.
+    registerTree: 'psyche'
+              At: 'transporter/psyche'.
 
-  bootstrap read: 'persona'
-          InTree: 'persona'.
+  bootstrap read: 'psyche'
+          InTree: 'psyche'.
 
 
 ] value
