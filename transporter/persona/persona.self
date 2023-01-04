@@ -215,18 +215,6 @@ See the LICENSE,d file for license information.
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'terminalEmulator' -> 'shellConnection' -> () From: ( | {
-         'Category: shell out\x7fModuleInfo: Module: persona InitialContents: FollowSlot'
-        
-         run: s = ( |
-             cmd.
-            | 
-            cmd: 'jexec jail_for_git ', s.
-            cmd:  os command: cmd. self).
-        } | ) 
-
-
-
  '-- Side effects'
 
  globals modules persona postFileIn
