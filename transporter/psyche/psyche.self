@@ -65,7 +65,15 @@ See the LICENSE,d file for license information.
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          postFileIn = ( |
-            | resend.postFileIn).
+            | 
+            resend.postFileIn.
+            snapshotAction
+              forCommandLineArg: '--psycheBootRoutine'
+                       DoAction: (| parent* = lobby.
+                                    value: i With: arg = (
+                                     psyche boot.
+                                     i succ).
+                                 |)).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -100,6 +108,7 @@ See the LICENSE,d file for license information.
         
          boot = ( |
             | 
+            '\n\nWELCOME TO PSYCHE\n\n' print.
             self).
         } | ) 
 
