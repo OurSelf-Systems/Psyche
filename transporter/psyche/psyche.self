@@ -1,7 +1,7 @@
  '0.0.1'
  '
 Copyright 2022 OurSelf-Systems.
-See the LICENSE,d file for license information.
+See the LICENSE.md file for license information.
 '
 ["preFileIn" self] value
 
@@ -39,7 +39,7 @@ See the LICENSE,d file for license information.
         
          copyright <- '
 Copyright 2022 OurSelf-Systems.
-See the LICENSE.md file for license information.
+See the LICENSE,d file for license information.
 '.
         } | ) 
 
@@ -100,8 +100,6 @@ See the LICENSE.md file for license information.
         
          boot = ( |
             | 
-            startJailForXvnc.
-            startJailForGit.
             self).
         } | ) 
 
@@ -153,29 +151,6 @@ See the LICENSE.md file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: jail - git\x7fComment: Initial version - no error checking\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         startJailForGit = ( |
-            | 
-            startJailNamed: 'jail_for_git' InDir: '$(pwd)/jail_for_git'.
-            sh: 'mkdir -p /opt/psyche' InJail: 'jail_for_git'.
-            sh: 'mount_nullfs ', pwd, ' ', pwd, '/jail_for_git/opt/psyche'.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: jail - git\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         startJailForXvnc = ( |
-            | 
-            startJailNamed: 'jail_for_xvnc' InDir: '$(pwd)/jail_for_xvnc'.
-            sh: 'daemonize /usr/local/bin/Xvnc :1 -geometry 1024x768 -depth 24 -SecurityTypes None,TSLNone -listen tcp' InJail: 'jail_for_xvnc'.
-            process this sleep: 1000.
-            sh: 'daemonize -E DISPLAY=:1 /usr/local/bin/ratpoison' InJail: 'jail_for_xvnc'.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          startJailNamed: n InDir: d = ( |
@@ -183,25 +158,6 @@ See the LICENSE.md file for license information.
             | 
             cmd: 'jail -cmr path="', d, '" name=', n, ' host.hostname=', n,  ' ip4=inherit allow.raw_sockets mount.devfs command=/bin/sh /etc/rc'.
             sh: cmd.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: jail - git\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         stopJailForGit = ( |
-            | 
-            stopJailNamed: 'jail_for_git'.
-            sh: 'umount ',  pwd, '/jail_for_git/opt/psyche'.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: jail - git\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         stopJailForXvnc = ( |
-            | 
-            stopJailNamed: 'jail_for_xvnc'.
             self).
         } | ) 
 
@@ -214,6 +170,8 @@ See the LICENSE.md file for license information.
             sh: 'umount ', pwd, '/', n, '/dev'.
             self).
         } | ) 
+
+
 
  '-- Side effects'
 
