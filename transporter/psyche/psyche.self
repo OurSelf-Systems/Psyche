@@ -1,4 +1,4 @@
- '0.0.1'
+ '2023010601'
  '
 Copyright 2022 OurSelf-Systems.
 See the LICENSE.md file for license information.
@@ -77,9 +77,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'0.0.1\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
         
-         revision <- '0.0.1'.
+         revision <- '2023010601'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -108,7 +108,7 @@ See the LICENSE,d file for license information.
         
          boot = ( |
             | 
-            '\n\nWELCOME TO PSYCHE\n\n' print.
+            wecomeMessage print.
             self).
         } | ) 
 
@@ -178,6 +178,38 @@ See the LICENSE,d file for license information.
             sh: 'jail -r ', n. 
             sh: 'umount ', pwd, '/', n, '/dev'.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: status\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         version = ( |
+            | modules psyche revision).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: status\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         version: v = ( |
+            | modules psyche revision: v asString. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         welcomeMessage = ( |
+            | 
+            '\n\nWELCOME TO PSYCHE\n
+            Version: ', version, '\n').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: unix\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         zpool = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'zpool' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche zpool.
+'.
+            | ) .
         } | ) 
 
 
