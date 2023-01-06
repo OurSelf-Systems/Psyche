@@ -113,6 +113,61 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: unix\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         cmd = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche cmd.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         cmd_ <- bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche cmd cmd_.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         addArg: flag With: args = ( |
+            | 
+            (flag size < 3) || ((flag slice: 0 @ 2) != 'f_')
+              ifTrue: [
+                builtCommand: builtCommand, ' ', flag.
+                ^ self].
+            args size = 0 ifTrue: [
+              builtCommand: builtCommand, ' -', (flag slice: 2 @ infinity).
+              ^ self].
+            builtCommand: builtCommand, ' -', (flag slice: 2 @ -1), ' ', args first asString.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
+        
+         builtCommand <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         undefinedSelector: sel Type: msgType Delegatee: del MethodHolder: mh Arguments: args = ( |
+            | 
+            _Clone 
+              cmd_: (cmd_ copy addArg: sel With: args)).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
@@ -201,15 +256,6 @@ See the LICENSE,d file for license information.
             | 
             '\n\nWELCOME TO PSYCHE\n
             Version: ', version, '\n').
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: unix\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         zpool = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'zpool' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche zpool.
-'.
-            | ) .
         } | ) 
 
 
