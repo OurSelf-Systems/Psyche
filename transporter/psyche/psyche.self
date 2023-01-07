@@ -155,7 +155,64 @@ See the LICENSE,d file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
+         do = ( |
+             r.
+             tmp.
+            | 
+            tmp: os_file temporaryFileName.
+            r: result copy.
+            os command: '( ', builtCommand, ' ) ', 
+                  '1> ', tmp, '.stdout 2> ', tmp, '.stderr' 
+              IfFail: false.
+            result stdout: (tmp, '.stdout') asFileContents.
+            result stderr: (tmp, '.stdoerr') asFileContents.
+            result).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
          parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         result = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> 'result' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche cmd cmd_ result.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> 'result' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (0)'
+        
+         error <- 0.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> 'result' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> 'result' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
+        
+         stderr <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> 'result' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
+        
+         stdout <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         do = ( |
+            | cmd_ do).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> () From: ( | {
