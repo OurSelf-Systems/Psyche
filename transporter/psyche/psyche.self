@@ -1,7 +1,7 @@
  '2023010601'
  '
 Copyright 2022 OurSelf-Systems.
-See the LICENSE.md file for license information.
+See the LICENSE,d file for license information.
 '
 ["preFileIn" self] value
 
@@ -109,6 +109,8 @@ See the LICENSE,d file for license information.
          boot = ( |
             | 
             wecomeMessage print.
+            importWorldsZpool.
+            installSSHKeys.
             self).
         } | ) 
 
@@ -225,6 +227,23 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         importWorldsZpool = ( |
+            | os command: 'zpool import worlds'. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         installSSHKeys = ( |
+            | 
+            os command: 'mkdir /root/.ssh'.
+            os command: 'cp /worlds/psyche/.ssh/* /root/.ssh/'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
@@ -244,6 +263,16 @@ See the LICENSE,d file for license information.
          runningJails = ( |
             | 
             sh: 'jls' ResultInMs: 100).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: development\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         setGitDetails = ( |
+            | 
+            os command: 'cd /self ; git config user.name = "Russell Allen"'.
+            os command: 'cd /self ; git config user.email = "mail@russell-allen.com"'.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
