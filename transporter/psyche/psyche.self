@@ -108,7 +108,7 @@ See the LICENSE,d file for license information.
         
          boot = ( |
             | 
-            wecomeMessage print.
+            welcomeMessage print.
             importWorldsZpool.
             installSSHKeys.
             self).
