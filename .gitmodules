@@ -4,3 +4,4 @@
 [submodule "transporter/TerminalEmulator"]
 	path = transporter/TerminalEmulator
 	url = git@github.com:OurSelf-Systems/TerminalEmulator.git
+	branch = netbsd
