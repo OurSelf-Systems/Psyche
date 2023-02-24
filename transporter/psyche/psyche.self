@@ -110,6 +110,7 @@ See the LICENSE,d file for license information.
             | 
             welcomeMessage print.
             startX.
+            desktop open.
             importWorldsZpool.
             installSSHKeys.
             self).
