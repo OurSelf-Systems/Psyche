@@ -1,4 +1,4 @@
- '2023010601'
+ '2023.02.27.01'
  '
 Copyright 2022 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -77,9 +77,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2023.02.27.01\')\x7fVisibility: public'
         
-         revision <- '2023010601'.
+         revision <- '2023.02.27.01'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -108,131 +108,24 @@ See the LICENSE,d file for license information.
         
          boot = ( |
             | 
-            welcomeMessage print.
+            importWorldsZpoolIfFail: prepareStorage.
+
             startX.
             desktop open.
-            importWorldsZpool.
+
             installSSHKeys.
+            welcomeMessage print.
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: unix\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         cmd = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche cmd.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         cmd_ <- bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche cmd cmd_.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         addArg: flag With: args = ( |
-            | 
-            (flag size < 3) || ((flag slice: 0 @ 2) != 'f_')
-              ifTrue: [
-                builtCommand: builtCommand, ' ', flag.
-                ^ self].
-            args size = 0 ifTrue: [
-              builtCommand: builtCommand, ' -', (flag slice: 2 @ infinity).
-              ^ self].
-            builtCommand: builtCommand, ' -', (flag slice: 2 @ -1), ' ', args first asString.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
-        
-         builtCommand <- ''.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         do = ( |
-             r.
-             tmp.
-            | 
-            tmp: os_file temporaryFileName.
-            r: result copy.
-            os command: '( ', builtCommand, ' ) ', 
-                  '1> ', tmp, '.stdout 2> ', tmp, '.stderr' 
-              IfFail: false.
-            result stdout: (tmp, '.stdout') asFileContents.
-            result stderr: (tmp, '.stdoerr') asFileContents.
-            result).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         result = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> 'result' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche cmd cmd_ result.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> 'result' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (0)'
-        
-         error <- 0.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> 'result' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> 'result' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
-        
-         stderr <- ''.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> 'cmd_' -> 'result' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
-        
-         stdout <- ''.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         do = ( |
-            | cmd_ do).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'cmd' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         undefinedSelector: sel Type: msgType Delegatee: del MethodHolder: mh Arguments: args = ( |
-            | 
-            _Clone 
-              cmd_: (cmd_ copy addArg: sel With: args)).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         importWorldsZpool = ( |
-            | os command: 'zpool import worlds'. self).
+         importWorldsZpoolIfFail: blk = ( |
+            | 
+                sh: 'zpool import worlds'
+            IfFail: blk value.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -252,11 +145,46 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: installation\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         prepareStorage = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'prepareStorage' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche prepareStorage.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'prepareStorage' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'globals' -> 'psyche' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'prepareStorage' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         value = ( |
+            | 
+            'Storage (zpool worlds) cannot be found.' printLine.
+            'Please create manually, then we will reboot.' printLine.
+            '"exit" when finished.' printLine.
+            sh: 'bash'.
+            'Thanks, rebooting now.' printLine.
+            reboot).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          pwd = ( |
             | 
             (os outputOfCommand: 'pwd' Timeout: 10 IfFail: [error: 'Can\'t find PWD']) shrinkwrapped).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: system actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         reboot = ( |
+            | sh: 'shutdown -r now').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -288,6 +216,16 @@ See the LICENSE,d file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
+         sh: cmd IfFail: blk = ( |
+            | 
+            r:  os command: cmd.
+            r = 0 ifFalse: [^ blk value: r].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
          sh: cmd InJail: j = ( |
             | 
             sh: 'jexec ', j, ' ', cmd.
@@ -303,7 +241,14 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: system actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         shutdown = ( |
+            | sh: 'shutdown -p now').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: jail management\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          startJailNamed: n InDir: d = ( |
              cmd.
@@ -325,7 +270,7 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: jail management\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          stopJailNamed: n = ( |
             | 
