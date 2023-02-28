@@ -280,6 +280,53 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: installation\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         systemConfig = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche systemConfig.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
+         'Category: reading and writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         readFileFrom: fileName IfFail: blk = ( |
+             b <- ''.
+             eof <- bootstrap stub -> 'globals' -> 'false' -> ().
+             f <- bootstrap stub -> 'globals' -> 'unixGlobals' -> 'os_file' -> ().
+            | 
+            "
+              The IO code need reworking in its entirity.
+              Until then, we'll do it ourselves here so that
+              we don't have any user errors at this level.
+            "
+            f: fileName asInputFileIfError: [
+                f closeIfFail: false.
+                ^ blk value: 'Error: could not open file: ', fileName].
+            [eof] whileFalse: [
+              b: b, (f readIfFail: [|:err|
+                f closeIfFail: false.
+                (err slice: 0 @ 3) = 'EOF'
+                  ifTrue: [eof: true]
+                   False: [^ blk value: 'Error: could not read file: ', fileName].
+                ''])].
+            b).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'none\')'
+        
+         systemDesktopAccessType <- 'none'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: status\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          version = ( |
