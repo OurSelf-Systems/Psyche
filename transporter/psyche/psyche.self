@@ -107,8 +107,10 @@ See the LICENSE,d file for license information.
          'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          boot = ( |
+             conf.
             | 
             importWorldsZpoolIfFail: prepareStorage.
+            conf: loadConfigIfFail: installOS.
 
             startX.
             desktop open.
@@ -129,6 +131,31 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: installation\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         installOS = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'installOS' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche installOS.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'installOS' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'globals' -> 'psyche' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'installOS' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         value = ( |
+            | 
+            'psyche.conf not found.' printLine.
+            'Please answer these questions: ' printLine.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          installSSHKeys = ( |
@@ -136,6 +163,14 @@ See the LICENSE,d file for license information.
             os command: 'mkdir /root/.ssh'.
             os command: 'cp /worlds/psyche/.ssh/* /root/.ssh/'.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         loadConfigIfFail: blk = ( |
+            | 
+            systemConfig readFrom: '/worlds/psyche/psyche.conf' IfFail: [|:e| blk value: e]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -280,7 +315,7 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: installation\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          systemConfig = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals psyche systemConfig.
@@ -289,35 +324,50 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: reading and writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+         readConfigFileFrom: fileName IfFail: blk = ( |
+             d <- bootstrap stub -> 'globals' -> 'dictionary' -> ().
+             s <- ''.
+            | 
+            d: dictionary copyRemoveAll.
+            s: readFileFrom: fileName IfFail: [|:e| ^ blk value: e].
+            (s splitOn: '\n') do: [|:l|
+              (l != '') && [l first != '#'] ifTrue: [| split |
+                split: l splitOn: '='.
+                split mapBy: [|:el| el shrinkwrapped].
+                d at: split first Put: (split at: 1)]].
+            d).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
          'Category: reading and writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         readFileFrom: fileName IfFail: blk = ( |
-             b <- ''.
-             eof <- bootstrap stub -> 'globals' -> 'false' -> ().
-             f <- bootstrap stub -> 'globals' -> 'unixGlobals' -> 'os_file' -> ().
+         readFrom: fileName IfFail: blk = ( |
+             c.
+             d.
             | 
-            "
-              The IO code need reworking in its entirity.
-              Until then, we'll do it ourselves here so that
-              we don't have any user errors at this level.
-            "
-            f: fileName asInputFileIfError: [
-                f closeIfFail: false.
-                ^ blk value: 'Error: could not open file: ', fileName].
-            [eof] whileFalse: [
-              b: b, (f readIfFail: [|:err|
-                f closeIfFail: false.
-                (err slice: 0 @ 3) = 'EOF'
-                  ifTrue: [eof: true]
-                   False: [^ blk value: 'Error: could not read file: ', fileName].
-                ''])].
-            b).
+            d: readConfigFileFrom: fileName IfFail: [|:e| ^ blk value: e].
+            c: copy.
+            slotsToRead do: [|:s|
+              (s, ':') sendTo: c With: (d at: s IfAbsent: [s sendTo: c])].
+            c).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
+         'Category: reading and writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         slotsToRead = ( |
+            | 
+            ((reflect: self) asList
+              filterBy: [|:s| s isAssignment not && s isParent not && s isMethod not])
+              mapBy: [|:s| s key]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'enabled\')'
+        
+         systemDesktop <- 'enabled'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
