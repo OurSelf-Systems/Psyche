@@ -111,12 +111,24 @@ See the LICENSE,d file for license information.
             | 
             importWorldsZpoolIfFail: prepareStorage.
             conf: loadConfigIfFail: installOS.
-
-            startX.
-            desktop open.
-
-            installSSHKeys.
+            conf systemDesktop = 'enabled' ifTrue: [
+              setFirewall: conf systemDesktopAccessType.
+              startX.
+              desktop open].
+            conf developmentMachine = 'enabled' ifTrue: [
+              installSSHKeys.
+              setGitDetails].
             welcomeMessage print.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: system desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         desktopFirewallNone = ( |
+            | 
+            sh: 'echo "pass in inet proto tcp to any port 5901" >> /etc/pf.conf'.
+            sh: 'pfctl -vnf /etc/pf.conf && pfctl -F all -f /etc/pf.conf'.
             self).
         } | ) 
 
@@ -156,7 +168,7 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: development\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          installSSHKeys = ( |
             | 
@@ -170,7 +182,7 @@ See the LICENSE,d file for license information.
         
          loadConfigIfFail: blk = ( |
             | 
-            systemConfig readFrom: '/worlds/psyche/psyche.conf' IfFail: [|:e| blk value: e]).
+            systemConfig copyReadFrom: '/worlds/psyche/psyche.conf' IfFail: [|:e| blk value: e]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -228,6 +240,17 @@ See the LICENSE,d file for license information.
          runningJails = ( |
             | 
             sh: 'jls' ResultInMs: 100).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: system desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         setFirewall: type = ( |
+            | 
+            case
+               if: 'none' = type Then: [ desktopFirewallNone ]
+               Else: [('Unknown desktop access method: ', type) printLine].
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -294,7 +317,7 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: system desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          startX = ( |
             | 
@@ -324,6 +347,74 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'enabled\')'
+        
+         developmentMachine <- 'enabled'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         configFile = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche traits configFile.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         fileSync* = bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'enabled\')'
+        
+         systemDesktop <- 'enabled'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'none\')'
+        
+         systemDesktopAccessType <- 'none'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         traits = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche traits.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
+         'Category: reading and writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         copyReadFrom: fileName IfFail: blk = ( |
+             c.
+             d.
+            | 
+            d: readConfigFileFrom: fileName IfFail: [|:e| ^ blk value: e].
+            c: copy.
+            slotsToRead do: [|:s|
+              (s, ':') sendTo: c With: (d at: s IfAbsent: [s sendTo: c])].
+            c).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
          'Category: reading and writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          readConfigFileFrom: fileName IfFail: blk = ( |
@@ -340,21 +431,33 @@ See the LICENSE,d file for license information.
             d).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
          'Category: reading and writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         readFrom: fileName IfFail: blk = ( |
-             c.
-             d.
+         readFileFrom: fileName IfFail: blk = ( |
+             b <- ''.
+             eof <- bootstrap stub -> 'globals' -> 'false' -> ().
+             f <- bootstrap stub -> 'globals' -> 'unixGlobals' -> 'os_file' -> ().
             | 
-            d: readConfigFileFrom: fileName IfFail: [|:e| ^ blk value: e].
-            c: copy.
-            slotsToRead do: [|:s|
-              (s, ':') sendTo: c With: (d at: s IfAbsent: [s sendTo: c])].
-            c).
+            "
+              The IO code need reworking in its entirity.
+              Until then, we'll do it ourselves here so that
+              we don't have any user errors at this level.
+            "
+            f: fileName asInputFileIfError: [
+                f closeIfFail: false.
+                ^ blk value: 'Error: could not open file: ', fileName].
+            [eof] whileFalse: [
+              b: b, (f readIfFail: [|:err|
+                f closeIfFail: false.
+                (err slice: 0 @ 3) = 'EOF'
+                  ifTrue: [eof: true]
+                   False: [^ blk value: 'Error: could not read file: ', fileName].
+                ''])].
+            b).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
          'Category: reading and writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          slotsToRead = ( |
@@ -362,18 +465,6 @@ See the LICENSE,d file for license information.
             ((reflect: self) asList
               filterBy: [|:s| s isAssignment not && s isParent not && s isMethod not])
               mapBy: [|:s| s key]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'enabled\')'
-        
-         systemDesktop <- 'enabled'.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'none\')'
-        
-         systemDesktopAccessType <- 'none'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
