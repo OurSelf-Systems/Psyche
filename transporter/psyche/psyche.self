@@ -137,6 +137,9 @@ See the LICENSE,d file for license information.
         
          importWorldsZpoolIfFail: blk = ( |
             | 
+            sh: '/sbin/zpool import'.
+            sh: '/sbin/zpool list'.
+            sh: '/sbin/zpool import worlds'.
                 sh: '/sbin/zpool import worlds'
             IfFail: blk value.
             self).
