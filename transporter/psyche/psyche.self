@@ -109,7 +109,7 @@ See the LICENSE,d file for license information.
          boot = ( |
              conf.
             | 
-            importWorldsZpoolIfFail: prepareStorage.
+            [importWorldsZpoolIfFail: prepareStorage.
             conf: loadConfigIfFail: installOS.
             conf systemDesktop = 'enabled' ifTrue: [
               setFirewall: conf systemDesktopAccessType.
@@ -118,7 +118,7 @@ See the LICENSE,d file for license information.
             conf developmentMachine = 'enabled' ifTrue: [
               installSSHKeys.
               setGitDetails].
-            welcomeMessage print.
+            welcomeMessage print.] trace.
             self).
         } | ) 
 
