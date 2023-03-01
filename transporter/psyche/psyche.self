@@ -139,8 +139,8 @@ See the LICENSE,d file for license information.
             | 
             sh: '/sbin/zpool import'.
             sh: '/sbin/zpool import worlds'.
-                sh: 'ls /worlds'
-            IfFail: blk value.
+            "    sh: 'ls /worlds'
+            IfFail: blk value."
             self).
         } | ) 
 
