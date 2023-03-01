@@ -277,6 +277,7 @@ See the LICENSE,d file for license information.
          'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          sh: cmd IfFail: blk = ( |
+            r.
             | 
             r:  os command: cmd.
             r = 0 ifFalse: [^ blk value: r].
