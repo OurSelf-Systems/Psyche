@@ -110,20 +110,14 @@ See the LICENSE,d file for license information.
              conf.
             | 
             importWorldsZpoolIfFail: prepareStorage.
-            process this sleep: 10000.
             conf: loadConfigIfFail: installOS.
-            process this sleep: 10000.
             conf systemDesktop = 'enabled' ifTrue: [
-              '1----------------------' printLine.
               setFirewall: conf systemDesktopAccessType.
               startX.
               desktop open].
-            process this sleep: 10000.
             conf developmentMachine = 'enabled' ifTrue: [
-              '2----------------------' printLine.
               installSSHKeys.
               setGitDetails].
-            process this sleep: 10000.
             welcomeMessage print.
             self).
         } | ) 
@@ -257,7 +251,9 @@ See the LICENSE,d file for license information.
             | 
             case
                if: 'none' = type Then: [ desktopFirewallNone ]
-               Else: [('Unknown desktop access method: ', type) printLine].
+               Else: [
+                    ('Unknown desktop access method: ', type) printLine.
+                    process this sleep: 10 * 1000].
             self).
         } | ) 
 
@@ -266,8 +262,8 @@ See the LICENSE,d file for license information.
         
          setGitDetails = ( |
             | 
-            os command: 'cd /self ; git config user.name = "Russell Allen"'.
-            os command: 'cd /self ; git config user.email = "mail@russell-allen.com"'.
+            os command: 'cd /objects ; git config user.name = "Russell Allen"'.
+            os command: 'cd /objects ; git config user.email = "mail@russell-allen.com"'.
             self).
         } | ) 
 
@@ -283,7 +279,7 @@ See the LICENSE,d file for license information.
          'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          sh: cmd IfFail: blk = ( |
-            r.
+             r.
             | 
             r:  os command: cmd.
             r = 0 ifFalse: [^ blk value: r].
@@ -495,8 +491,8 @@ See the LICENSE,d file for license information.
         
          welcomeMessage = ( |
             | 
-            '\n\nWELCOME TO PSYCHE\n
-            Version: ', version, '\n').
+            '\n\n\n\nWELCOME TO PSYCHE\n
+            Version: ', version, '\n\n\n').
         } | ) 
 
 
