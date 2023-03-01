@@ -109,16 +109,22 @@ See the LICENSE,d file for license information.
          boot = ( |
              conf.
             | 
-            [importWorldsZpoolIfFail: prepareStorage.
+            importWorldsZpoolIfFail: prepareStorage.
+            process this sleep: 10000.
             conf: loadConfigIfFail: installOS.
+            process this sleep: 10000.
             conf systemDesktop = 'enabled' ifTrue: [
+              '1----------------------' printLine.
               setFirewall: conf systemDesktopAccessType.
               startX.
               desktop open].
+            process this sleep: 10000.
             conf developmentMachine = 'enabled' ifTrue: [
+              '2----------------------' printLine.
               installSSHKeys.
               setGitDetails].
-            welcomeMessage print.] trace.
+            process this sleep: 10000.
+            welcomeMessage print.
             self).
         } | ) 
 
