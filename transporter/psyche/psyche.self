@@ -188,6 +188,12 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: config - builtin\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'/objects\')'
+        
+         objectsDirectory <- '/objects'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
@@ -262,8 +268,8 @@ See the LICENSE,d file for license information.
         
          setGitDetails = ( |
             | 
-            os command: 'cd /objects ; git config user.name = "Russell Allen"'.
-            os command: 'cd /objects ; git config user.email = "mail@russell-allen.com"'.
+            os command: 'cd ', objectsDirectory, ' ; git config user.name = "Russell Allen"'.
+            os command: 'cd ', objectsDirectory, ' ; git config user.email = "mail@russell-allen.com"'.
             self).
         } | ) 
 
@@ -484,6 +490,12 @@ See the LICENSE,d file for license information.
         
          version: v = ( |
             | modules psyche revision: v asString. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: config - builtin\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'/vm/Self\')'
+        
+         vmBinary <- '/vm/Self'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
