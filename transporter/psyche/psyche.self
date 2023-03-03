@@ -109,6 +109,7 @@ See the LICENSE,d file for license information.
          boot = ( |
              conf.
             | 
+            ensureLogging.
             importWorldsZpoolIfFail: prepareStorage.
             conf: loadConfigIfFail: installOS.
             conf systemDesktop = 'enabled' ifTrue: [
@@ -127,8 +128,19 @@ See the LICENSE,d file for license information.
         
          desktopFirewallNone = ( |
             | 
-            sh: 'echo "pass in inet proto tcp to any port 5901" >> /etc/pf.conf'.
-            sh: 'pfctl -vnf /etc/pf.conf && pfctl -F all -f /etc/pf.conf'.
+            sh: 'echo "pass in inet proto tcp to any port 5901" >> /etc/pf.conf' IfFail: [
+              log error: 'Could not amend /etc/pf.conf'].
+            sh: 'pfctl -vnf /etc/pf.conf && pfctl -F all -f /etc/pf.conf' IfFail: [
+              log error: 'Could not restart pf'].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         ensureLogging = ( |
+            | 
+            log dispatcher add: log prototypeHandlers allToFile.
             self).
         } | ) 
 
@@ -136,11 +148,11 @@ See the LICENSE,d file for license information.
          'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          importWorldsZpoolIfFail: blk = ( |
+             ignoreError.
             | 
-            sh: '/sbin/zpool import'.
-            sh: '/sbin/zpool import worlds'.
-            "    sh: 'ls /worlds'
-            IfFail: blk value."
+            sh: '/sbin/zpool import' IfFail: [blk value].
+            sh: '/sbin/zpool import worlds' IfFail: ignoreError.
+            sh: 'ls /worlds' IfFail: [blk value].
             self).
         } | ) 
 
@@ -222,7 +234,7 @@ See the LICENSE,d file for license information.
             'Storage (zpool worlds) cannot be found.' printLine.
             'Please create manually, then we will reboot.' printLine.
             '"exit" when finished.' printLine.
-            sh: 'bash'.
+            sh: 'bash' IfFail: false.
             'Thanks, rebooting now.' printLine.
             reboot).
         } | ) 
@@ -239,7 +251,10 @@ See the LICENSE,d file for license information.
          'Category: system actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          reboot = ( |
-            | sh: 'shutdown -r now').
+            | 
+             sh: 'shutdown -r now' IfFail: [
+              log error: 'Shutdown failed'].
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -247,7 +262,9 @@ See the LICENSE,d file for license information.
         
          runningJails = ( |
             | 
-            sh: 'jls' ResultInMs: 100).
+            sh: 'jls' ResultInMs: 100 IfFail: [
+              log error: 'Could not run jls'].
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -258,7 +275,7 @@ See the LICENSE,d file for license information.
             case
                if: 'none' = type Then: [ desktopFirewallNone ]
                Else: [
-                    ('Unknown desktop access method: ', type) printLine.
+                    log error: 'Unknown desktop access method: ', type.
                     process this sleep: 10 * 1000].
             self).
         } | ) 
@@ -271,14 +288,6 @@ See the LICENSE,d file for license information.
             os command: 'cd ', objectsDirectory, ' ; git config user.name = "Russell Allen"'.
             os command: 'cd ', objectsDirectory, ' ; git config user.email = "mail@russell-allen.com"'.
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         sh: cmd = ( |
-            | 
-            os command: cmd).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -297,23 +306,26 @@ See the LICENSE,d file for license information.
         
          sh: cmd InJail: j = ( |
             | 
-            sh: 'jexec ', j, ' ', cmd.
+            sh: 'jexec ', j, ' ', cmd IfFail: [
+              log error: 'Failed to run: ', cmd, ' in jail ', j].
             self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         sh: cmd ResultInMs: ms = ( |
-            | 
-            os outputOfCommand: cmd Timeout: ms IfFail: [error: 'Cmd failed']).
+         sh: cmd ResultInMs: ms IfFail: blk = ( |
+            | os outputOfCommand: cmd Timeout: ms IfFail: [blk value: 'Cmd ', cmd, ' in jail ', j, ' failed']).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: system actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          shutdown = ( |
-            | sh: 'shutdown -p now').
+            | 
+             sh: 'shutdown -p now' IfFail: [
+              log error: 'Shutdown failed'].
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -323,7 +335,8 @@ See the LICENSE,d file for license information.
              cmd.
             | 
             cmd: 'jail -cmr path="', d, '" name=', n, ' host.hostname=', n,  ' ip4=inherit allow.raw_sockets mount.devfs command=/bin/sh /etc/rc'.
-            sh: cmd.
+            sh: cmd IfFail: [
+              log error: 'Failed to start jail ', n, ' in directory ', d].
             self).
         } | ) 
 
@@ -343,8 +356,11 @@ See the LICENSE,d file for license information.
         
          stopJailNamed: n = ( |
             | 
-            sh: 'jail -r ', n. 
-            sh: 'umount ', pwd, '/', n, '/dev'.
+            sh: 'jail -r ', n IfFail: [
+              log error: 'Failed to stop jail named ', n].
+            self
+            sh: 'umount ', pwd, '/', n, '/dev' IfFail: [
+              log error: 'Failed to unmount /dev in stopped jail named ', n].
             self).
         } | ) 
 
