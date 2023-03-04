@@ -67,13 +67,9 @@ See the LICENSE,d file for license information.
          postFileIn = ( |
             | 
             resend.postFileIn.
-            snapshotAction
-              forCommandLineArg: '--psycheBootRoutine'
-                       DoAction: (| parent* = lobby.
-                                    value: i With: arg = (
-                                     psyche boot.
-                                     i succ).
-                                 |)).
+            snapshotAction addSchedulerInitialMessage:
+              message copy receiver: psyche Selector: 'boot'.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -140,7 +136,9 @@ See the LICENSE,d file for license information.
         
          ensureLogging = ( |
             | 
-            log dispatcher add: log prototypeHandlers allToFile.
+            " Pluggable until netbsd branch is merged "
+            ((reflect: log prototypeHandlers) includesKey: 'allToFile')
+              ifTrue: [log dispatcher add: log prototypeHandlers allToFile].
             self).
         } | ) 
 
@@ -519,8 +517,7 @@ See the LICENSE,d file for license information.
         
          welcomeMessage = ( |
             | 
-            '\n\n\n\nWELCOME TO PSYCHE\n
-            Version: ', version, '\n\n\n').
+            '\n\n\n\nWELCOME TO PSYCHE\n\nVersion: ', version, '\n\n\n').
         } | ) 
 
 
