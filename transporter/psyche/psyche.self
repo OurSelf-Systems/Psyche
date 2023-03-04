@@ -67,13 +67,6 @@ See the LICENSE,d file for license information.
          postFileIn = ( |
             | 
             resend.postFileIn.
-              forCommandLineArg: '--suspendBootRoutine'
-                       DoAction: (| parent* = lobby.
-                                    value: i With: arg = (
-                                     "Don't start up psyche this time"
-                                     psyche suspendBoot: true.
-                                     i succ).
-                                 |).
             snapshotAction addSchedulerInitialMessage:
               message copy receiver: psyche Selector: 'boot'.
             self).
@@ -110,7 +103,15 @@ See the LICENSE,d file for license information.
          'Category: boot support\x7fComment: This is the main entry point for booting\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          boot = ( |
-            | suspendBoot ifFalse: [prompt suspendWhile: [mainBootRoutine]]. self).
+            | 
+            bootIsSuspended ifFalse: [prompt suspendWhile: [mainBootRoutine]]. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: boot support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         bootIsSuspended = ( |
+            | snapshotAction commandLine includes: '--suspendPsycheBootRoutine').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -374,12 +375,6 @@ See the LICENSE,d file for license information.
             sh: 'umount ', pwd, '/', n, '/dev' IfFail: [
               log error: 'Failed to unmount /dev in stopped jail named ', n].
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: boot support\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (false)'
-        
-         suspendBoot <- bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
