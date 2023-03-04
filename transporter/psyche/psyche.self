@@ -104,14 +104,19 @@ See the LICENSE,d file for license information.
         
          boot = ( |
             | 
-            bootIsSuspended ifFalse: [prompt suspendWhile: [mainBootRoutine]]. self).
+            bootIsSuspended 
+                ifTrue: [ensureLogging. log info: 'Boot skipped with --suspendPsycheBootRoutine']
+            	 False: [prompt suspendWhile: [mainBootRoutine]]. 
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: boot support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          bootIsSuspended = ( |
-            | snapshotAction commandLine includes: '--suspendPsycheBootRoutine').
+            | 
+            " use primitive so we cover building on commandline "
+            _CommandLine includes: '--suspendPsycheBootRoutine').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
