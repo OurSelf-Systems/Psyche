@@ -67,6 +67,13 @@ See the LICENSE,d file for license information.
          postFileIn = ( |
             | 
             resend.postFileIn.
+              forCommandLineArg: '--suspendBootRoutine'
+                       DoAction: (| parent* = lobby.
+                                    value: i With: arg = (
+                                     "Don't start up psyche this time"
+                                     psyche suspendBoot: true.
+                                     i succ).
+                                 |).
             snapshotAction addSchedulerInitialMessage:
               message copy receiver: psyche Selector: 'boot'.
             self).
@@ -100,23 +107,10 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: boot support\x7fComment: This is the main entry point for booting\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          boot = ( |
-             conf.
-            | 
-            ensureLogging.
-            importWorldsZpoolIfFail: prepareStorage.
-            conf: loadConfigIfFail: installOS.
-            conf systemDesktop = 'enabled' ifTrue: [
-              setFirewall: conf systemDesktopAccessType.
-              startX.
-              desktop open].
-            conf developmentMachine = 'enabled' ifTrue: [
-              installSSHKeys.
-              setGitDetails].
-            welcomeMessage print.
-            self).
+            | suspendBoot ifFalse: [prompt suspendWhile: [mainBootRoutine]]. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -132,7 +126,7 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: boot support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          ensureLogging = ( |
             | 
@@ -143,7 +137,7 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: boot support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          importWorldsZpoolIfFail: blk = ( |
              ignoreError.
@@ -195,6 +189,26 @@ See the LICENSE,d file for license information.
          loadConfigIfFail: blk = ( |
             | 
             systemConfig copyReadFrom: '/worlds/psyche/psyche.conf' IfFail: [|:e| blk value: e]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: boot support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         mainBootRoutine = ( |
+             conf.
+            | 
+            ensureLogging.
+            importWorldsZpoolIfFail: prepareStorage.
+            conf: loadConfigIfFail: installOS.
+            conf systemDesktop = 'enabled' ifTrue: [
+              setFirewall: conf systemDesktopAccessType.
+              startX.
+              desktop open].
+            conf developmentMachine = 'enabled' ifTrue: [
+              installSSHKeys.
+              setGitDetails].
+            welcomeMessage print.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -363,6 +377,12 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: boot support\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (false)'
+        
+         suspendBoot <- bootstrap stub -> 'globals' -> 'false' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          systemConfig = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( |
@@ -513,7 +533,7 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: boot support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          welcomeMessage = ( |
             | 
