@@ -100,13 +100,21 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: system actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         addFreeBSDUser: u IfFail: blk = ( |
+            | 
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: boot support\x7fComment: This is the main entry point for booting\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          boot = ( |
             | 
             bootIsSuspended 
                 ifTrue: [ensureLogging. log info: 'Boot skipped with --suspendPsycheBootRoutine']
-            	 False: [prompt suspendWhile: [mainBootRoutine]]. 
+                 False: [prompt suspendWhile: [mainBootRoutine]]. 
             self).
         } | ) 
 
@@ -120,7 +128,10 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: system desktop\x7fComment: This punches a hole in the firewall at port 5901 and 
+exposes VNC without a password or encryption. 
+
+DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          desktopFirewallNone = ( |
             | 
@@ -132,6 +143,16 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: system desktop\x7fComment: This starts a sshd for login as \'control\' user. 
+Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         desktopFirewallSSH = ( |
+            | 
+            ensureSystemUser.
+            startSSHD).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: boot support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          ensureLogging = ( |
@@ -140,6 +161,41 @@ See the LICENSE,d file for license information.
             ((reflect: log prototypeHandlers) includesKey: 'allToFile')
               ifTrue: [log dispatcher add: log prototypeHandlers allToFile].
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: system desktop\x7fCategory: ssh\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         ensureSystemUser = ( |
+             logError.
+             logWarning.
+             userName = 'system'.
+             users.
+            | 
+            logError:   [|:m| log error: 'In "ensureSystemUser", ', m. ^ self].
+            logWarning: [|:m| log warn:  'In "ensureSystemUser", ', m. ^ self].
+
+            " Does system user exist? "
+            users: freebsdUsersIfFail: [logError value: 'Cannot determine FreeBSD users'].
+            (users includes: userName) ifTrue: [logWarning value: '"', userName, '" user already exists.'].
+
+            " Add system user "
+            sh: 'pw adduser -n ', userName, ' -s /sbin/nologin' IfFail: [logError: 'Cannot create user "', userName, '"'].
+
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: system status\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         freebsdUsersIfFail: blk = ( |
+             f.
+             u.
+            | 
+            f: readFileFrom: '/etc/passwd' IfFail: [^ blk value: 'Could not read /etc/passwd'].
+            ((f splitOn: '\n') 
+              mapBy: [|:l| (l splitOn: ':') first])
+              filterBy: [|:l| (l != '') && ['#' != l first]]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -266,6 +322,32 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         readFileFrom: fileName IfFail: blk = ( |
+             b <- ''.
+             eof <- bootstrap stub -> 'globals' -> 'false' -> ().
+             f <- bootstrap stub -> 'globals' -> 'unixGlobals' -> 'os_file' -> ().
+            | 
+            "
+              The IO code need reworking in its entirity.
+              Until then, we'll do it ourselves here so that
+              we don't have any user errors at this level.
+            "
+            f: fileName asInputFileIfError: [
+                f closeIfFail: false.
+                ^ blk value: 'Error: could not open file: ', fileName].
+            [eof] whileFalse: [
+              b: b, (f readIfFail: [|:err|
+                f closeIfFail: false.
+                (err slice: 0 @ 3) = 'EOF'
+                  ifTrue: [eof: true]
+                   False: [^ blk value: 'Error: could not read file: ', fileName].
+                ''])].
+            b).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: system actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          reboot = ( |
@@ -292,6 +374,7 @@ See the LICENSE,d file for license information.
             | 
             case
                if: 'none' = type Then: [ desktopFirewallNone ]
+               If: 'ssh'  = type Then: [ desktopFirewallSSH  ]
                Else: [
                     log error: 'Unknown desktop access method: ', type.
                     process this sleep: 10 * 1000].
@@ -355,6 +438,16 @@ See the LICENSE,d file for license information.
             cmd: 'jail -cmr path="', d, '" name=', n, ' host.hostname=', n,  ' ip4=inherit allow.raw_sockets mount.devfs command=/bin/sh /etc/rc'.
             sh: cmd IfFail: [
               log error: 'Failed to start jail ', n, ' in directory ', d].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: system desktop\x7fCategory: ssh\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         startSSHD = ( |
+            | 
+            sh: 'service sshd onestart' IfFail: [
+              log warn: 'Cannot start SSHD'].
             self).
         } | ) 
 
@@ -480,26 +573,8 @@ See the LICENSE,d file for license information.
          'Category: reading and writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          readFileFrom: fileName IfFail: blk = ( |
-             b <- ''.
-             eof <- bootstrap stub -> 'globals' -> 'false' -> ().
-             f <- bootstrap stub -> 'globals' -> 'unixGlobals' -> 'os_file' -> ().
             | 
-            "
-              The IO code need reworking in its entirity.
-              Until then, we'll do it ourselves here so that
-              we don't have any user errors at this level.
-            "
-            f: fileName asInputFileIfError: [
-                f closeIfFail: false.
-                ^ blk value: 'Error: could not open file: ', fileName].
-            [eof] whileFalse: [
-              b: b, (f readIfFail: [|:err|
-                f closeIfFail: false.
-                (err slice: 0 @ 3) = 'EOF'
-                  ifTrue: [eof: true]
-                   False: [^ blk value: 'Error: could not read file: ', fileName].
-                ''])].
-            b).
+            psyche readFileFrom: fileName IfFail: blk).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
