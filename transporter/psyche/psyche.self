@@ -149,6 +149,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
          desktopFirewallSSH = ( |
             | 
             ensureSystemUser.
+            saveSSHKey.
             startSSHD).
         } | ) 
 
@@ -368,6 +369,18 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: system desktop\x7fCategory: ssh\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         saveSSHKey = ( |
+             f.
+            | 
+              write: (loadConfigIfFail: false) systemDesktopSSHKey
+             ToFile: '/home/system/.ssh/authorized_keys'
+             IfFail: false.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: system desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          setFirewall: type = ( |
@@ -523,6 +536,12 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
          systemDesktopAccessType <- 'none'.
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'rsa\')'
+        
+         systemDesktopSSHKey <- 'rsa'.
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
@@ -613,6 +632,18 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
          welcomeMessage = ( |
             | 
             '\n\n\n\nWELCOME TO PSYCHE\n\nVersion: ', version, '\n\n\n').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         write: s ToFile: fileName IfFail: blk = ( |
+             f.
+            | 
+            f: fileName asOutputFileIfError: false.
+            f write: s IfFail: false.
+            f closeIfFail: false.
+            self).
         } | ) 
 
 
