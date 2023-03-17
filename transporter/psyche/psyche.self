@@ -135,10 +135,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         
          desktopFirewallNone = ( |
             | 
-            sh: 'echo "pass in inet proto tcp to any port 5901" >> /etc/pf.conf' IfFail: [
-              log error: 'Could not amend /etc/pf.conf'].
-            sh: 'pfctl -vnf /etc/pf.conf && pfctl -F all -f /etc/pf.conf' IfFail: [
-              log error: 'Could not restart pf'].
+            pfOpenPort: 5901.
             self).
         } | ) 
 
@@ -150,7 +147,9 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
             | 
             ensureSystemUser.
             saveSSHKey.
-            startSSHD).
+            startSSHD.
+            pfOpenPort: 22.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -170,7 +169,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
          ensureSystemUser = ( |
              logError.
              logWarning.
-             userName = 'system'.
+             userName = 'system4'.
              users.
             | 
             logError:   [|:m| log error: 'In "ensureSystemUser", ', m. ^ self].
@@ -181,7 +180,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
             (users includes: userName) ifTrue: [logWarning value: '"', userName, '" user already exists.'].
 
             " Add system user "
-            sh: 'pw adduser -n ', userName, ' -s /sbin/nologin' IfFail: [logError: 'Cannot create user "', userName, '"'].
+            sh: 'pw useradd -n ', userName, ' -m -s /sbin/nologin' IfFail: [logError: 'Cannot create user "', userName, '"'].
 
             self).
         } | ) 
@@ -287,6 +286,17 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: system pf\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         pfOpenPort: p = ( |
+            | 
+            sh: 'echo "pass in inet proto tcp to any port ', p asString, '" >> /etc/pf.conf' IfFail: [
+              log error: 'Could not amend /etc/pf.conf'].
+            restartPf.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: installation\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          prepareStorage = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'prepareStorage' -> () From: ( |
@@ -359,6 +369,16 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: system pf\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         restartPf = ( |
+            | 
+            sh: 'pfctl -vnf /etc/pf.conf && pfctl -F all -f /etc/pf.conf' IfFail: [
+              log error: 'Could not restart pf'].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: system status\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          runningJails = ( |
@@ -374,9 +394,12 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
          saveSSHKey = ( |
              f.
             | 
+            sh: 'mkdir -p /home/system/.ssh' IfFail: [|:m| 
+              log error: 'In "saveSSHKey" canoot make .ssh dir'. ^ self].
+
               write: (loadConfigIfFail: false) systemDesktopSSHKey
              ToFile: '/home/system/.ssh/authorized_keys'
-             IfFail: false.
+             IfFail: [|:m| log error: 'In "saveSSHKey", ', m. ^ self].
             self).
         } | ) 
 
@@ -638,11 +661,21 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
          'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          write: s ToFile: fileName IfFail: blk = ( |
-             f.
+             f <- bootstrap stub -> 'globals' -> 'unixGlobals' -> 'os_file' -> ().
             | 
-            f: fileName asOutputFileIfError: false.
-            f write: s IfFail: false.
-            f closeIfFail: false.
+            "
+              The IO code need reworking in its entirity.
+              Until then, we'll do it ourselves here so that
+              we don't have any user errors at this level.
+            "
+            f: os_file openForWriting: fileName IfFail: [
+                f closeIfFail: false.
+                ^ blk value: 'Error: could not open file: ', fileName].
+            f write: s IfFail: [|:err|
+                f closeIfFail: false.
+                ^ blk value: 'Error: could not write file: ', fileName].
+            f closeIfFail: [
+                blk value: 'Error: error closing file: ', fileName].
             self).
         } | ) 
 
