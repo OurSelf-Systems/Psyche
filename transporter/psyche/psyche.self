@@ -169,7 +169,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
          ensureSystemUser = ( |
              logError.
              logWarning.
-             userName = 'system4'.
+             userName = 'system'.
              users.
             | 
             logError:   [|:m| log error: 'In "ensureSystemUser", ', m. ^ self].
@@ -180,8 +180,8 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
             (users includes: userName) ifTrue: [logWarning value: '"', userName, '" user already exists.'].
 
             " Add system user "
-            sh: 'pw useradd -n ', userName, ' -m -s /sbin/nologin' IfFail: [logError: 'Cannot create user "', userName, '"'].
-
+            sh: 'pw useradd -n ', userName, ' -m ' IfFail: [logError: 'Cannot create user "', userName, '"'].
+            " -s /sbin/nologin "
             self).
         } | ) 
 
