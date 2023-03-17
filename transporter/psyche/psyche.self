@@ -180,7 +180,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
             (users includes: userName) ifTrue: [logWarning value: '"', userName, '" user already exists.'].
 
             " Add system user "
-            sh: 'pw useradd -n ', userName, ' -m ' IfFail: [logError: 'Cannot create user "', userName, '"'].
+            sh: 'pw useradd -n ', userName, ' -m -s /sbin/nologin ' IfFail: [logError: 'Cannot create user "', userName, '"'].
             " -s /sbin/nologin "
             self).
         } | ) 
