@@ -582,7 +582,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
-         'Category: reading and writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: reading\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          copyReadFrom: fileName IfFail: blk = ( |
              c.
@@ -602,7 +602,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
-         'Category: reading and writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: reading\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          readConfigFileFrom: fileName IfFail: blk = ( |
              d <- bootstrap stub -> 'globals' -> 'dictionary' -> ().
@@ -619,7 +619,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
-         'Category: reading and writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: reading\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          readFileFrom: fileName IfFail: blk = ( |
             | 
@@ -627,7 +627,27 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
-         'Category: reading and writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: wizard\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         setVieWizard = ( |
+            | 
+            prompt suspendWhile: [
+
+            'Enter values for the following keys: ' printLine.
+
+            slotsToRead do: [|:str. newValue|
+              (str, ' [', (str sendTo: self), ']: ') print.
+              newValue: stdin readLine.
+              newValue isEmpty 
+                ifFalse: [ (str, ':') sendTo: self With: newValue].
+            ].
+
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
+         'Category: introspection\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          slotsToRead = ( |
             | 
