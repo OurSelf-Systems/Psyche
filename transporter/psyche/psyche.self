@@ -244,9 +244,18 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          value = ( |
+             conf.
             | 
+
             'psyche.conf not found.' printLine.
             'Please answer these questions: ' printLine.
+
+            conf: systemConfigPrototype copy setViaWizard.
+            conf writeTo: '/worlds/psyche/psyche.conf' IfFail: [
+              log error: 'Did not save!'].
+            loadConfigIfFail: [
+              log error: 'DId not read!'].
+
             self).
         } | ) 
 
@@ -582,6 +591,17 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
+         'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         asConfigFileString = ( |
+             s <- ''.
+            | 
+              slotsToRead do: [|:slot|
+                s: s, slot, ' = ', (slot sendTo: self), '\n'].
+            s).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
          'Category: reading\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          copyReadFrom: fileName IfFail: blk = ( |
@@ -654,6 +674,17 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
             ((reflect: self) asList
               filterBy: [|:s| s isAssignment not && s isParent not && s isMethod not])
               mapBy: [|:s| s key]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
+         'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         writeTo: fileName IfFail: blk = ( |
+            | 
+            psyche write: asConfigFileString 
+                  ToFile: filmName
+                  IfFail: [^ blk value].
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
