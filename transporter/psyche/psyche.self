@@ -128,6 +128,21 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         systemConfigPrototype = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche systemConfigPrototype.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: config\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (psyche systemConfigPrototype)'
+        
+         currentSystemConfig <- bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: desktop\x7fComment: This punches a hole in the firewall at port 5901 and 
 exposes VNC without a password or encryption. 
 
@@ -250,7 +265,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
         
          loadConfigIfFail: blk = ( |
             | 
-            systemConfig copyReadFrom: '/worlds/psyche/psyche.conf' IfFail: [|:e| blk value: e]).
+            currentSystemConfig: systemConfigPrototype copyReadFrom: '/worlds/psyche/psyche.conf' IfFail: [|:e| ^ blk value: e]. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -261,7 +276,8 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
             | 
             ensureLogging.
             importWorldsZpoolIfFail: prepareStorage.
-            conf: loadConfigIfFail: installOS.
+            loadConfigIfFail: installOS.
+            conf: currentSystemConfig.
             conf systemDesktop = 'enabled' ifTrue: [
               setFirewall: conf systemDesktopAccessType.
               startX.
@@ -397,7 +413,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
             sh: 'mkdir -p /home/system/.ssh' IfFail: [|:m| 
               log error: 'In "saveSSHKey" canoot make .ssh dir'. ^ self].
 
-              write: (loadConfigIfFail: false) systemDesktopSSHKey
+              write: currentSystemConfig systemDesktopSSHKey
              ToFile: '/home/system/.ssh/authorized_keys'
              IfFail: [|:m| log error: 'In "saveSSHKey", ', m. ^ self].
             self).
@@ -511,16 +527,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         systemConfig = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche systemConfig.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'enabled\')'
         
          developmentMachine <- 'enabled'.
@@ -535,31 +542,31 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          fileSync* = bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'enabled\')'
         
          systemDesktop <- 'enabled'.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'none\')'
         
          systemDesktopAccessType <- 'none'.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfig' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'rsa\')'
         
          systemDesktopSSHKey <- 'rsa'.
