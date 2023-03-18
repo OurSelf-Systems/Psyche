@@ -143,18 +143,6 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: desktop\x7fComment: This punches a hole in the firewall at port 5901 and 
-exposes VNC without a password or encryption. 
-
-DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         desktopFirewallNone = ( |
-            | 
-            pfOpenPort: 5901.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: desktop\x7fComment: This starts a sshd for login as \'control\' user. 
 Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
@@ -164,6 +152,18 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
             saveSSHKey.
             startSSHD.
             pfOpenPort: 22.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: desktop\x7fComment: This punches a hole in the firewall at port 5901 and 
+exposes VNC without a password or encryption. 
+
+DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         desktopFirewallUnsafe = ( |
+            | 
+            pfOpenPort: 5901.
             self).
         } | ) 
 
@@ -425,8 +425,8 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
          setFirewall: type = ( |
             | 
             case
-               if: 'none' = type Then: [ desktopFirewallNone ]
-               If: 'ssh'  = type Then: [ desktopFirewallSSH  ]
+               if: 'unsafe' = type Then: [ desktopFirewallUnsafe ]
+               If: 'ssh'    = type Then: [ desktopFirewallSSH    ]
                Else: [
                     log error: 'Unknown desktop access method: ', type.
                     process this sleep: 10 * 1000].
@@ -528,9 +528,9 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'enabled\')'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'disabled\')'
         
-         developmentMachine <- 'enabled'.
+         developmentMachine <- 'disabled'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> () From: ( | {
@@ -555,15 +555,15 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'enabled\')'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'disabled\')'
         
-         systemDesktop <- 'enabled'.
+         systemDesktop <- 'disabled'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'none\')'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'unsafe\')'
         
-         systemDesktopAccessType <- 'none'.
+         systemDesktopAccessType <- 'unsafe'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> () From: ( | {
