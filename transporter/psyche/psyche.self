@@ -100,7 +100,7 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: system\x7fCategory: users\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          addFreeBSDUser: u IfFail: blk = ( |
             | 
@@ -128,7 +128,7 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system desktop\x7fComment: This punches a hole in the firewall at port 5901 and 
+         'Category: desktop\x7fComment: This punches a hole in the firewall at port 5901 and 
 exposes VNC without a password or encryption. 
 
 DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
@@ -140,7 +140,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system desktop\x7fComment: This starts a sshd for login as \'control\' user. 
+         'Category: desktop\x7fComment: This starts a sshd for login as \'control\' user. 
 Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          desktopFirewallSSH = ( |
@@ -164,7 +164,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system desktop\x7fCategory: ssh\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          ensureSystemUser = ( |
              logError.
@@ -186,7 +186,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system status\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: system\x7fCategory: users\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          freebsdUsersIfFail: blk = ( |
              f.
@@ -286,7 +286,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system pf\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: system\x7fCategory: pf\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          pfOpenPort: p = ( |
             | 
@@ -325,7 +325,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: system\x7fCategory: pwd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          pwd = ( |
             | 
@@ -359,7 +359,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: system\x7fCategory: shutdown\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          reboot = ( |
             | 
@@ -369,7 +369,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system pf\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: system\x7fCategory: pf\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          restartPf = ( |
             | 
@@ -379,7 +379,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system status\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: system\x7fCategory: jails\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          runningJails = ( |
             | 
@@ -389,7 +389,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system desktop\x7fCategory: ssh\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          saveSSHKey = ( |
              f.
@@ -404,7 +404,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          setFirewall: type = ( |
             | 
@@ -456,7 +456,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: system\x7fCategory: shutdown\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          shutdown = ( |
             | 
@@ -466,7 +466,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: jail management\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: system\x7fCategory: jails\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          startJailNamed: n InDir: d = ( |
              cmd.
@@ -478,7 +478,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system desktop\x7fCategory: ssh\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: system\x7fCategory: sshd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          startSSHD = ( |
             | 
@@ -488,7 +488,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          startX = ( |
             | 
@@ -499,7 +499,7 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: jail management\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: system\x7fCategory: jails\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          stopJailNamed: n = ( |
             | 
