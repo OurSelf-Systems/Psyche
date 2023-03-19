@@ -651,8 +651,6 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         
          setViaWizard = ( |
             | 
-            prompt suspendWhile: [
-
             'Enter values for the following keys: ' printLine.
 
             slotsToRead do: [|:str. newValue|
@@ -662,7 +660,6 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
                 ifFalse: [ (str, ':') sendTo: self With: newValue].
             ].
 
-            ].
             self).
         } | ) 
 
@@ -682,7 +679,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
          writeTo: fileName IfFail: blk = ( |
             | 
             psyche write: asConfigFileString 
-                  ToFile: filmName
+                  ToFile: fileName
                   IfFail: [^ blk value].
             self).
         } | ) 
