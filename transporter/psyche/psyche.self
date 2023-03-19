@@ -254,7 +254,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
             conf writeTo: '/worlds/psyche/psyche.conf' IfFail: [
               log error: 'Did not save!'].
             loadConfigIfFail: [
-              log error: 'DId not read!'].
+              log error: 'Did not read!'].
 
             self).
         } | ) 
@@ -649,7 +649,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
          'Category: wizard\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         setVieWizard = ( |
+         setViaWizard = ( |
             | 
             prompt suspendWhile: [
 
