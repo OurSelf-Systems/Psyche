@@ -13,11 +13,6 @@ See the LICENSE,d file for license information.
         
          postFileIn = ( |
             | 
-            " Only run if Psyche isn't doing boot "
-            psyche bootIsSuspended ifFalse: [
-              snapshotAction addSchedulerInitialMessage: (
-                message copy receiver: prompt Selector: 'mainInputLoop').
-            ].
             resend.postFileIn).
         } | ) 
 
@@ -127,7 +122,8 @@ See the LICENSE,d file for license information.
             | 
             bootIsSuspended 
                 ifTrue: [ensureLogging. log info: 'Boot skipped with --suspendPsycheBootRoutine']
-                 False: [mainBootRoutine. ["See: " modules prompt postFileIn]. startPrompt]. 
+                 False: [mainBootRoutine]. 
+            startPrompt.
             self).
         } | ) 
 
