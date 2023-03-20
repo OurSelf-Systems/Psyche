@@ -8,6 +8,19 @@ See the LICENSE,d file for license information.
 
  '-- Module body'
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'prompt' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         postFileIn = ( |
+            | 
+            " Only run if Psyche isn't doing boot "
+            psyche bootIsSuspended ifFalse: [
+              snapshotAction addSchedulerInitialMessage: (
+                message copy receiver: prompt Selector: 'mainInputLoop').
+            ].
+            resend.postFileIn).
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
@@ -114,7 +127,7 @@ See the LICENSE,d file for license information.
             | 
             bootIsSuspended 
                 ifTrue: [ensureLogging. log info: 'Boot skipped with --suspendPsycheBootRoutine']
-                 False: [prompt suspendWhile: [mainBootRoutine]]. 
+                 False: [mainBootRoutine. ["See: " modules prompt postFileIn]. startPrompt]. 
             self).
         } | ) 
 
@@ -503,6 +516,13 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: boot support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         startPrompt = ( |
+            | prompt mainInputLoop. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: system\x7fCategory: sshd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          startSSHD = ( |
@@ -709,7 +729,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         
          welcomeMessage = ( |
             | 
-            '\n\n\n\nWELCOME TO PSYCHE\n\nVersion: ', version, '\n\n\n').
+            '\n\n\n\nW E L C O M E   T O   P S Y C H E\n\nVersion: ', version, '\n\n\n').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
