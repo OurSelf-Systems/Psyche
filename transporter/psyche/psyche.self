@@ -8,14 +8,6 @@ See the LICENSE,d file for license information.
 
  '-- Module body'
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'prompt' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         postFileIn = ( |
-            | 
-            resend.postFileIn).
-        } | ) 
-
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
@@ -116,19 +108,18 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: boot support\x7fComment: This is the main entry point for booting\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: boot\x7fComment: This is the main entry point for booting\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          boot = ( |
             | 
             bootIsSuspended 
                 ifTrue: [ensureLogging. log info: 'Boot skipped with --suspendPsycheBootRoutine']
                  False: [mainBootRoutine]. 
-            startPrompt.
             self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: boot support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          bootIsSuspended = ( |
             | 
@@ -177,7 +168,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: boot support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          ensureLogging = ( |
             | 
@@ -223,7 +214,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: boot support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          importWorldsZpoolIfFail: blk = ( |
              ignoreError.
@@ -287,7 +278,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: boot support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          mainBootRoutine = ( |
              conf.
@@ -356,6 +347,13 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
             sh: 'bash' IfFail: false.
             'Thanks, rebooting now.' printLine.
             reboot).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         preventPromptStart = ( |
+            | self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -512,7 +510,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: boot support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          startPrompt = ( |
             | prompt mainInputLoop. self).
@@ -721,7 +719,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: boot support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          welcomeMessage = ( |
             | 
@@ -747,6 +745,17 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
                 ^ blk value: 'Error: could not write file: ', fileName].
             f closeIfFail: [
                 blk value: 'Error: error closing file: ', fileName].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'snapshotAction' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
+        
+         schedulerInitial = ( |
+            | 
+            log info: 'Psyche Scheduler started (according to snapshotAction schedulerInitial)'.
+            psyche preventPromptStart.
+            schedulerInitialMessages do: [|:msg| msg fork resume].
             self).
         } | ) 
 
