@@ -112,9 +112,11 @@ See the LICENSE,d file for license information.
         
          boot = ( |
             | 
+            ensureLogging. 
             bootIsSuspended 
-                ifTrue: [ensureLogging. log info: 'Boot skipped with --suspendPsycheBootRoutine']
+                ifTrue: [log info: 'Boot skipped with --suspendPsycheBootRoutine']
                  False: [mainBootRoutine]. 
+            startPrompt.
             self).
         } | ) 
 
@@ -283,7 +285,6 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
          mainBootRoutine = ( |
              conf.
             | 
-            ensureLogging.
             importWorldsZpoolIfFail: prepareStorage.
             loadConfigIfFail: installOS.
             conf: currentSystemConfig.
@@ -517,7 +518,11 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
          'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          startPrompt = ( |
-            | prompt mainInputLoop. self).
+             m.
+            | 
+            m: message copy receiver: prompt Selector: 'mainInputLoop'.
+            m fork resume.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
