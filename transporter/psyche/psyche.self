@@ -354,7 +354,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         
          preventPromptStart = ( |
             | 
-            snapshotAction schedulerInitialMessages copy filterBy: [|:e|
+            snapshotAction schedulerInitialMessages filterBy: [|:e|
               e selector != 'mainInputLoop'].
             self).
         } | ) 
