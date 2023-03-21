@@ -253,10 +253,16 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
             'Please answer these questions: ' printLine.
 
             conf: systemConfigPrototype copy setViaWizard.
+
+            mkdir_p: '/worlds/psyche' IfFail: [
+              log error: 'Could not create /worlds/psyche!'.
+              ^ self].
             conf writeTo: '/worlds/psyche/psyche.conf' IfFail: [
-              log error: 'Did not save!'].
+              log error: 'Did not save conf file!'.
+              ^ self].
             loadConfigIfFail: [
-              log error: 'Did not read!'].
+              log error: 'Did not read conf file!'.
+              ^ self].
 
             self).
         } | ) 
@@ -297,6 +303,13 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
               setGitDetails].
             welcomeMessage print.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: system\x7fCategory: mkdir\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         mkdir_p: dir IfFail: blk = ( |
+            | sh: 'mkdir -p ', dir IfFail: blk).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
