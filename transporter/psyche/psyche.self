@@ -354,8 +354,9 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         
          preventPromptStart = ( |
             | 
-            snapshotAction schedulerInitialMessages filterBy: [|:e|
-              e selector != 'mainInputLoop'].
+            bootIfSuspended ifFalse: [
+              snapshotAction schedulerInitialMessages filterBy: [|:e|
+                e selector != 'mainInputLoop']].
             self).
         } | ) 
 
