@@ -353,7 +353,10 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
          'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          preventPromptStart = ( |
-            | self).
+            | 
+            snapshotAction schedulerInitialMessages copy filterBy: [|:e|
+              e selector != 'mainInputLoop'].
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
