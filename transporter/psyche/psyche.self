@@ -1,6 +1,6 @@
- '2023.02.27.01'
+ '2023.03.24.01'
  '
-Copyright 2022 OurSelf-Systems.
+Copyright 2022-2023 OurSelf-Systems.
 See the LICENSE,d file for license information.
 '
 ["preFileIn" self] value
@@ -33,12 +33,12 @@ SlotsToOmit: copyright directory fileInTimeString myComment postFileIn revision 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
          'Category: state\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'
-Copyright 2022 OurSelf-Systems.
+Copyright 2022-2023 OurSelf-Systems.
 See the LICENSE,d file for license information.
 \')\x7fVisibility: public'
         
          copyright <- '
-Copyright 2022 OurSelf-Systems.
+Copyright 2022-2023 OurSelf-Systems.
 See the LICENSE,d file for license information.
 '.
         } | ) 
@@ -73,9 +73,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2023.02.27.01\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2023.03.24.01\')\x7fVisibility: public'
         
-         revision <- '2023.02.27.01'.
+         revision <- '2023.03.24.01'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -724,7 +724,8 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
          'Category: status\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          version = ( |
-            | modules psyche revision).
+            | 
+            modules psyche revision).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
