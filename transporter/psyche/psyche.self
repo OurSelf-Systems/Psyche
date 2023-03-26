@@ -130,6 +130,29 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: jails\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         createBase = ( |
+            | 
+            " Clean "
+            "sh: 'zfs destroy worlds/base/core_13_1'."
+
+            " Create dataset "
+            sh: 'zfs create -p worlds/base/core_13_1'.
+
+            " Fetch base "
+            sh: 'fetch -o /worlds/base https://download.freebsd.org/ftp/releases/amd64/13.1-RELEASE/base.txz'.
+            sh: 'tar -zxvf /worlds/base/base.txz -C /worlds/base/core_13_1'.
+
+            " Install NoVNC "
+            sh: 'mkdir /worlds/base/core_13_1/opt'.
+            sh: 'git clone https://github.com/novnc/noVNC.git /worlds/base/core_13_1/opt/noVNC'.
+
+
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          systemConfigPrototype = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> () From: ( |
@@ -475,6 +498,14 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
             os command: 'cd ', objectsDirectory, ' ; git config user.name = "Russell Allen"'.
             os command: 'cd ', objectsDirectory, ' ; git config user.email = "mail@russell-allen.com"'.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: support\x7fComment: Only use this manually\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sh: cmd = ( |
+            | 
+            sh: cmd IfFail: [|:e| ^ error: e]. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
