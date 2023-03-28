@@ -148,6 +148,15 @@ See the LICENSE,d file for license information.
             sh: 'mkdir /worlds/base/core_13_1/opt'.
             sh: 'git clone https://github.com/novnc/noVNC.git /worlds/base/core_13_1/opt/noVNC'.
 
+            " /dev "
+            sh: 'mkdir /worlds/base/core_13_1/dev'.
+
+            " Install packages "
+            startJailNamed: 'core_13_1' InDir: '/worlds/base/core_13_1'.
+            sh: 'pkg install --yes tightvnc ratpoison bash websockify tmux gotty' InJail: 'core_13_1'.
+            sh: 'pkg install --yes xlsfonts xorg-fonts terminus-font urwfonts xset ImageMagick7 socat' InJail: 'core_13_1'.
+            sh: 'pkg install --yes git-lite python3' InJail: 'core_13_1'.
+            stopJailNamed: 'core_13_1'.
 
             self).
         } | ) 
@@ -520,7 +529,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: support\x7fComment: Only use on command line\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          sh: cmd InJail: j = ( |
             | 
