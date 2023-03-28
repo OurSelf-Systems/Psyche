@@ -135,7 +135,10 @@ See the LICENSE,d file for license information.
          createBase = ( |
             | 
             " Clean "
-            "sh: 'zfs destroy worlds/base/core_13_1'."
+            sh: 'chflags -R noschg /worlds/base/core_13_1/*' IfFail: false.
+            sh: 'umount /worlds/base/core_13_1/dev' IfFail: false.
+            sh: 'rm -rf /worlds/base/core_13_1/*' IfFail: false.
+            sh: 'zfs destroy worlds/base/core_13_1'.
 
             " Create dataset "
             sh: 'zfs create -p worlds/base/core_13_1'.
@@ -149,7 +152,10 @@ See the LICENSE,d file for license information.
             sh: 'git clone https://github.com/novnc/noVNC.git /worlds/base/core_13_1/opt/noVNC'.
 
             " /dev "
-            sh: 'mkdir /worlds/base/core_13_1/dev'.
+            sh: 'mkdir /worlds/base/core_13_1/dev' IfFail: false.
+
+            " resolv.conf "
+            sh: 'cp /etc/resolv.conf /worlds/base/core_13_1/etc/resolv.conf'.
 
             " Install packages "
             startJailNamed: 'core_13_1' InDir: '/worlds/base/core_13_1'.
