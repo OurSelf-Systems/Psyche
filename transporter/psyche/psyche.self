@@ -100,14 +100,6 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system\x7fCategory: users\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         addFreeBSDUser: u IfFail: blk = ( |
-            | 
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: jails\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          base_core_13_1 = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'base_core_13_1' -> () From: ( |
@@ -256,8 +248,8 @@ Only allows port forwarding, no shell.\x7fModuleInfo: Module: psyche InitialCont
             | 
             ensureSystemUser.
             saveSSHKey.
-            startSSHD.
-            pfOpenPort: 22.
+            sys startSSHD.
+            sys pfOpenPort: 22.
             self).
         } | ) 
 
@@ -269,7 +261,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         
          desktopFirewallUnsafe = ( |
             | 
-            pfOpenPort: 5901.
+            sys pfOpenPort: 5901.
             self).
         } | ) 
 
@@ -297,26 +289,13 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
             logWarning: [|:m| log warn:  'In "ensureSystemUser", ', m. ^ self].
 
             " Does system user exist? "
-            users: freebsdUsersIfFail: [logError value: 'Cannot determine FreeBSD users'].
+            users: sys freebsdUsersIfFail: [logError value: 'Cannot determine FreeBSD users'].
             (users includes: userName) ifTrue: [logWarning value: '"', userName, '" user already exists.'].
 
             " Add system user "
-            sh: 'pw useradd -n ', userName, ' -m -s /sbin/nologin ' IfFail: [logError: 'Cannot create user "', userName, '"'].
+            sys sh: 'pw useradd -n ', userName, ' -m -s /sbin/nologin ' IfFail: [logError: 'Cannot create user "', userName, '"'].
             " -s /sbin/nologin "
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system\x7fCategory: users\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         freebsdUsersIfFail: blk = ( |
-             f.
-             u.
-            | 
-            f: readFileFrom: '/etc/passwd' IfFail: [^ blk value: 'Could not read /etc/passwd'].
-            ((f splitOn: '\n') 
-              mapBy: [|:l| (l splitOn: ':') first])
-              filterBy: [|:l| (l != '') && ['#' != l first]]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -325,9 +304,9 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
          importWorldsZpoolIfFail: blk = ( |
              ignoreError.
             | 
-            sh: '/sbin/zpool import' IfFail: [blk value].
-            sh: '/sbin/zpool import worlds' IfFail: ignoreError.
-            sh: 'ls /worlds' IfFail: [blk value].
+            sys sh: '/sbin/zpool import' IfFail: [blk value].
+            sys sh: '/sbin/zpool import worlds' IfFail: ignoreError.
+            sys sh: 'ls /worlds' IfFail: [blk value].
             self).
         } | ) 
 
@@ -343,7 +322,13 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'installOS' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         parent* = bootstrap stub -> 'globals' -> 'psyche' -> ().
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'installOS' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'installOS' -> () From: ( | {
@@ -358,7 +343,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
 
             conf: systemConfigPrototype copy setViaWizard.
 
-            mkdir_p: '/worlds/psyche' IfFail: [
+            sys mkdir_p: '/worlds/psyche' IfFail: [
               log error: 'Could not create /worlds/psyche!'.
               ^ self].
             conf writeTo: '/worlds/psyche/psyche.conf' IfFail: [
@@ -410,13 +395,6 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system\x7fCategory: mkdir\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         mkdir_p: dir IfFail: blk = ( |
-            | sh: 'mkdir -p ', dir IfFail: blk).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: config - builtin\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'/objects\')'
         
          objectsDirectory <- '/objects'.
@@ -426,17 +404,6 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system\x7fCategory: pf\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         pfOpenPort: p = ( |
-            | 
-            sh: 'echo "pass in inet proto tcp to any port ', p asString, '" >> /etc/pf.conf' IfFail: [
-              log error: 'Could not amend /etc/pf.conf'].
-            restartPf.
-            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -451,7 +418,13 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'prepareStorage' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         parent* = bootstrap stub -> 'globals' -> 'psyche' -> ().
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'prepareStorage' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'prepareStorage' -> () From: ( | {
@@ -462,9 +435,9 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
             'Storage (zpool worlds) cannot be found.' printLine.
             'Please create manually, then we will reboot.' printLine.
             '"exit" when finished.' printLine.
-            sh: 'bash' IfFail: false.
+            sys sh: 'bash' IfFail: false.
             'Thanks, rebooting now.' printLine.
-            reboot).
+            sys reboot).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -479,81 +452,17 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system\x7fCategory: pwd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         pwd = ( |
-            | 
-            (os outputOfCommand: 'pwd' Timeout: 10 IfFail: [error: 'Can\'t find PWD']) shrinkwrapped).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         readFileFrom: fileName IfFail: blk = ( |
-             b <- ''.
-             eof <- bootstrap stub -> 'globals' -> 'false' -> ().
-             f <- bootstrap stub -> 'globals' -> 'unixGlobals' -> 'os_file' -> ().
-            | 
-            "
-              The IO code need reworking in its entirity.
-              Until then, we'll do it ourselves here so that
-              we don't have any user errors at this level.
-            "
-            f: fileName asInputFileIfError: [
-                f closeIfFail: false.
-                ^ blk value: 'Error: could not open file: ', fileName].
-            [eof] whileFalse: [
-              b: b, (f readIfFail: [|:err|
-                f closeIfFail: false.
-                (err slice: 0 @ 3) = 'EOF'
-                  ifTrue: [eof: true]
-                   False: [^ blk value: 'Error: could not read file: ', fileName].
-                ''])].
-            b).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system\x7fCategory: shutdown\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         reboot = ( |
-            | 
-             sh: 'shutdown -r now' IfFail: [
-              log error: 'Shutdown failed'].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system\x7fCategory: pf\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         restartPf = ( |
-            | 
-            sh: 'pfctl -vnf /etc/pf.conf && pfctl -F all -f /etc/pf.conf' IfFail: [
-              log error: 'Could not restart pf'].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system\x7fCategory: jails\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         runningJails = ( |
-            | 
-            sh: 'jls' ResultInMs: 100 IfFail: [
-              log error: 'Could not run jls'].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          saveSSHKey = ( |
              f.
             | 
-            sh: 'mkdir -p /home/system/.ssh' IfFail: [|:m| 
+            sys sh: 'mkdir -p /home/system/.ssh' IfFail: [|:m| 
               log error: 'In "saveSSHKey" canoot make .ssh dir'. ^ self].
 
-              write: currentSystemConfig systemDesktopSSHKey
-             ToFile: '/home/system/.ssh/authorized_keys'
-             IfFail: [|:m| log error: 'In "saveSSHKey", ', m. ^ self].
+            sys write: currentSystemConfig systemDesktopSSHKey
+               ToFile: '/home/system/.ssh/authorized_keys'
+               IfFail: [|:m| log error: 'In "saveSSHKey", ', m. ^ self].
             self).
         } | ) 
 
@@ -582,64 +491,6 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: support\x7fComment: Only use this manually\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         sh: cmd = ( |
-            | 
-            sh: cmd IfFail: [|:e| ^ error: e]. self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         sh: cmd IfFail: blk = ( |
-             r.
-            | 
-            r:  os command: cmd.
-            r = 0 ifFalse: [^ blk value: r].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: support\x7fComment: Only use on command line\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         sh: cmd InJail: j = ( |
-            | 
-            sh: 'jexec ', j, ' ', cmd IfFail: [
-              log error: 'Failed to run: ', cmd, ' in jail ', j].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         sh: cmd ResultInMs: ms IfFail: blk = ( |
-            | os outputOfCommand: cmd Timeout: ms IfFail: [blk value: 'Cmd ', cmd, ' in jail ', j, ' failed']).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system\x7fCategory: shutdown\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         shutdown = ( |
-            | 
-             sh: 'shutdown -p now' IfFail: [
-              log error: 'Shutdown failed'].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system\x7fCategory: jails\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         startJailNamed: n InDir: d = ( |
-             cmd.
-            | 
-            cmd: 'jail -cmr path="', d, '" name=', n, ' host.hostname=', n,  ' ip4=inherit allow.raw_sockets mount.devfs command=/bin/sh /etc/rc'.
-            sh: cmd IfFail: [
-              log error: 'Failed to start jail ', n, ' in directory ', d].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          startPrompt = ( |
@@ -651,16 +502,6 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system\x7fCategory: sshd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         startSSHD = ( |
-            | 
-            sh: 'service sshd onestart' IfFail: [
-              log warn: 'Cannot start SSHD'].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          startX = ( |
@@ -668,19 +509,6 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
             os command: 'daemon /usr/local/bin/Xvnc :1 -geometry 1024x768 -depth 24 -SecurityTypes None,TLSNone'.
             process this sleep: 2000.
             os command: 'DISPLAY=:1 daemon /usr/local/bin/ratpoison'.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: system\x7fCategory: jails\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         stopJailNamed: n = ( |
-            | 
-            sh: 'jail -r ', n IfFail: [
-              log error: 'Failed to stop jail named ', n].
-            self
-            sh: 'umount ', pwd, '/', n, '/dev' IfFail: [
-              log error: 'Failed to unmount /dev in stopped jail named ', n].
             self).
         } | ) 
 
@@ -1003,7 +831,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         
          readFileFrom: fileName IfFail: blk = ( |
             | 
-            psyche readFileFrom: fileName IfFail: blk).
+            sys readFileFrom: fileName IfFail: blk).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
@@ -1034,13 +862,19 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
          'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          writeTo: fileName IfFail: blk = ( |
             | 
-            psyche write: asConfigFileString 
-                  ToFile: fileName
-                  IfFail: [^ blk value].
+            sys write: asConfigFileString 
+               ToFile: fileName
+               IfFail: [^ blk value].
             self).
         } | ) 
 
@@ -1071,28 +905,6 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
          welcomeMessage = ( |
             | 
             '\n\n\n\nW E L C O M E   T O   P S Y C H E\n\nVersion: ', version, '\n\n\n').
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         write: s ToFile: fileName IfFail: blk = ( |
-             f <- bootstrap stub -> 'globals' -> 'unixGlobals' -> 'os_file' -> ().
-            | 
-            "
-              The IO code need reworking in its entirity.
-              Until then, we'll do it ourselves here so that
-              we don't have any user errors at this level.
-            "
-            f: os_file openForWriting: fileName IfFail: [
-                f closeIfFail: false.
-                ^ blk value: 'Error: could not open file: ', fileName].
-            f write: s IfFail: [|:err|
-                f closeIfFail: false.
-                ^ blk value: 'Error: could not write file: ', fileName].
-            f closeIfFail: [
-                blk value: 'Error: error closing file: ', fileName].
-            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'snapshotAction' -> () From: ( | {
