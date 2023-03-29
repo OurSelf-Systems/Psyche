@@ -108,6 +108,110 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: jails\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         base_core_13_1 = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'base_core_13_1' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche base_core_13_1.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_core_13_1' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         destroy = ( |
+            | 
+            " Clean "
+            sys sh: 'chflags -R noschg /worlds/base/core_13_1/*' IfFail: false.
+            sys sh: 'umount /worlds/base/core_13_1/dev' IfFail: false.
+            sys sh: 'rm -rf /worlds/base/core_13_1/*' IfFail: false.
+            sys sh: 'zfs destroy -r worlds/base/core_13_1'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_core_13_1' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_core_13_1' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         setup = ( |
+            | 
+            " Create dataset "
+            sys sh: 'zfs create -p worlds/base/core_13_1'.
+
+            " Fetch base "
+            sys sh: 'fetch -o /worlds/base https://download.freebsd.org/ftp/releases/amd64/13.1-RELEASE/base.txz'.
+            sys sh: 'tar -zxvf /worlds/base/base.txz -C /worlds/base/core_13_1'.
+
+            " Install NoVNC "
+            sys sh: 'mkdir /worlds/base/core_13_1/opt'.
+            sys sh: 'git clone https://github.com/novnc/noVNC.git /worlds/base/core_13_1/opt/noVNC'.
+
+            " /dev "
+            sys sh: 'mkdir /worlds/base/core_13_1/dev' IfFail: false.
+
+            " resolv.conf "
+            sys sh: 'cp /etc/resolv.conf /worlds/base/core_13_1/etc/resolv.conf'.
+
+            " Install packages "
+            sys startJailNamed: 'core_13_1' InDir: '/worlds/base/core_13_1'.
+            sys sh: 'pkg install --yes tightvnc ratpoison bash websockify tmux gotty' InJail: 'core_13_1'.
+            sys sh: 'pkg install --yes xlsfonts xorg-fonts terminus-font urwfonts xset ImageMagick7 socat' InJail: 'core_13_1'.
+            sys sh: 'pkg install --yes git-lite python3' InJail: 'core_13_1'.
+            sys stopJailNamed: 'core_13_1'.
+
+            " Copy Over Self VM "
+            sys sh: 'cp -r /vm /worlds/base/core_13_1/'.
+
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_core_13_1' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         snapshot = ( |
+            | 
+            sys sh: 'zfs destroy worlds/base/core_13_1@current' IfFail: false. 
+            sys sh: 'zfs snapshot worlds/base/core_13_1@current'. 
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_core_13_1' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         start = ( |
+            | 
+            sys startJailNamed: 'core_13_1' InDir: '/worlds/base/core_13_1'. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_core_13_1' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         stop = ( |
+            | 
+            sys stopJailNamed: 'core_13_1'. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche sys.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_core_13_1' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: boot\x7fComment: This is the main entry point for booting\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          boot = ( |
@@ -127,44 +231,6 @@ See the LICENSE,d file for license information.
             | 
             " use primitive so we cover building on commandline "
             _CommandLine includes: '--suspendPsycheBootRoutine').
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: jails\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         createBase = ( |
-            | 
-            " Clean "
-            sh: 'chflags -R noschg /worlds/base/core_13_1/*' IfFail: false.
-            sh: 'umount /worlds/base/core_13_1/dev' IfFail: false.
-            sh: 'rm -rf /worlds/base/core_13_1/*' IfFail: false.
-            sh: 'zfs destroy worlds/base/core_13_1'.
-
-            " Create dataset "
-            sh: 'zfs create -p worlds/base/core_13_1'.
-
-            " Fetch base "
-            sh: 'fetch -o /worlds/base https://download.freebsd.org/ftp/releases/amd64/13.1-RELEASE/base.txz'.
-            sh: 'tar -zxvf /worlds/base/base.txz -C /worlds/base/core_13_1'.
-
-            " Install NoVNC "
-            sh: 'mkdir /worlds/base/core_13_1/opt'.
-            sh: 'git clone https://github.com/novnc/noVNC.git /worlds/base/core_13_1/opt/noVNC'.
-
-            " /dev "
-            sh: 'mkdir /worlds/base/core_13_1/dev' IfFail: false.
-
-            " resolv.conf "
-            sh: 'cp /etc/resolv.conf /worlds/base/core_13_1/etc/resolv.conf'.
-
-            " Install packages "
-            startJailNamed: 'core_13_1' InDir: '/worlds/base/core_13_1'.
-            sh: 'pkg install --yes tightvnc ratpoison bash websockify tmux gotty' InJail: 'core_13_1'.
-            sh: 'pkg install --yes xlsfonts xorg-fonts terminus-font urwfonts xset ImageMagick7 socat' InJail: 'core_13_1'.
-            sh: 'pkg install --yes git-lite python3' InJail: 'core_13_1'.
-            stopJailNamed: 'core_13_1'.
-
-            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -615,6 +681,218 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
             self
             sh: 'umount ', pwd, '/', n, '/dev' IfFail: [
               log error: 'Failed to unmount /dev in stopped jail named ', n].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: users\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         addFreeBSDUser: u IfFail: blk = ( |
+            | 
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: users\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         freebsdUsersIfFail: blk = ( |
+             f.
+             u.
+            | 
+            f: readFileFrom: '/etc/passwd' IfFail: [^ blk value: 'Could not read /etc/passwd'].
+            ((f splitOn: '\n') 
+              mapBy: [|:l| (l splitOn: ':') first])
+              filterBy: [|:l| (l != '') && ['#' != l first]]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: mkdir\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         mkdir_p: dir IfFail: blk = ( |
+            | sh: 'mkdir -p ', dir IfFail: blk).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: pf\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         pfOpenPort: p = ( |
+            | 
+            sh: 'echo "pass in inet proto tcp to any port ', p asString, '" >> /etc/pf.conf' IfFail: [
+              log error: 'Could not amend /etc/pf.conf'].
+            restartPf.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: pwd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         pwd = ( |
+            | 
+            (os outputOfCommand: 'pwd' Timeout: 10 IfFail: [error: 'Can\'t find PWD']) shrinkwrapped).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         readFileFrom: fileName IfFail: blk = ( |
+             b <- ''.
+             eof <- bootstrap stub -> 'globals' -> 'false' -> ().
+             f <- bootstrap stub -> 'globals' -> 'unixGlobals' -> 'os_file' -> ().
+            | 
+            "
+              The IO code need reworking in its entirity.
+              Until then, we'll do it ourselves here so that
+              we don't have any user errors at this level.
+            "
+            f: fileName asInputFileIfError: [
+                f closeIfFail: false.
+                ^ blk value: 'Error: could not open file: ', fileName].
+            [eof] whileFalse: [
+              b: b, (f readIfFail: [|:err|
+                f closeIfFail: false.
+                (err slice: 0 @ 3) = 'EOF'
+                  ifTrue: [eof: true]
+                   False: [^ blk value: 'Error: could not read file: ', fileName].
+                ''])].
+            b).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: shutdown\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         reboot = ( |
+            | 
+             sh: 'shutdown -r now' IfFail: [
+              log error: 'Shutdown failed'].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: pf\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         restartPf = ( |
+            | 
+            sh: 'pfctl -vnf /etc/pf.conf && pfctl -F all -f /etc/pf.conf' IfFail: [
+              log error: 'Could not restart pf'].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: jails\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         runningJails = ( |
+            | 
+            sh: 'jls' ResultInMs: 100 IfFail: [
+              log error: 'Could not run jls'].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: support\x7fComment: Only use this manually\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sh: cmd = ( |
+            | 
+            sh: cmd IfFail: [|:e| ^ error: e]. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sh: cmd IfFail: blk = ( |
+             r.
+            | 
+            r:  os command: cmd.
+            r = 0 ifFalse: [^ blk value: r].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: support\x7fComment: Only use on command line\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sh: cmd InJail: j = ( |
+            | 
+            sh: 'jexec ', j, ' ', cmd IfFail: [
+              log error: 'Failed to run: ', cmd, ' in jail ', j].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sh: cmd ResultInMs: ms IfFail: blk = ( |
+            | os outputOfCommand: cmd Timeout: ms IfFail: [blk value: 'Cmd ', cmd, ' in jail ', j, ' failed']).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: shutdown\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         shutdown = ( |
+            | 
+             sh: 'shutdown -p now' IfFail: [
+              log error: 'Shutdown failed'].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: jails\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         startJailNamed: n InDir: d = ( |
+             cmd.
+            | 
+            cmd: 'jail -cmr path="', d, '" name=', n, ' host.hostname=', n,  ' ip4=inherit allow.raw_sockets mount.devfs command=/bin/sh /etc/rc'.
+            sh: cmd IfFail: [
+              log error: 'Failed to start jail ', n, ' in directory ', d].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: sshd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         startSSHD = ( |
+            | 
+            sh: 'service sshd onestart' IfFail: [
+              log warn: 'Cannot start SSHD'].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: jails\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         stopJailNamed: n = ( |
+            | 
+            sh: 'jail -r ', n IfFail: [
+              log error: 'Failed to stop jail named ', n].
+            self
+            sh: 'umount ', pwd, '/', n, '/dev' IfFail: [
+              log error: 'Failed to unmount /dev in stopped jail named ', n].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         write: s ToFile: fileName IfFail: blk = ( |
+             f <- bootstrap stub -> 'globals' -> 'unixGlobals' -> 'os_file' -> ().
+            | 
+            "
+              The IO code need reworking in its entirity.
+              Until then, we'll do it ourselves here so that
+              we don't have any user errors at this level.
+            "
+            f: os_file openForWriting: fileName IfFail: [
+                f closeIfFail: false.
+                ^ blk value: 'Error: could not open file: ', fileName].
+            f write: s IfFail: [|:err|
+                f closeIfFail: false.
+                ^ blk value: 'Error: could not write file: ', fileName].
+            f closeIfFail: [
+                blk value: 'Error: error closing file: ', fileName].
             self).
         } | ) 
 
