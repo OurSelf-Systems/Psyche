@@ -506,7 +506,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         
          startX = ( |
             | 
-            os command: 'daemon /usr/local/bin/Xvnc :1 -geometry 1024x768 -depth 24 -SecurityTypes None,TLSNone'.
+            os command: 'daemon /usr/local/bin/Xvnc :1 -geometry ', currentSystemConfig systemDesktopSize, ' -depth 24 -SecurityTypes None,TLSNone'.
             process this sleep: 2000.
             os command: 'DISPLAY=:1 daemon /usr/local/bin/ratpoison'.
             self).
@@ -790,6 +790,19 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
+         'Category: wizard\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         askForSlotName: str = ( |
+             newValue <- ''.
+            | 
+             (str, ' [', (str sendTo: self), ']: ') print.
+              newValue: stdin readLine.
+              newValue isEmpty 
+                ifFalse: [ (str, ':') sendTo: self With: newValue].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
          'Category: reading\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          copyReadFrom: fileName IfFail: blk = ( |
@@ -798,8 +811,12 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
             | 
             d: readConfigFileFrom: fileName IfFail: [|:e| ^ blk value: e].
             c: copy.
-            slotsToRead do: [|:s|
-              (s, ':') sendTo: c With: (d at: s IfAbsent: [s sendTo: c])].
+            slotsToRead do: [|:s. defaultValue. fileValue |
+              defaultValue: s sendTo: c.
+              fileValue: (d at: s IfAbsent: defaultValue).
+              fileValue = 'ask'   
+                ifTrue: [askForSlotName: s]
+                 False: [(s, ':') sendTo: c With: fileValue]].
             c).
         } | ) 
 
@@ -842,10 +859,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
             'Enter values for the following keys: ' printLine.
 
             slotsToRead do: [|:str. newValue|
-              (str, ' [', (str sendTo: self), ']: ') print.
-              newValue: stdin readLine.
-              newValue isEmpty 
-                ifFalse: [ (str, ':') sendTo: self With: newValue].
+              askForSlotName: str.
             ].
 
             self).
