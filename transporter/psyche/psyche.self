@@ -775,7 +775,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
          systemDesktopSize <- '1024x768'.
         } | ) 
 
-bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          traits = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> () From: ( |
@@ -799,13 +799,15 @@ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: wizard\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          askForSlotName: str = ( |
+             defaultValue.
              newValue <- ''.
             | 
-             (str, ' [', (str sendTo: self), ']: ') print.
-              newValue: stdin readLine.
-              newValue isEmpty 
-                ifFalse: [ (str, ':') sendTo: self With: newValue].
-            self).
+            defaultValue: str sendTo: self.
+            (str, ' [', defaultValue, ']: ') print.
+            newValue: stdin readLine.
+            newValue isEmpty 
+                ifTrue: defaultValue
+                ifFalse: newValue).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
@@ -817,12 +819,13 @@ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
             | 
             d: readConfigFileFrom: fileName IfFail: [|:e| ^ blk value: e].
             c: copy.
-            slotsToRead do: [|:s. defaultValue. fileValue |
+            slotsToRead do: [|:s. defaultValue. fileValue. newValue |
               defaultValue: s sendTo: c.
               fileValue: (d at: s IfAbsent: defaultValue).
               fileValue = 'ask'   
-                ifTrue: [askForSlotName: s]
-                 False: [(s, ':') sendTo: c With: fileValue]].
+                ifTrue: [newValue: askForSlotName: s]
+                 False: [newValue: fileValue].
+              (s, ':') sendTo: c With: newValue].
             c).
         } | ) 
 
