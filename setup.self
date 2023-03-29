@@ -17,4 +17,8 @@ modules init
           InTree: 'psyche'.
 
 
+  bootstrap read: 'miocontrol'
+          InTree: 'psyche'.
+
+
 ] value
