@@ -807,7 +807,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
             newValue: stdin readLine.
             newValue isEmpty 
                 ifTrue: defaultValue
-                ifFalse: newValue).
+                 False: newValue).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
