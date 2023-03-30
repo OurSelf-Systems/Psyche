@@ -424,16 +424,6 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: development\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         installSSHKeys = ( |
-            | 
-            os command: 'mkdir /root/.ssh'.
-            os command: 'cp /worlds/psyche/.ssh/* /root/.ssh/'.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          mainBootRoutine = ( |
@@ -535,16 +525,6 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
                Else: [
                     log error: 'Unknown desktop access method: ', type.
                     process this sleep: 10 * 1000].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: development\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         setGitDetails = ( |
-            | 
-            os command: 'cd ', objectsDirectory, ' ; git config user.name = "Russell Allen"'.
-            os command: 'cd ', objectsDirectory, ' ; git config user.email = "mail@russell-allen.com"'.
             self).
         } | ) 
 
