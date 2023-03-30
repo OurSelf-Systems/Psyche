@@ -603,9 +603,9 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         
          setGitDetails = ( |
             | 
-            sys sh: 'cd ', objectsDirectory, ' ; git config user.name = "Russell Allen"'
+            sys sh: 'cd ', psyche objectsDirectory, ' ; git config user.name = "Russell Allen"'
               IfFail: [log error: 'Could not set git user.name in setGitDetails'].
-            sys sh: 'cd ', objectsDirectory, ' ; git config user.email = "mail@russell-allen.com"'
+            sys sh: 'cd ', psyche objectsDirectory, ' ; git config user.email = "mail@russell-allen.com"'
               IfFail: [log error: 'Could not set git user.email in setGitDetails'].
             self).
         } | ) 
