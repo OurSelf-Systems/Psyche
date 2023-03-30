@@ -1,4 +1,4 @@
- '2023.03.24.01'
+ '2023.03.30.01'
  '
 Copyright 2022-2023 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -73,9 +73,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2023.03.24.01\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2023.03.30.01\')\x7fVisibility: public'
         
-         revision <- '2023.03.24.01'.
+         revision <- '2023.03.30.01'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -228,16 +228,32 @@ See the LICENSE,d file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         systemConfigPrototype = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche systemConfigPrototype.
+         config = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche config.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: config\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (psyche systemConfigPrototype)'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         currentSystemConfig <- bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> ().
+         default = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche config default.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (psyche config default)'
+        
+         current <- bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         loadIfFail: blk = ( |
+            | current: default copyReadFrom: '/worlds/psyche/psyche.conf' IfFail: [|:e| ^ blk value: e]. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -311,7 +327,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: installation\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: installation modules\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          installOS = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'installOS' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals psyche installOS.
@@ -341,7 +357,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
             'psyche.conf not found.' printLine.
             'Please answer these questions: ' printLine.
 
-            conf: systemConfigPrototype copy setViaWizard.
+            conf: psyche config default copy setViaWizard.
 
             sys mkdir_p: '/worlds/psyche' IfFail: [
               log error: 'Could not create /worlds/psyche!'.
@@ -349,29 +365,11 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
             conf writeTo: '/worlds/psyche/psyche.conf' IfFail: [
               log error: 'Did not save conf file!'.
               ^ self].
-            loadConfigIfFail: [
+            psyche config loadIfFail: [
               log error: 'Did not read conf file!'.
               ^ self].
 
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: development\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         installSSHKeys = ( |
-            | 
-            os command: 'mkdir /root/.ssh'.
-            os command: 'cp /worlds/psyche/.ssh/* /root/.ssh/'.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         loadConfigIfFail: blk = ( |
-            | 
-            currentSystemConfig: systemConfigPrototype copyReadFrom: '/worlds/psyche/psyche.conf' IfFail: [|:e| ^ blk value: e]. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -381,21 +379,20 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
              conf.
             | 
             importWorldsZpoolIfFail: prepareStorage.
-            loadConfigIfFail: installOS.
-            conf: currentSystemConfig.
+            config loadIfFail: installOS.
+            conf: config current.
             conf systemDesktop = 'enabled' ifTrue: [
               setFirewall: conf systemDesktopAccessType.
               startX.
               desktop open].
-            conf developmentMachine = 'enabled' ifTrue: [
-              installSSHKeys.
-              setGitDetails].
+            conf developmentMachine = 'enabled'
+               ifTrue: setupForDevelopment.
             welcomeMessage print.
             self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: config - builtin\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'/objects\')'
+         'Category: config\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'/objects\')'
         
          objectsDirectory <- '/objects'.
         } | ) 
@@ -407,7 +404,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: installation\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: installation modules\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          prepareStorage = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'prepareStorage' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals psyche prepareStorage.
@@ -460,7 +457,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
             sys sh: 'mkdir -p /home/system/.ssh' IfFail: [|:m| 
               log error: 'In "saveSSHKey" canoot make .ssh dir'. ^ self].
 
-            sys write: currentSystemConfig systemDesktopSSHKey
+            sys write: config current systemDesktopSSHKey
                ToFile: '/home/system/.ssh/authorized_keys'
                IfFail: [|:m| log error: 'In "saveSSHKey", ', m. ^ self].
             self).
@@ -481,13 +478,55 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: development\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: installation modules\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         setupForDevelopment = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'setupForDevelopment' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche setupForDevelopment.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'setupForDevelopment' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         installSSHKeys = ( |
+            | 
+            sys sh: 'mkdir /root/.ssh' IfFail: [
+              log error: 'Could not make /root/.ssh in installSSHKeys'. ^ self].
+            sys sh: 'cp /worlds/psyche/.ssh/* /root/.ssh/' IfFail: [
+              log error: 'Could not copy Git keys to /root/.ssh in installSSHKeys'. ^ self].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'setupForDevelopment' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'setupForDevelopment' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          setGitDetails = ( |
             | 
-            os command: 'cd ', objectsDirectory, ' ; git config user.name = "Russell Allen"'.
-            os command: 'cd ', objectsDirectory, ' ; git config user.email = "mail@russell-allen.com"'.
+            sys sh: 'cd ', objectsDirectory, ' ; git config user.name = "Russell Allen"'
+              IfFail: [log error: 'Could not set git user.name in setGitDetails'].
+            sys sh: 'cd ', objectsDirectory, ' ; git config user.email = "mail@russell-allen.com"'
+              IfFail: [log error: 'Could not set git user.email in setGitDetails'].
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'setupForDevelopment' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'setupForDevelopment' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         value = ( |
+            | installSSHKeys. setGitDetails. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -506,7 +545,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         
          startX = ( |
             | 
-            os command: 'daemon /usr/local/bin/Xvnc :1 -geometry ', currentSystemConfig systemDesktopSize, ' -depth 24 -SecurityTypes None,TLSNone'.
+            os command: 'daemon /usr/local/bin/Xvnc :1 -geometry ', config current systemDesktopSize, ' -depth 24 -SecurityTypes None,TLSNone'.
             process this sleep: 2000.
             os command: 'DISPLAY=:1 daemon /usr/local/bin/ratpoison'.
             self).
@@ -724,10 +763,13 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'disabled\')'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         developmentMachine <- 'disabled'.
+         traits = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche traits.
+'.
+            | ) .
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> () From: ( | {
@@ -735,51 +777,6 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         
          configFile = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals psyche traits configFile.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         fileSync* = bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'disabled\')'
-        
-         systemDesktop <- 'disabled'.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'unsafe\')'
-        
-         systemDesktopAccessType <- 'unsafe'.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'rsa\')'
-        
-         systemDesktopSSHKey <- 'rsa'.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'systemConfigPrototype' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'1024x768\')'
-        
-         systemDesktopSize <- '1024x768'.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         traits = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche traits.
 '.
             | ) .
         } | ) 
@@ -902,7 +899,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: status\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          version = ( |
             | 
@@ -910,14 +907,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: status\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         version: v = ( |
-            | modules psyche revision: v asString. self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: config - builtin\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'/vm/Self\')'
+         'Category: config\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'/vm/Self\')'
         
          vmBinary <- '/vm/Self'.
         } | ) 
