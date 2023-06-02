@@ -271,6 +271,12 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'/objects\')'
+        
+         objectsDirectory <- '/objects'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
@@ -559,10 +565,12 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          setGitDetails = ( |
+             od.
             | 
-            sys sh: 'cd ', psyche objectsDirectory, ' ; git config user.name = "Russell Allen"'
+            od: psyche config current objectsDirectory.
+            sys sh: 'cd ', od, ' ; git config user.name = "Russell Allen"'
               IfFail: [log error: 'Could not set git user.name in setGitDetails'].
-            sys sh: 'cd ', psyche objectsDirectory, ' ; git config user.email = "mail@russell-allen.com"'
+            sys sh: 'cd ', od, ' ; git config user.email = "mail@russell-allen.com"'
               IfFail: [log error: 'Could not set git user.email in setGitDetails'].
             self).
         } | ) 
