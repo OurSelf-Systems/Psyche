@@ -927,7 +927,7 @@ otherwise:
             | 
             defaultValue: str sendTo: self.
             (str, ' [', defaultValue, ']: ') print.
-            newValue: stdin readLine.
+            newValue: stdin preemptReadLine.
             newValue isEmpty 
                 ifTrue: defaultValue
                  False: newValue).
