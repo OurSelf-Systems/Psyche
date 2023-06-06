@@ -374,6 +374,79 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
+         handleAlternateObjectRoot = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'handleAlternateObjectRoot' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche handleAlternateObjectRoot.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'handleAlternateObjectRoot' -> () From: ( | {
+         'Category: private\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'handleAlternateObjectRoot' -> () From: ( | {
+         'Category: private\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         removeRestartFlag = ( |
+            | 
+            sys removeFile: restartFlagFilename
+                       IfFail: [log error: 'Could not remove restart flag: ', restartFlagFilename].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'handleAlternateObjectRoot' -> () From: ( | {
+         'Category: private\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         restartFlagExists = ( |
+            | 
+            sys readFileFrom: restartFlagFilename IfFail: [^ false].
+            true).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'handleAlternateObjectRoot' -> () From: ( | {
+         'Category: private\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         restartFlagFilename = '/RESTART_REQUESTED'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'handleAlternateObjectRoot' -> () From: ( | {
+         'Category: private\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'handleAlternateObjectRoot' -> () From: ( | {
+         'Comment: Entry point.
+
+\"
+if we hae restarted,
+   revmoe restart flag
+   continue boot
+if we have not restarted and objectDir is default:
+   continue boot
+otherwise:
+   set restart flag to new objectDir
+   exit this world
+\"\x7fModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
+        
+         withConf: conf = ( |
+            | 
+            restartFlagExists ifTrue: [
+              removeRestartFlag. ^ self].
+            psyche config default objectsDirectory = conf objectsDirectory
+               ifTrue: [^ self].
+            " We haven't yet restarted, but config file tells us we should"
+            sys write: conf objectsDirectory 
+               ToFile: restartFlagFilename
+               IfFail: [log error: 'Could not write restart flag! Ignoring objectsDirectory config entry.'. ^ self].
+            _Quit).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
          importWorldsZpoolIfFail: blk = ( |
              ignoreError.
             | 
@@ -438,6 +511,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
             importWorldsZpoolIfFail: prepareStorage.
             config loadIfFail: installOS.
             conf: config current.
+            handleAlternateObjectRoot: conf.
             conf systemDesktop = 'enabled' ifTrue: [
               setFirewall: conf systemDesktopAccessType.
               startX.
@@ -446,12 +520,6 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
                ifTrue: setupForDevelopment.
             welcomeMessage print.
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: config\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'/objects\')'
-        
-         objectsDirectory <- '/objects'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -697,6 +765,14 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
              sh: 'shutdown -r now' IfFail: [
               log error: 'Shutdown failed'].
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: files and directories\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         removeFile: fn IfFail: blk = ( |
+            | 
+            sh: 'rm ', fn IfFail: [^ blk value: 'Could not remove ', fn]. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
