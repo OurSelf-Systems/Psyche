@@ -511,7 +511,7 @@ otherwise:
             importWorldsZpoolIfFail: prepareStorage.
             config loadIfFail: installOS.
             conf: config current.
-            handleAlternateObjectRoot: conf.
+            handleAlternateObjectRoot withConf: conf.
             conf systemDesktop = 'enabled' ifTrue: [
               setFirewall: conf systemDesktopAccessType.
               startX.
