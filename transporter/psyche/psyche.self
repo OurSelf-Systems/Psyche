@@ -515,10 +515,22 @@ otherwise:
             conf systemDesktop = 'enabled' ifTrue: [
               setFirewall: conf systemDesktopAccessType.
               startX.
-              desktop open].
+              openDesktop].
             conf developmentMachine = 'enabled'
                ifTrue: setupForDevelopment.
             welcomeMessage print.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         openDesktop = ( |
+            | 
+            desktop isOpen 
+             ifTrue: [desktop restartSuppressedFlag: false. 
+                      desktop returnFromSnapshot]
+              False: [desktop open].
             self).
         } | ) 
 
