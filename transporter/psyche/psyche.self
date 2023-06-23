@@ -179,7 +179,7 @@ See the LICENSE,d file for license information.
              d.
              n.
             | 
-            n: 'zero'.
+            n: 'zero'. 
             d: '/worlds/base/zero'.
             sys sh: 'jail -cmr path="', d, '" name=', n, ' host.hostname=', n,  ' mount.devfs command=dtach -n /var/self.sock /vm/Self'. self).
         } | ) 
