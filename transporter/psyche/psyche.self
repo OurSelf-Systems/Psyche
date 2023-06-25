@@ -340,6 +340,63 @@ See the LICENSE,d file for license information.
          current <- bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> ().
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'disabled\')'
+        
+         developmentMachine <- 'disabled'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         configFile = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche traits configFile.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         fileSync* = bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'/objects\')'
+        
+         objectsDirectory <- '/objects'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'disabled\')'
+        
+         systemDesktop <- 'disabled'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'unsafe\')'
+        
+         systemDesktopAccessType <- 'unsafe'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'rsa\')'
+        
+         systemDesktopSSHKey <- 'rsa'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'1024x768\')'
+        
+         systemDesktopSize <- '1024x768'.
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
@@ -953,13 +1010,121 @@ otherwise:
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
+         'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         asConfigFileString = ( |
+             s <- ''.
+            | 
+              slotsToRead do: [|:slot|
+                s: s, slot, ' = ', (slot sendTo: self), '\n'].
+            s).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
+         'Category: wizard\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         askForSlotName: str = ( |
+             defaultValue.
+             newValue <- ''.
+            | 
+            defaultValue: str sendTo: self.
+            (str, ' [', defaultValue, ']: ') print.
+            newValue: stdin preemptReadLine.
+            newValue isEmpty 
+                ifTrue: defaultValue
+                 False: newValue).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
+         'Category: reading\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         copyReadFrom: fileName IfFail: blk = ( |
+             c.
+             d.
+            | 
+            d: readConfigFileFrom: fileName IfFail: [|:e| ^ blk value: e].
+            c: copy.
+            slotsToRead do: [|:s. defaultValue. fileValue. newValue |
+              defaultValue: s sendTo: c.
+              fileValue: (d at: s IfAbsent: defaultValue).
+              fileValue = 'ask'   
+                ifTrue: [newValue: askForSlotName: s]
+                 False: [newValue: fileValue].
+              (s, ':') sendTo: c With: newValue].
+            c).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         configFile = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche traits configFile.
-'.
-            | ) .
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
+         'Category: reading\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         readConfigFileFrom: fileName IfFail: blk = ( |
+             d <- bootstrap stub -> 'globals' -> 'dictionary' -> ().
+             s <- ''.
+            | 
+            d: dictionary copyRemoveAll.
+            s: readFileFrom: fileName IfFail: [|:e| ^ blk value: e].
+            (s splitOn: '\n') do: [|:l|
+              (l != '') && [l first != '#'] ifTrue: [| split |
+                split: l splitOn: '='.
+                split mapBy: [|:el| el shrinkwrapped].
+                d at: split first Put: (split at: 1)]].
+            d).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
+         'Category: reading\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         readFileFrom: fileName IfFail: blk = ( |
+            | 
+            sys readFileFrom: fileName IfFail: blk).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
+         'Category: wizard\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         setViaWizard = ( |
+            | 
+            'Enter values for the following keys: ' printLine.
+
+            slotsToRead do: [|:str. newValue|
+              askForSlotName: str.
+            ].
+
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
+         'Category: introspection\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         slotsToRead = ( |
+            | 
+            ((reflect: self) asList
+              filterBy: [|:s| s isAssignment not && s isParent not && s isMethod not])
+              mapBy: [|:s| s key]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
+         'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         writeTo: fileName IfFail: blk = ( |
+            | 
+            sys write: asConfigFileString 
+               ToFile: fileName
+               IfFail: [^ blk value].
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
