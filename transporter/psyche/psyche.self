@@ -213,66 +213,134 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: settings\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         copyInDtach = ( |
-             b.
-            | 
-            b: '/worlds/base/zero'.
-            sys sh: 'cp /usr/local/bin/dtach ', b, '/bin'.
-            sys sh: 'cp /lib/libutil.so.9 ', b, '/lib'.
-            sys sh: 'cp /lib/libc.so.7 ', b, '/lib').
+         baseDirectory = ( |
+            | jailsDirectory, '/', jail_uuid).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         destroy = ( |
+         buildTemplate = ( |
+             mkdir.
             | 
-            " Clean "
-            sys sh: 'chflags -R noschg /worlds/base/core_13_1/*' IfFail: false.
-            sys sh: 'umount /worlds/base/core_13_1/dev' IfFail: false.
-            sys sh: 'rm -rf /worlds/base/core_13_1/*' IfFail: false.
-            sys sh: 'zfs destroy -r worlds/base/core_13_1'.
+            mkdir: [|:dir| sys sh: 'mkdir -p ', templateDirectory, dir].
+
+            " Create directory "
+            mkdir value: '/'.
+
+            " Create structure "
+            ('/dev' & '/var' & '/var/run' & '/libexec' & '/lib' & '/etc' & '/tmp' & '/objects') asVector do: mkdir.
+
+
+            " Copy in needed files "
+            sys sh: 'cp -r /vm ', templateDirectory, '/'.
+            sys sh: 'tar -c /rescue/* | tar -xC ', templateDirectory, '/'.
+            sys sh: 'mv ', templateDirectory, '/rescue ', templateDirectory, '/bin'.
+            sys sh: 'cp -r /libexec/* ', templateDirectory, '/libexec/'.
+
+            " resolv.conf "
+            sys sh: 'cp /etc/resolv.conf ', templateDirectory, '/etc/resolv.conf'.
+
             self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+         copyOnWorld: dataset = ( |
+            | copy worldDataset: dataset).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         setup = ( |
+         dataset = ( |
+            | worldDataset).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
+         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         destroyJail = ( |
             | 
-            " Create dataset "
-            sys sh: 'zfs create -p worlds/base/zero'.
+            " Clean "
+            "sys sh: 'chflags -R noschg /worlds/base/core_13_1/*' IfFail: false."
+            sys sh: 'umount ', baseDirectory, '/tmp'      IfFail: false.
+            sys sh: 'umount ', baseDirectory, '/dev'      IfFail: false.
+            sys sh: 'umount ', baseDirectory, '/objects'  IfFail: false.
+            sys sh: 'umount ', baseDirectory, '/'         IfFail: false.
+            sys sh: 'rm -rf ', baseDirectory, '/'         IfFail: false.
+            sys sh: 'rm ', selfSock                       IfFail: false.
+            self).
+        } | ) 
 
-            " Clean dataset "
-            sys sh: 'rm -r /worlds/base/zero/*'.
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         dtachSocket = ( |
+            | selfSock).
+        } | ) 
 
-            " Create structure "
-            sys sh: 'mkdir -p /worlds/base/zero/dev'.
-            sys sh: 'mkdir -p /worlds/base/zero/var'.
-            sys sh: 'mkdir -p /worlds/base/zero/var/run'.
-            sys sh: 'mkdir -p /worlds/base/zero/libexec'.
-            sys sh: 'mkdir -p /worlds/base/zero/lib'.
-            sys sh: 'mkdir -p /worlds/base/zero/etc'.
-            sys sh: 'mkdir -p /worlds/base/zero/tmp'.
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
+         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         ensureTemplate = ( |
+            | 
+            (os_file exists: templateDirectory) ifFalse: [buildTemplate].
+            (os_file exists: templateDirectory) ifFalse: raiseError.
+            self).
+        } | ) 
 
-            " Copy in needed files "
-            sys sh: 'cp -r /vm /worlds/base/zero/'.
-            sys sh: 'tar -c /rescue/* | tar -xC /worlds/base/zero/'.
-            sys sh: 'mv /worlds/base/zero/rescue /worlds/base/zero/bin'.
-            sys sh: 'cp -r /libexec/* /worlds/base/zero/libexec/'.
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
+         'Category: settings\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         hostName = 'zero'.
+        } | ) 
 
-            " resolv.conf "
-            sys sh: 'cp /etc/resolv.conf /worlds/base/zero/etc/resolv.conf'.
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         id = ( |
+            | jail_uuid).
+        } | ) 
 
-            copyInDtach.
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
+         'Category: settings\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
+        
+         jail_uuid <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
+         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         jailsDirectory = '/jails'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
+         'Category: settings\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         selfSock = ( |
+            | '/var/self/', jail_uuid, '.sock').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
+         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         setupJail = ( |
+            | 
+            jail_uuid: sys uuidgen.
+            sys mkdir_p: baseDirectory IfFail: raiseError.
+            sys sh: 'mount_nullfs -o ro    ', templateDirectory, ' ', baseDirectory.
+            sys sh: 'mount_nullfs          ', worldDirectory,    ' ', baseDirectory, '/objects'.
+            sys sh: 'mount -t tmpfs tmpfs  ',                         baseDirectory, '/tmp'.
             self).
         } | ) 
 
@@ -280,18 +348,63 @@ See the LICENSE,d file for license information.
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          start = ( |
+            | ensureTemplate. setupJaili. startJail. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
+         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         startJail = ( |
              d.
              n.
+             s.
             | 
-            n: 'zero'.    
-            d: '/worlds/base/zero'.
-            sys sh: 'jail -cmr path="', d, '" name=', n, ' host.hostname=', n,  ' mount.devfs command=dtach -n /var/self.sock /vm/Self'. self).
+            n: hostName.    
+            d: baseDirectory.
+            s: selfSock.
+            sys sh: 'dtach -n ', s, ' jail -cmr path="', d, '" name=', n, ' host.hostname=', n,  ' mount.devfs command=/vm/Self'. 
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
+         stop = ( |
+            | stopJail. destroyJail. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
+         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         stopJail = ( |
+            | 
+            sys sh: 'jail -r ', hostName IfFail: raiseError.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
          sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
+         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         templateDirectory = '/jailTemplate'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
+         'Category: settings\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'worlds/testWorld\')'
+        
+         worldDataset <- 'worlds/testWorld'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
+         'Category: settings\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         worldDirectory = ( |
+            | sys zfs mountpointOfDataset: worldDataset).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -790,6 +903,39 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: support\x7fCategory: command with result\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         commandOutput = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'commandOutput' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche sys commandOutput.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'commandOutput' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (0)'
+        
+         exitCode <- 0.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'commandOutput' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'commandOutput' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
+        
+         stderr <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'commandOutput' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
+        
+         stdout <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
          'Category: system\x7fCategory: users\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          freebsdUsersIfFail: blk = ( |
@@ -807,6 +953,49 @@ otherwise:
         
          mkdir_p: dir IfFail: blk = ( |
             | sh: 'mkdir -p ', dir IfFail: blk).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: support\x7fCategory: command with result\x7fComment: Attempts to run the os command commandSource
+in a separate OS-level process. Redirects the
+text output of the command into a temporary
+file, and returns the contents of that file
+after process has finished.\x7fModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
+        
+         outputOfCommand: commandSource Timeout: ms IfTimeout: fb = ( |
+             endTime.
+             exitCode.
+             flag.
+             outputBase.
+             stderr.
+             stdout.
+            | 
+              outputBase: os_file temporaryFileName.
+              flag:     outputBase, '.flag'.
+              exitCode: outputBase, '.exit'.
+              stdout:   outputBase, '.stdout'.
+              stderr:   outputBase, '.stderr'.
+
+              " We don't timeout, if timeout is infinite in length "
+              ms = infinity ifFalse: [endTime: time current addMsec: ms].
+
+             [
+              os command: '( ', commandSource, ' > ', stdout, ' 2> ', stderr, ' ; echo $? > ', exitCode, ' ; echo finished > ', flag, ' ) & ' IfFail: [|:e| ^ fb value: e ].
+              [ ((ms != infinity) && [time current > endTime]) || (os_file exists: flag) ] whileFalse.
+              " Return output of command "
+              (os_file exists: flag) ifTrue: [| o |
+                    o: commandOutput copy.
+                    o exitCode: exitCode asFileContents shrinkwrapped asInteger.
+                    o stdout: stdout asFileContents.
+                    o stderr: stderr asFileContents.
+                    o]
+                False: [fb value: 'Timed out'].
+            ] onReturn: [
+              os unlink: stdout    IfFail: [].
+              os unlink: stderr    IfFail: [].
+              os unlink: flag      IfFail: [].
+              os unlink: exitCode  IfFail: [].
+            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
@@ -967,6 +1156,13 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: support\x7fCategory: command with result\x7fComment: Only use interactively - ignores errors\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         stdoutOfCommand: c = ( |
+            | (outputOfCommand: c Timeout: 1000 IfTimeout: raiseError) stdout).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
          'Category: system\x7fCategory: jails\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          stopJailNamed: n = ( |
@@ -977,6 +1173,14 @@ otherwise:
             sh: 'umount ', pwd, '/', n, '/dev' IfFail: [
               log error: 'Failed to unmount /dev in stopped jail named ', n].
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: uuid\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         uuidgen = ( |
+            | 
+            (outputOfCommand: 'uuidgen' Timeout: 1000 IfTimeout: raiseError) stdout shrinkwrapped).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
@@ -999,6 +1203,38 @@ otherwise:
             f closeIfFail: [
                 blk value: 'Error: error closing file: ', fileName].
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: zfs\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         zfs = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'zfs' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche sys zfs.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'zfs' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         mountpointOfDataset: ds = ( |
+             o.
+            | 
+            o: sys outputOfCommand: 'zfs get -o value -H mountpoint ', ds Timeout: 1000 IfTimeout: raiseError.
+            o exitCode != 0 ifTrue: [raiseError value: o stderr].
+            o stdout shrinkwrapped).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'zfs' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'zfs' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
