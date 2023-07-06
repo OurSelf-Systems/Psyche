@@ -102,110 +102,6 @@ See the LICENSE,d file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: jails\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         base_core_13_1 = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'base_core_13_1' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche base_core_13_1.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_core_13_1' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         destroy = ( |
-            | 
-            " Clean "
-            sys sh: 'chflags -R noschg /worlds/base/core_13_1/*' IfFail: false.
-            sys sh: 'umount /worlds/base/core_13_1/dev' IfFail: false.
-            sys sh: 'rm -rf /worlds/base/core_13_1/*' IfFail: false.
-            sys sh: 'zfs destroy -r worlds/base/core_13_1'.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_core_13_1' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_core_13_1' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         setup = ( |
-            | 
-            " Create dataset "
-            sys sh: 'zfs create -p worlds/base/core_13_1'.
-
-            " Fetch base "
-            sys sh: 'fetch -o /worlds/base https://download.freebsd.org/ftp/releases/amd64/13.1-RELEASE/base.txz'.
-            sys sh: 'tar -zxvf /worlds/base/base.txz -C /worlds/base/core_13_1'.
-
-            " Install NoVNC "
-            sys sh: 'mkdir /worlds/base/core_13_1/opt'.
-            sys sh: 'git clone https://github.com/novnc/noVNC.git /worlds/base/core_13_1/opt/noVNC'.
-
-            " /dev "
-            sys sh: 'mkdir /worlds/base/core_13_1/dev' IfFail: false.
-
-            " resolv.conf "
-            sys sh: 'cp /etc/resolv.conf /worlds/base/core_13_1/etc/resolv.conf'.
-
-            " Install packages "
-            sys startJailNamed: 'core_13_1' InDir: '/worlds/base/core_13_1'.
-            sys sh: 'pkg install --yes tightvnc ratpoison bash websockify tmux gotty' InJail: 'core_13_1'.
-            sys sh: 'pkg install --yes xlsfonts xorg-fonts terminus-font urwfonts xset ImageMagick7 socat' InJail: 'core_13_1'.
-            sys sh: 'pkg install --yes git-lite python3' InJail: 'core_13_1'.
-            sys stopJailNamed: 'core_13_1'.
-
-            " Copy Over Self VM "
-            sys sh: 'cp -r /vm /worlds/base/core_13_1/'.
-
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_core_13_1' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         snapshot = ( |
-            | 
-            sys sh: 'zfs destroy worlds/base/core_13_1@current' IfFail: false. 
-            sys sh: 'zfs snapshot worlds/base/core_13_1@current'. 
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_core_13_1' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         start = ( |
-            | 
-            sys startJailNamed: 'core_13_1' InDir: '/worlds/base/core_13_1'. self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_core_13_1' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         stop = ( |
-            | 
-            sys stopJailNamed: 'core_13_1'. self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         sys = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche sys.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_core_13_1' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: jails\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
          base_zero = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals psyche base_zero.
 '.
@@ -265,8 +161,6 @@ See the LICENSE,d file for license information.
         
          destroyJail = ( |
             | 
-            " Clean "
-            "sys sh: 'chflags -R noschg /worlds/base/core_13_1/*' IfFail: false."
             sys sh: 'umount ', baseDirectory, '/tmp'      IfFail: false.
             sys sh: 'umount ', baseDirectory, '/dev'      IfFail: false.
             sys sh: 'umount ', baseDirectory, '/objects'  IfFail: false.
@@ -348,7 +242,8 @@ See the LICENSE,d file for license information.
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          start = ( |
-            | ensureTemplate. setupJaili. startJail. self).
+            | 
+            ensureTemplate. setupJail. startJail. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
@@ -362,7 +257,7 @@ See the LICENSE,d file for license information.
             n: hostName.    
             d: baseDirectory.
             s: selfSock.
-            sys sh: 'dtach -n ', s, ' jail -cmr path="', d, '" name=', n, ' host.hostname=', n,  ' mount.devfs command=/vm/Self'. 
+            sys sh: 'dtach -n ', s, ' jail -cmr path="', d, '" name=', n, ' host.hostname=', n,  ' mount.devfs command=/vm/Self -s /objects/snapshot'. 
             self).
         } | ) 
 
@@ -380,6 +275,15 @@ See the LICENSE,d file for license information.
             | 
             sys sh: 'jail -r ', hostName IfFail: raiseError.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche sys.
+'.
+            | ) .
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'base_zero' -> () From: ( | {
@@ -1418,7 +1322,8 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> () From: ( | {
          'Category: settings\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         storeBaseDirectory = '/worlds/store'.
+         storeBaseDirectory = ( |
+            | sys zfs mountpointOfDataset: storeBaseDataset).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> () From: ( | {
@@ -1443,6 +1348,42 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
              {} = 'ModuleInfo: Creator: globals psyche worlds worldRecord.
 '.
             | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> () From: ( | {
+         'Category: prototypes\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         worldsSnapshot = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldsSnapshot' -> () From: ( |
+             {} = 'Comment: I am a snapshot of the worlds known
+to the system and their status. I should
+be treated as immutable.e\x7fModuleInfo: Creator: globals psyche worlds worldsSnapshot.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldsSnapshot' -> () From: ( | {
+         'Comment: Give me an updated snapshot.e\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         copyUpdated = ( |
+            | self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldsSnapshot' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (set copyRemoveAll)'
+        
+         knownWorlds <- set copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldsSnapshot' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldsSnapshot' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (time origin)'
+        
+         snapshotTimestamp <- time origin.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'snapshotAction' -> () From: ( | {
