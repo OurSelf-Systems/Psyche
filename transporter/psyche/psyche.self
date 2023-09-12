@@ -108,7 +108,7 @@ See the LICENSE,d file for license information.
             bootIsSuspended 
                 ifTrue: [log info: 'Boot skipped with --suspendPsycheBootRoutine']
                  False: [mainBootRoutine]. 
-            startPrompt.
+            "startPrompt."
             self).
         } | ) 
 
@@ -1982,7 +1982,7 @@ have changed when `update` me.\x7fModuleInfo: Creator: globals psyche worlds wor
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'snapshotAction' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
         
-         schedulerInitial = ( |
+         schedulerInitial_psyche = ( |
             | 
             log info: 'Psyche Scheduler started (according to snapshotAction schedulerInitial)'.
             psyche preventPromptStart.
