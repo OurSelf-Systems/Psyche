@@ -1245,7 +1245,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
             | 
             defaultValue: str sendTo: self.
             (str, ' [', defaultValue, ']: ') print.
-            newValue: stdin preemptReadLine.
+            newValue: stdin readLine.
             newValue isEmpty 
                 ifTrue: defaultValue
                  False: newValue).
