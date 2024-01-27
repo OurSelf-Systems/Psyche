@@ -360,7 +360,7 @@ otherwise:
          'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          importWorldsZpoolIfFail: blk = ( |
-             ignoreError.
+             ignoreError = true.
             | 
             sys sh: '/sbin/zpool import' IfFail: [blk value].
             sys sh: '/sbin/zpool import worlds' IfFail: ignoreError.
