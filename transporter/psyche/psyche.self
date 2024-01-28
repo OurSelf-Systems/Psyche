@@ -108,7 +108,7 @@ See the LICENSE,d file for license information.
             bootIsSuspended 
                 ifTrue: [log info: 'Boot skipped with --suspendPsycheBootRoutine']
                  False: [mainBootRoutine]. 
-            startPrompt.
+            "startPrompt."
             self).
         } | ) 
 
@@ -360,7 +360,7 @@ otherwise:
          'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          importWorldsZpoolIfFail: blk = ( |
-             ignoreError.
+             ignoreError = true.
             | 
             sys sh: '/sbin/zpool import' IfFail: [blk value].
             sys sh: '/sbin/zpool import worlds' IfFail: ignoreError.
@@ -1245,7 +1245,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
             | 
             defaultValue: str sendTo: self.
             (str, ' [', defaultValue, ']: ') print.
-            newValue: stdin preemptReadLine.
+            newValue: stdin readLine.
             newValue isEmpty 
                 ifTrue: defaultValue
                  False: newValue).
@@ -1995,7 +1995,7 @@ have changed when `update` me.\x7fModuleInfo: Creator: globals psyche worlds wor
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'snapshotAction' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
         
-         schedulerInitial = ( |
+         schedulerInitial_psyche = ( |
             | 
             log info: 'Psyche Scheduler started (according to snapshotAction schedulerInitial)'.
             psyche preventPromptStart.
