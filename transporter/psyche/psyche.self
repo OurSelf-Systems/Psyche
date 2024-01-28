@@ -895,9 +895,9 @@ otherwise:
              x.
             | 
             c: copy.
-            x: st splitOn: '\t'.
+            x: st asTokensSeparatedByWhiteSpace.
             c source: x at: 0.
-            c mountpoint: x at: 2.
+            c mountpoint: x at: 1.
             c).
         } | ) 
 
@@ -1630,7 +1630,8 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
          'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          ensureDtachSocketDirectory = ( |
-            | sys sh: 'mkdir -p /var/self'. self).
+            | 
+            sys sh: 'mkdir -p ', sockDirectory. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
@@ -1685,7 +1686,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
          'Category: settings\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          selfSock = ( |
-            | '/var/self/', id, '.sock').
+            | sockDirectory, '/', id, '.sock').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
@@ -1714,6 +1715,12 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         
          sleep = ( |
             | stopJail. destroyJail. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sockDirectory = '/var/self'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
@@ -1818,8 +1825,8 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
          setIsMountedForUse = ( |
             | 
             rawIsMountedForUse: sys mounts current anySatisfy: [|:md| 
-              (md source = dataset) && 
-              (md mountpoint matchesPattern: worlds jailsBaseDirectory, '/*')].
+              (md source = (sys zfs mountpointOfDataset: dataset)) && 
+              [md mountpoint findSubstring: worlds jailsBaseDirectory IfPresent: true IfAbsent: false]].
             self).
         } | ) 
 
@@ -1842,8 +1849,14 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
          'Category: actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          sleep = ( |
+             c.
+             r.
             | 
-            (runner copyOnWorldRecord: self) sleep. copy update).
+            r: runner copyOnWorldRecord: self.
+            r sleep. 
+            c: copy update.
+            c isAwake ifFalse: [c rawConsoleSocket: nil].
+            c).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
