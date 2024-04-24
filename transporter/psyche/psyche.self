@@ -108,7 +108,7 @@ See the LICENSE,d file for license information.
             bootIsSuspended 
                 ifTrue: [log info: 'Boot skipped with --suspendPsycheBootRoutine']
                  False: [mainBootRoutine]. 
-            startPrompt.
+            "startPrompt."
             self).
         } | ) 
 
