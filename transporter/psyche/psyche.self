@@ -108,7 +108,7 @@ See the LICENSE,d file for license information.
             bootIsSuspended 
                 ifTrue: [log info: 'Boot skipped with --suspendPsycheBootRoutine']
                  False: [mainBootRoutine]. 
-            "startPrompt."
+            startPrompt.
             self).
         } | ) 
 
@@ -214,6 +214,16 @@ See the LICENSE,d file for license information.
         
          deprecated = ( |
             | log warn: 'Use of deprecated method'. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: desktop\x7fComment: This punches a hole in the firewall at port 443 to
+allow for HTTPS access to system and worlds.\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         desktopFirewallHTTPS = ( |
+            | 
+            sys pfOpenPort: 443.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -360,12 +370,24 @@ otherwise:
          'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          importWorldsZpoolIfFail: blk = ( |
-             ignoreError = true.
+             ignoreError.
             | 
             sys sh: '/sbin/zpool import' IfFail: [blk value].
             sys sh: '/sbin/zpool import worlds' IfFail: ignoreError.
             sys sh: 'ls /worlds' IfFail: [blk value].
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         initialCaddyConfig = ( |
+            | 
+             '
+            %IP% {
+                reverse_proxy http://127.0.0.1:6080
+            }
+            ' replace: '%IP%' With: sys local_ip4).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -542,6 +564,8 @@ otherwise:
          openDesktop = ( |
             | 
             startX.
+            startNoVNC.
+            startCaddy.
             desktop isOpen 
              ifTrue: [desktop restartSuppressedFlag: false. 
                       desktop returnFromSnapshot]
@@ -623,6 +647,7 @@ otherwise:
             case
                if: 'unsafe' = type Then: [ desktopFirewallUnsafe ]
                If: 'ssh'    = type Then: [ desktopFirewallSSH    ]
+               If: 'https'  = type Then: [ desktopFirewallHTTPS  ]
                Else: [
                     log error: 'Unknown desktop access method: ', type.
                     process this sleep: 10 * 1000].
@@ -684,6 +709,29 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         startCaddy = ( |
+             f.
+            | 
+            f = [log error: 'start Caddy failed'. ^ self ].
+            sys caddy config: initialCaddyConfig.
+            (sys caddy isRunningIfFail: f) ifFalse: [
+               sys caddy startIfFail: f].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         startNoVNC = ( |
+            | 
+            os command: 'chmod a+x /usr/local/libexec/novnc/utils/novnc_proxy'.
+            os command: 'daemon -f /usr/local/libexec/novnc/utils/novnc_proxy --listen 6080 --vnc :5901'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          startPrompt = ( |
@@ -711,6 +759,99 @@ otherwise:
          addFreeBSDUser: u IfFail: blk = ( |
             | 
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: caddu\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         caddy = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche sys caddy.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         config = ( |
+             f.
+             r.
+            | 
+            f: os_file openForReading: configFilename.
+            r: f contents.
+            f close.
+            r).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         config: s = ( |
+             f.
+             r.
+            | 
+            f: os_file openForWriting: configFilename.
+            f write: s.
+            f close.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         configFilename = '/usr/local/etc/caddy/Caddyfile'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         isRunningIfFail: fb = ( |
+             r.
+            | 
+            r: sys sh: 'service caddy onestatus' ResultInMs: 100 IfFail: [^ fb value: 'Check for running Caddy failed.'].
+            r shrinkwrapped != 'caddy is not running.').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         reloadConfigIfFail: fb = ( |
+            | 
+            sys sh: 'service caddy onereload' IfFail: [^ fb value: 'Reloading caddy config failed.']. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         startIfFail: fb = ( |
+            | sys sh: 'service caddy onestart' IfFail: [^ fb value: 'Starting Caddy failed.']. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         stopIfFail: fb = ( |
+            | 
+            sys sh: 'service caddy onestop' IfFail: [^ fb value: 'Stopping caddy failed.']. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         validateConfig = ( |
+            | sys sh: 'service caddy onereload --validate' IfFail: false. true).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
@@ -764,6 +905,16 @@ otherwise:
             ((f splitOn: '\n') 
               mapBy: [|:l| (l splitOn: ':') first])
               filterBy: [|:l| (l != '') && ['#' != l first]]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: ifconfig\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         local_ip4 = ( |
+             s.
+            | 
+            s: sh: 'ifconfig em0 | grep -w inet | awk \'{print $2}\'' ResultInMs: 100 IfFail: ''.
+            s shrinkwrapped).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
@@ -1144,11 +1295,12 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
-         'Category: system\x7fCategory: uuid\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: system\x7fCategory: uuid\x7fComment: A 32 character string (so it fits in usernames)\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          uuidgen = ( |
             | 
-            (outputOfCommand: 'uuidgen' Timeout: 1000 IfTimeout: raiseError) stdout shrinkwrapped).
+            ((outputOfCommand: 'uuidgen' Timeout: 1000 IfTimeout: raiseError) 
+              stdout shrinkwrapped splitOn: '-') joinUsing: '').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
@@ -1245,7 +1397,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
             | 
             defaultValue: str sendTo: self.
             (str, ' [', defaultValue, ']: ') print.
-            newValue: stdin readLine.
+            newValue: stdin preemptReadLine.
             newValue isEmpty 
                 ifTrue: defaultValue
                  False: newValue).
@@ -1694,10 +1846,11 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         
          setupJail = ( |
              m.
-            | " raiseError on errors - TODO - make proper handlers "
+            | 
+             " raiseError on errors - TODO - make proper handlers "
             sys mkdir_p: baseDirectory IfFail: raiseError.
 
-            m: sys mounter.
+            m: sys mounter copy.
             m type: 'nullfs'. m options: 'ro'. m source: templateDirectory. m target: baseDirectory. 
             m mount.
 
@@ -1734,7 +1887,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
             n: hostName.    
             d: baseDirectory.
             s: selfSock.
-            sys sh: 'dtach -n ', s, ' jail -cmr path="', d, '" name=', n, ' host.hostname=', n,  ' mount.devfs command=/vm/Self -s /objects/snapshot'. 
+            sys sh: 'dtach -n \'', s, '\' jail -cmr path=\'', d, '\' name=\'', n, '\' host.hostname=\'', n,  '\' mount.devfs command=/vm/Self -s /objects/snapshot'. 
             self).
         } | ) 
 
@@ -1912,7 +2065,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
              {} = 'Comment: I am a snapshot of the worlds known
 to the system and their status. I should
 be treated as immutable - if you think things
-have changed when `update` me.\x7fModuleInfo: Creator: globals psyche worlds worldsSnapshot.
+have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds worldsSnapshot.
 '.
             | ) .
         } | ) 
@@ -1995,7 +2148,7 @@ have changed when `update` me.\x7fModuleInfo: Creator: globals psyche worlds wor
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'snapshotAction' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
         
-         schedulerInitial_psyche = ( |
+         schedulerInitial = ( |
             | 
             log info: 'Psyche Scheduler started (according to snapshotAction schedulerInitial)'.
             psyche preventPromptStart.
