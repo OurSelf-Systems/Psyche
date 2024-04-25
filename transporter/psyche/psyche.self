@@ -389,7 +389,9 @@ otherwise:
             | 
              '
             %IP% {
-                reverse_proxy http://127.0.0.1:6080
+                handle_path /desktop/* {
+                  reverse_proxy http://127.0.0.1:6080
+                }
             }
             ' replace: '%IP%' With: sys local_ip4).
         } | ) 
@@ -730,8 +732,8 @@ otherwise:
         
          startNoVNC = ( |
             | 
-            os command: 'chmod a+x /usr/local/libexec/novnc/utils/novnc_proxy'.
-            os command: 'daemon -f /usr/local/libexec/novnc/utils/novnc_proxy --listen 6080 --vnc :5901'.
+            os command: 'chmod a+x /opt/noVNC/utils/novnc_proxy'.
+            os command: 'daemon -f /opt/noVNC/utils/novnc_proxy --listen 6080 --vnc :5901'.
             self).
         } | ) 
 
