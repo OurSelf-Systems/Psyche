@@ -69,6 +69,10 @@ See the LICENSE,d file for license information.
             resend.postFileIn.
             snapshotAction addSchedulerInitialMessage:
               message copy receiver: psyche Selector: 'boot'.
+            " Prevent prompt.self from starting a second mainInputLoop "
+            snapshotAction schedulerInitialMessages:
+              snapshotAction schedulerInitialMessages copyFilteredBy: [|:m|
+                'mainInputLoop' != m selector].
             self).
         } | ) 
 
