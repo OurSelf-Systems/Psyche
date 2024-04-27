@@ -135,6 +135,19 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> () From: ( | {
+         'Category: wizard\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         askForSlotName: str Default: defaultValue = ( |
+             newValue <- ''.
+            | 
+            (str, ' [', defaultValue, ']: ') print.
+            newValue: 0 stdin preemptReadLine.
+            newValue isEmpty 
+                ifTrue: defaultValue
+                 False: newValue).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          default = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( |
@@ -165,7 +178,7 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          fileSync* = bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> ().
         } | ) 
@@ -177,9 +190,15 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
+        
+         passwordHash <- ''.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
@@ -211,6 +230,36 @@ See the LICENSE,d file for license information.
         
          loadIfFail: blk = ( |
             | current: default copyReadFrom: '/worlds/psyche/psyche.conf' IfFail: [|:e| ^ blk value: e]. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> () From: ( | {
+         'Category: wizard\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         setPasswordHash = ( |
+             p.
+            | 
+            p: askForSlotName: 'password' Default: 'pass123'.
+            (0 psyche sys stdoutOfCommand: 'caddy hash-password -p ', p) shrinkwrapped).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> () From: ( | {
+         'Category: wizard\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         setViaWizard = ( |
+             c.
+            | 
+            c: default copy.
+
+            'Enter values for the following keys: ' printLine.
+
+            c slotsToRead do: [|:str. newValue|
+              str = 'passwordHash' 
+                ifTrue: [c passwordHash: setPasswordHash]
+                 False: [newValue: askForSlotName: str Default: str sendTo: c.
+                         (str, ':') sendTo: c With: newValue].
+            ].
+
+            c).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -386,14 +435,21 @@ otherwise:
          'Category: desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          initialCaddyConfig = ( |
+             b.
             | 
-             '
+            b: '
             %IP% {
-                handle_path /desktop/* {
+                handle_path /control/* {
                   reverse_proxy http://127.0.0.1:6080
                 }
+                basicauth /control/* {
+                  control %HASH%
+                }
             }
-            ' replace: '%IP%' With: sys local_ip4).
+            '.
+            b: b replace: '%IP%' With: sys local_ip4.
+            b: b replace: '%HASH%' With: config current passwordHash.
+            b).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -427,7 +483,7 @@ otherwise:
             'psyche.conf not found.' printLine.
             'Please answer these questions: ' printLine.
 
-            conf: psyche config default copy setViaWizard.
+            conf: psyche config setViaWizard.
 
             sys mkdir_p: '/worlds/psyche' IfFail: [
               log error: 'Could not create /worlds/psyche!'.
@@ -814,7 +870,8 @@ otherwise:
          isRunningIfFail: fb = ( |
              r.
             | 
-            r: sys sh: 'service caddy onestatus' ResultInMs: 100 IfFail: [^ fb value: 'Check for running Caddy failed.'].
+            " Sometimes this takes a while"
+            r: sys sh: 'service caddy onestatus' ResultInMs: 10000 IfFail: [^ fb value: 'Check for running Caddy failed.'].
             r shrinkwrapped != 'caddy is not running.').
         } | ) 
 
@@ -1245,7 +1302,8 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
          'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          sh: cmd ResultInMs: ms IfFail: blk = ( |
-            | os outputOfCommand: cmd Timeout: ms IfFail: [blk value: 'Cmd ', cmd, ' in jail ', j, ' failed']).
+            | 
+            os outputOfCommand: cmd Timeout: ms IfFail: [blk value: 'Cmd ', cmd, ' failed']).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
@@ -1395,21 +1453,6 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
-         'Category: wizard\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         askForSlotName: str = ( |
-             defaultValue.
-             newValue <- ''.
-            | 
-            defaultValue: str sendTo: self.
-            (str, ' [', defaultValue, ']: ') print.
-            newValue: stdin preemptReadLine.
-            newValue isEmpty 
-                ifTrue: defaultValue
-                 False: newValue).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
          'Category: reading\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          copyReadFrom: fileName IfFail: blk = ( |
@@ -1457,20 +1500,6 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
          readFileFrom: fileName IfFail: blk = ( |
             | 
             sys readFileFrom: fileName IfFail: blk).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
-         'Category: wizard\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         setViaWizard = ( |
-            | 
-            'Enter values for the following keys: ' printLine.
-
-            slotsToRead do: [|:str. newValue|
-              askForSlotName: str.
-            ].
-
-            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> () From: ( | {
