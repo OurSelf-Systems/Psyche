@@ -1,4 +1,4 @@
- '2023.06.08.01'
+ '2024.04.30.01'
  '
 Copyright 2022-2023 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -77,9 +77,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2023.06.08.01\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.04.30.01\')\x7fVisibility: public'
         
-         revision <- '2023.06.08.01'.
+         revision <- '2024.04.30.01'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -1359,6 +1359,95 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         ttyd = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ttyd' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche sys ttyd.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ttyd' -> () From: ( | {
+         'Category: state\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
+        
+         command <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ttyd' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         copyOn: cmd = ( |
+            | copy openOn: cmd).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ttyd' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         ensureDirectories = ( |
+            | 
+            sys sh: 'mkdir -p ', pidDirectory.
+            sys sh: 'mkdir -p ', sockDirectory.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ttyd' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         kill = ( |
+            | 
+            sys sh: 'kill ', pid asFileContents IfFail: false. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ttyd' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         openOn: cmd = ( |
+            | 
+            command: cmd.
+            socket: sockDirectory, sys uuidgen, '.sock'.
+            pid: pidDirectory, sys uuidgen, '.pid'.
+            ensureDirectories.
+            sys sh: 'daemon -f -p ', pid, ' ttyd -i ', socket, ' -W ', cmd.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ttyd' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ttyd' -> () From: ( | {
+         'Category: state\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (0)'
+        
+         pid <- 0.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ttyd' -> () From: ( | {
+         'Category: settings\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         pidDirectory = '/var/ttyd/pid/'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ttyd' -> () From: ( | {
+         'Category: settings\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sockDirectory = '/var/ttyd/sock/'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ttyd' -> () From: ( | {
+         'Category: state\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
+        
+         socket <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ttyd' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
          'Category: system\x7fCategory: uuid\x7fComment: A 32 character string (so it fits in usernames)\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          uuidgen = ( |
@@ -1902,7 +1991,8 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          sleep = ( |
-            | stopJail. destroyJail. self).
+            | 
+            stopJail. destroyJail. stopTTyd. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
@@ -1927,12 +2017,26 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         startTtyd = ( |
+            | ttyd: sys ttyd copyOn: 'dtach -W -a ', dtachSocket. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
          'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          stopJail = ( |
             | 
             sys sh: 'jail -r ', hostName IfFail: true.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         stopTtyd = ( |
+            | ttyd kill. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
@@ -1948,11 +2052,21 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (psyche sys ttyd)'
+        
+         ttyd <- bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ttyd' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          wake = ( |
             | 
-            ensureTemplate. setupJail. startJail. self).
+            ensureTemplate. 
+            setupJail. 
+            startJail. 
+            startTtyd.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
@@ -2160,6 +2274,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds wor
             knownWorlds: set copyRemoveAll.
             uuidsOfKnownWorlds do: [|:u|
               knownWorlds add: worlds worldRecord copyUpdatedFor: u].
+            snapshotTimestamp: time current.
             self).
         } | ) 
 
