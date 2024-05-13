@@ -305,6 +305,19 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         desktopMessage = ( |
+            | 
+            'You can access the desktop for this world at:
+                https://', sys local_ip4, '/control/
+            with the username \'control\' and the password chosen at installation.
+
+
+            ').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          ensureLogging = ( |
@@ -435,21 +448,14 @@ otherwise:
          'Category: desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          initialCaddyConfig = ( |
-             b.
+             c.
             | 
-            b: '
-            %IP% {
-                handle_path /control/* {
-                  reverse_proxy http://127.0.0.1:6080
-                }
-                basicauth /control/* {
-                  control %HASH%
-                }
-            }
-            '.
-            b: b replace: '%IP%' With: sys local_ip4.
-            b: b replace: '%HASH%' With: config current passwordHash.
-            b).
+            c: sys caddy caddyConfigPrototype copy.
+            c registerPath: '/control/'
+                  ForProxy: 'http://127.0.0.1:6080'
+                  Username: 'control'
+              PasswordHash: config current passwordHash.
+            c).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -824,7 +830,7 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
-         'Category: system\x7fCategory: caddu\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: system\x7fCategory: caddy\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          caddy = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals psyche sys caddy.
@@ -833,35 +839,229 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         caddyConfigPrototype = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche sys caddy caddyConfigPrototype.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         config = ( |
-             f.
-             r.
+         configFooter = ( |
+            | '\n}').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         configHeader = ( |
+             h.
             | 
-            f: os_file openForReading: configFilename.
-            r: f contents.
-            f close.
-            r).
+            h: '%IP% {\n'.
+            h: h replace: '%IP%' With: sys local_ip4.
+            h).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         copy = ( |
+            | resend.copy proxies: proxies copy).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         deregisterPath: path = ( |
+            | 
+            proxies removeKey: path.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> () From: ( | {
+         'Category: proxy\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (dictionary copyRemoveAll)'
+        
+         proxies <- dictionary copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> () From: ( | {
+         'Category: proxy\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         proxyEntryPrototype = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> 'proxyEntryPrototype' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche sys caddy caddyConfigPrototype proxyEntryPrototype.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> 'proxyEntryPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> 'proxyEntryPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         passwordHash <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> 'proxyEntryPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         path <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> 'proxyEntryPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         proxy <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> 'proxyEntryPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         username <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         registerPath: path ForProxy: proxy Username: user PasswordHash: ph = ( |
+            | 
+            proxies at: path
+                   Put: (
+            (((proxyEntryPrototype copy
+                    path: path)
+                   proxy: proxy)
+                username: user)
+            passwordHash: ph).
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> () From: ( | {
+         'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         renderConfig = ( |
+             b.
+             s.
+            | 
+            s: ''.
+            b: '    handle_path %PATH%* {
+                  reverse_proxy %PROXY%
+                }
+                basicauth %PATH%* bcrypt %PATH% {
+                  %USER% %HASH%
+                }
+            '.
+
+            proxies do: [|:p. c|
+              c: b copy.
+              c: c replace: '%PATH%' With: p path.
+              c: c replace: '%PROXY%' With: p proxy.
+              c: c replace: '%USER%' With: p username.
+              c: c replace: '%HASH%' With: p passwordHash.
+              s: s, c].
+            s).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> () From: ( | {
+         'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         renderMeta = ( |
+             s.
+            | 
+            s: ''.
+            proxies do: [|:p|
+              s: s, '# ', p path, ' ', p proxy, ' ', p username, ' ', p passwordHash, '\n'].
+            s).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> () From: ( | {
+         'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         toString = ( |
+            | 
+            renderMeta, configHeader, renderConfig, configFooter).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         config = ( |
+            | parseConfig: text_config).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         config: caddyConfig = ( |
+            | text_config: caddyConfig toString. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'Category: config\x7fCategory: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         configFilename = '/usr/local/etc/caddy/Caddyfile'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'Category: api\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         configSocket = '/var/run/caddy/caddy.sock'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         config: s = ( |
-             f.
-             r.
+         deregisterPath: path = ( |
+             n.
+             o.
             | 
-            f: os_file openForWriting: configFilename.
-            f write: s.
-            f close.
+            o: config.
+            n: config copy.
+            n deregisterPath: path.
+            isRunningIfFail: [raiseError].
+            config: n.
+            validateConfig ifFalse: [config: o. raiseError].
+            reloadConfigIfFail: [raiseError].
             self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: config\x7fCategory: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         configFilename = '/usr/local/etc/caddy/Caddyfile'.
+         emptyConfig = ( |
+             b.
+            | 
+            b: '
+            %IP% {
+                # MATCHES #
+            }
+            '.
+            b: b replace: '%IP%' With: sys local_ip4.
+            b).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'Category: api\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         getConfigViaAPI: path = ( |
+            | sys stdoutOfCommand: 'curl -GET --unix-socket ', configSocket, ' http://127.0.0.1/config/', path).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
@@ -882,11 +1082,62 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'Category: config\x7fCategory: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parseConfig: c = ( |
+             cc.
+            | 
+            cc: caddyConfigPrototype copy.
+            (c splitOn: '\n') do: [|:l|
+             (l isEmpty not && [l first = '#']) ifTrue: [|s|
+                s: l splitOn: ' '.
+                cc registerPath: (s at: 1)
+                       ForProxy: (s at: 2)
+                       Username: (s at: 3)
+                   PasswordHash: (s at: 4)]].
+            cc).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         registerPath: path ForProxy: proxy Username: user PasswordHash: ph = ( |
+             n.
+             o.
+            | 
+            o: config.
+            n: config copy.
+            n registerPath: path ForProxy: proxy Username: user PasswordHash: ph.
+            isRunningIfFail: [raiseError].
+            config: n.
+            validateConfig ifFalse: [config: o. raiseError].
+            reloadConfigIfFail: [raiseError].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          reloadConfigIfFail: fb = ( |
             | 
             sys sh: 'service caddy onereload' IfFail: [^ fb value: 'Reloading caddy config failed.']. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         resetConfig = ( |
+            | 
+            config: emptyConfig.
+            (isRunningIfFail: raiseError) ifTrue: [startIfFail: raiseError].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'Category: api\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         setConfigViaAPI: path Config: c = ( |
+            | sys stdoutOfCommand: 'curl -POST --unix-socket ', configSocket, ' http://127.0.0.1/config/', path, ' -d ', c. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
@@ -911,7 +1162,27 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: config\x7fCategory: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         text_config = ( |
+            | configFilename asFileContents).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'Category: config\x7fCategory: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         text_config: s = ( |
+             f.
+             r.
+            | 
+            f: os_file openForWriting: configFilename.
+            f write: s.
+            f close.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'Category: config\x7fCategory: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          validateConfig = ( |
             | sys sh: 'service caddy onereload --validate' IfFail: false. true).
@@ -1548,7 +1819,8 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         
          welcomeMessage = ( |
             | 
-            '\n\n\n\nW E L C O M E   T O   P S Y C H E\n\nVersion: ', version, '\n\n\n').
+            '\n\n\n\nW E L C O M E   T O   P S Y C H E\n\nVersion: ', version, '\n\n\n', 
+            'This is the console for the Control world.\n', desktopMessage).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -1605,6 +1877,13 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
              {} = 'ModuleInfo: Creator: globals psyche worlds worldRecord.
 '.
             | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         consolePasswordHash = ( |
+            | rawMetadata consolePasswordHash ifNil: raiseError).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
@@ -1672,9 +1951,61 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
+         'Category: internal\x7fCategory: metadata\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         metadataFilename = ( |
+            | (sys zfs mountpointOfDataset: dataset), '/metadata').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
+         'Category: internal\x7fCategory: metadata\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         metadataPrototype = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'metadataPrototype' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche worlds worldRecord metadataPrototype.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'metadataPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
+        
+         consolePasswordHash <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'metadataPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         fileSync* = bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'configFile' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'metadataPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'metadataPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         shortName <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
          'Category: internal\x7fCategory: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
+         'Category: setting\x7fComment: worldRecords are immutable - will return a new object\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         password: p = ( |
+             h.
+            | 
+            h: (sys stdoutOfCommand: 'caddy hash-password -p ', p) shrinkwrapped.
+            rawMetadata consolePasswordHash: h.
+            rawMetadata writeTo: metadataFilename IfFail: raiseError.
+            copy update).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
@@ -1717,6 +2048,12 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
          'Category: internal\x7fCategory: state\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (nil)'
         
          rawJailExists.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
+         'Category: internal\x7fCategory: metadata\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (psyche worlds worldRecord metadataPrototype)'
+        
+         rawMetadata <- bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'metadataPrototype' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
@@ -1789,6 +2126,15 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         
          dataset = ( |
             | worldRecord dataset).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         deregisterTtydWithCaddy = ( |
+            | 
+            psyche sys caddy deregisterPath: '/console/', id, '/'.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
@@ -1880,6 +2226,19 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         registerTtydWithCaddy = ( |
+            | 
+            psyche sys caddy 
+               registerPath: '/console/', id, '/'
+                   ForProxy: 'unix/', ttydSock
+                   Username: 'console'
+               PasswordHash: worldRecord consolePasswordHash.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
          'Category: settings\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          selfSock = ( |
@@ -1913,7 +2272,9 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         
          sleep = ( |
             | 
-            stopJail. destroyJail. stopTtyd. self).
+            stopJail. destroyJail. 
+            stopTtyd. deregisterTtydWithCaddy.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
@@ -1947,7 +2308,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
              ttyd.
             | 
             ensureTtydDirectories.
-            dtach: 'dtach -W -a ', dtachSocket, ' '.
+            dtach: 'dtach -a ', dtachSocket, ' '.
             ttyd: 'ttyd -W -i ', ttydSock, ' '.
             daemon: 'daemon -f -p ', ttydPid, ' '.
             cmd: daemon, ttyd, dtach.
@@ -2022,6 +2383,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
             setupJail. 
             startJail. 
             startTtyd.
+            registerTtydWithCaddy.
             self).
         } | ) 
 
@@ -2104,6 +2466,13 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         shortName = ( |
+            | rawMetadata shortName ifNil: raiseError).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
          'Category: actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          sleep = ( |
@@ -2138,8 +2507,19 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
             "Order is important"
             setDataset     setIsMountedForUse 
             setJailExists  setExists
-            setIsAwake
+            setIsAwake     updateMetadata
             setTimestamp).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
+         'Category: internal\x7fCategory: metadata\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         updateMetadata = ( |
+            | 
+            rawMetadata: metadataPrototype 
+                    copyReadFrom: metadataFilename
+                          IfFail: raiseError. 
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
