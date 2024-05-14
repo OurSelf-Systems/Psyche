@@ -1,4 +1,4 @@
- '2024.04.30.01'
+ '2024.05.14.01'
  '
 Copyright 2022-2023 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -77,9 +77,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.04.30.01\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.05.14.01\')\x7fVisibility: public'
         
-         revision <- '2024.04.30.01'.
+         revision <- '2024.05.14.01'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -2098,7 +2098,12 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
             sys sh: 'cp -r /vm ', templateDirectory, '/'.
             sys sh: 'tar -c /rescue/* | tar -xC ', templateDirectory, '/'.
             sys sh: 'mv ', templateDirectory, '/rescue ', templateDirectory, '/bin'.
-            sys sh: 'cp -r /libexec/* ', templateDirectory, '/libexec/'.
+            sys sh: 'cp -r /libexec/* ', templateDirectory, '/libexec/'.  
+
+            " dtach "
+            sys sh: 'cp /usr/local/bin/dtach ', templateDirectory, '/bin'.
+            sys sh: 'cp /lib/libutil.so.9 ', templateDirectory, '/lib'.
+            sys sh: 'cp /lib/libc.so.7 ', templateDirectory, '/lib'.
 
             " resolv.conf "
             sys sh: 'cp /etc/resolv.conf ', templateDirectory, '/etc/resolv.conf'.
@@ -2141,14 +2146,15 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
          'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          destroyJail = ( |
+             fb.
             | 
-            sys sh: 'umount ', baseDirectory, '/tmp'      IfFail: false.
+            fb: [raiseError].
+            sys sh: 'umount ', baseDirectory, '/tmp'      IfFail: fb.
             " /dev is mounted by jail(8) "
-            sys sh: 'umount ', baseDirectory, '/dev'      IfFail: false.
-            sys sh: 'umount ', baseDirectory, '/objects'  IfFail: false.
-            sys sh: 'umount ', baseDirectory, '/'         IfFail: false.
-            sys sh: 'rm -rf ', baseDirectory, '/'         IfFail: false.
-            sys sh: 'rm ', selfSock                       IfFail: false.
+            sys sh: 'umount ', baseDirectory, '/dev'      IfFail: fb.
+            sys sh: 'umount ', baseDirectory, '/objects'  IfFail: fb.
+            sys sh: 'umount ', baseDirectory, '/'         IfFail: fb.
+            sys sh: 'rmdir ', baseDirectory, '/'         IfFail: fb.
             self).
         } | ) 
 
@@ -2239,7 +2245,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
-         'Category: settings\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: settings\x7fComment: In jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          selfSock = ( |
             | sockDirectory, '/', id, '.sock').
@@ -2278,9 +2284,16 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'Category: jail template\x7fComment: In jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sockDirectory = '/tmp'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
          'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         sockDirectory = '/var/self'.
+         sockDirectoryOutside = ( |
+            | baseDirectory, sockDirectory).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
@@ -2294,7 +2307,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
             n: hostName.    
             d: baseDirectory.
             s: selfSock.
-            sys sh: 'dtach -n \'', s, '\' jail -cmr path=\'', d, '\' name=\'', n, '\' host.hostname=\'', n,  '\' mount.devfs command=/vm/Self -s /objects/snapshot'. 
+            sys sh: 'jail -cmr path=\'', d, '\' name=\'', n, '\' mount.devfs devfs_ruleset=5 host.hostname=\'', n,  '\' command=/bin/dtach -n \'', s, '\' /vm/Self -s /objects/snapshot'. 
             self).
         } | ) 
 
@@ -2308,7 +2321,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
              ttyd.
             | 
             ensureTtydDirectories.
-            dtach: 'dtach -a ', dtachSocket, ' '.
+            dtach: 'dtach -a ', baseDirectory, dtachSocket, ' '.
             ttyd: 'ttyd -W -i ', ttydSock, ' '.
             daemon: 'daemon -f -p ', ttydPid, ' '.
             cmd: daemon, ttyd, dtach.
@@ -2322,6 +2335,13 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
          stopJail = ( |
             | 
             sys sh: 'jail -r ', hostName IfFail: true.
+            " Waiting until nothing is using the filesystem,
+              ie untl the jail has properly stopped.
+            "
+            [|o| 
+            o: sys stdoutOfCommand: 'fuser ', baseDirectory.
+            o shrinkwrapped isEmpty
+            ] whileFalse.
             self).
         } | ) 
 
