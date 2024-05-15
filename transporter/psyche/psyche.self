@@ -809,7 +809,7 @@ otherwise:
         
          startX = ( |
             | 
-            os command: 'daemon /usr/local/bin/Xvnc :1 -geometry ', config current systemDesktopSize, ' -depth 24 -SecurityTypes None,TLSNone'.
+            os command: 'daemon /usr/local/bin/Xvnc :1 -geometry ', systemDesktopSize, ' -depth 24 -SecurityTypes None,TLSNone'.
             "Pause until Xvnc has started "
             [ 0 = (os command: 'ls /tmp/.X11-unix/X1')] whileFalse.
             os command: 'daemon /usr/local/bin/vncconfig -display :1 -nowin'.
