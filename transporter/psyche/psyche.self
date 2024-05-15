@@ -304,7 +304,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
          desktopMessage = ( |
             | 
             'You can access the desktop for this world at:
-                https://', sys local_ip4, '/control/
+                https://', sys caddy hostname, '/control/
             with the username \'control\' and the password chosen at installation.
 
 
@@ -1051,7 +1051,7 @@ otherwise:
                 # MATCHES #
             }
             '.
-            b: b replace: '%IP%' With: sys local_ip4.
+            b: b replace: '%IP%' With: hostname.
             b).
         } | ) 
 
@@ -1275,8 +1275,12 @@ otherwise:
          local_ip4 = ( |
              s.
             | 
-            s: sh: 'ifconfig em0 | grep -w inet | awk \'{print $2}\'' ResultInMs: 100 IfFail: ''.
-            s shrinkwrapped).
+            [
+              s: sh: 'ifconfig em0 | grep -w inet | awk \'{print $2}\'' ResultInMs: 100 IfFail: ''.
+              s: s shrinkwrapped.
+              '' = s
+            ] whileTrue: [ log info: 'Cannot determine ip4 address. Retrying.'. process sleep: 1000].
+            s).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
@@ -2187,7 +2191,7 @@ browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpres
         
          deregisterTtydWithCaddy = ( |
             | 
-            psyche sys caddy deregisterPath: '/console/', id, '/'.
+            psyche sys caddy deregisterPath: '/', id, '/console/'.
             self).
         } | ) 
 
@@ -2286,7 +2290,7 @@ browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpres
          registerTtydWithCaddy = ( |
             | 
             psyche sys caddy 
-               registerPath: '/console/', id, '/'
+               registerPath: '/', id, '/console/'
                    ForProxy: 'unix/', ttydSock
                    Username: 'console'
                PasswordHash: worldRecord consolePasswordHash.
