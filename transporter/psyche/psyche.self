@@ -816,6 +816,10 @@ otherwise:
          startX = ( |
             | 
             os command: 'daemon /usr/local/bin/Xvnc :1 -geometry ', config current systemDesktopSize, ' -depth 24 -SecurityTypes None,TLSNone'.
+            "Pause until Xvnc has started "
+            [ 0 = (os command: 'ls /tmp/.X11-unix/X1')] whileFalse.
+            os command: 'daemon /usr/local/bin/vncconfig -display :1 -nowin'.
+            os command: 'daemon autocutsel'.
             process this sleep: 2000.
             os command: 'DISPLAY=:1 daemon /usr/local/bin/ratpoison'.
             self).
@@ -861,7 +865,7 @@ otherwise:
              h.
             | 
             h: '%IP% {\n'.
-            h: h replace: '%IP%' With: sys local_ip4.
+            h: h replace: '%IP%' With: sys caddy hostname.
             h).
         } | ) 
 
@@ -1065,6 +1069,24 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'Category: hostname\x7fComment: This should be one of three types:
+- localhost, ie 127.0.0.1 (assuming ip4)
+- local ip, eg 192.168.1.114
+- global domain name set in psyche.conf\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         hostname = ( |
+            | 
+            localhost = rawHostname ifTrue: [rawHostname: sys local_ip4]. rawHostname).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'Category: hostname\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         hostname: hn = ( |
+            | rawHostname: hn. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          isRunningIfFail: fb = ( |
@@ -1073,6 +1095,12 @@ otherwise:
             " Sometimes this takes a while"
             r: sys sh: 'service caddy onestatus' ResultInMs: 10000 IfFail: [^ fb value: 'Check for running Caddy failed.'].
             r shrinkwrapped != 'caddy is not running.').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'Category: hostname\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         localhost = '127.0.0.1'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
@@ -1096,6 +1124,12 @@ otherwise:
                        Username: (s at: 3)
                    PasswordHash: (s at: 4)]].
             cc).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'Category: hostname\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (psyche sys caddy localhost)'
+        
+         rawHostname <- psyche sys caddy localhost.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
@@ -1894,6 +1928,20 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
+         'Category: URLs\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         consoleURL = ( |
+            | 'https://', sys caddy hostname, '/', id, '/console').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
+         'Category: URLs\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         copyConsoleURLToClipboard = ( |
+            | ui2_textBuffer contents: consoleURL. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          copyUpdatedFor: uuid = ( |
@@ -2159,10 +2207,10 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: settings\x7fComment: In jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          dtachSocket = ( |
-            | selfSock).
+            | sockDirectory, '/', id, '.sock').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
@@ -2245,13 +2293,6 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
-         'Category: settings\x7fComment: In jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         selfSock = ( |
-            | sockDirectory, '/', id, '.sock').
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
          'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          setupJail = ( |
@@ -2278,8 +2319,10 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         
          sleep = ( |
             | 
-            stopJail. destroyJail. 
-            stopTtyd. deregisterTtydWithCaddy.
+            stopJail. 
+            destroyJail. 
+            stopTtyd. 
+            deregisterTtydWithCaddy.
             self).
         } | ) 
 
@@ -2306,7 +2349,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
             | 
             n: hostName.    
             d: baseDirectory.
-            s: selfSock.
+            s: dtachSocket.
             sys sh: 'jail -cmr path=\'', d, '\' name=\'', n, '\' mount.devfs devfs_ruleset=5 host.hostname=\'', n,  '\' command=/bin/dtach -n \'', s, '\' /vm/Self -s /objects/snapshot'. 
             self).
         } | ) 
