@@ -1,4 +1,4 @@
- '2024.05.14.01'
+ '2024.05.15.01'
  '
 Copyright 2022-2023 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -77,9 +77,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.05.14.01\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.05.15.01\')\x7fVisibility: public'
         
-         revision <- '2024.05.14.01'.
+         revision <- '2024.05.15.01'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -217,12 +217,6 @@ See the LICENSE,d file for license information.
          'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'rsa\')'
         
          systemDesktopSSHKey <- 'rsa'.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'1024x768\')'
-        
-         systemDesktopSize <- '1024x768'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> () From: ( | {
@@ -1735,6 +1729,13 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: desktop\x7fComment: Default - should resize automatically to
+browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'1024x768\')'
+        
+         systemDesktopSize <- '1024x768'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
