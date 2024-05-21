@@ -875,7 +875,7 @@ otherwise:
         
          deregisterPath: path = ( |
             | 
-            proxies removeKey: path.
+            proxies removeKey: path IfAbsent: true.
             self).
         } | ) 
 
@@ -1419,6 +1419,12 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'mounts' -> 'mountDescriptor' -> () From: ( | {
+         'Category: umount\x7fComment: FreeBSD specific.\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         ebusy = 16.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'mounts' -> 'mountDescriptor' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          mountpoint.
@@ -1434,6 +1440,30 @@ otherwise:
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          source.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'mounts' -> 'mountDescriptor' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'mounts' -> 'mountDescriptor' -> () From: ( | {
+         'Category: umount\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         umountForcedIfFail: fb = ( |
+            | 
+            sys sh: 'umount -F ', mountpoint IfFail: [|:e| ^ fb value: e].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'mounts' -> 'mountDescriptor' -> () From: ( | {
+         'Category: umount\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         umountIfFail: fb = ( |
+            | 
+            sys sh: 'umount ', mountpoint IfFail: [|:e| ^ fb value: e].
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'mounts' -> () From: ( | {
@@ -2146,17 +2176,7 @@ browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpres
             " Create structure "
             ('/dev' & '/var' & '/var/run' & '/libexec' & '/lib' & '/etc' & '/tmp' & '/objects') asVector do: mkdir.
 
-
-            " Copy in needed files "
-            sys sh: 'cp -r /vm ', templateDirectory, '/'.
-            sys sh: 'tar -c /rescue/* | tar -xC ', templateDirectory, '/'.
-            sys sh: 'mv ', templateDirectory, '/rescue ', templateDirectory, '/bin'.
-            sys sh: 'cp -r /libexec/* ', templateDirectory, '/libexec/'.  
-
-            " dtach "
-            sys sh: 'cp /usr/local/bin/dtach ', templateDirectory, '/bin'.
-            sys sh: 'cp /lib/libutil.so.9 ', templateDirectory, '/lib'.
-            sys sh: 'cp /lib/libc.so.7 ', templateDirectory, '/lib'.
+            sharedDirs do: mkdir.
 
             " resolv.conf "
             sys sh: 'cp /etc/resolv.conf ', templateDirectory, '/etc/resolv.conf'.
@@ -2170,6 +2190,23 @@ browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpres
          cleanTemplate = ( |
             | 
             sys sh: 'rm -rf ', templateDirectory. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         copyInBinary: path = ( |
+             s.
+            | 
+            sys sh: 'cp ', path, ' ', templateDirectory, '/bin'.
+            s: sys stdoutOfCommand: 'ldd ', path.
+            (s splitOn: '\n') do: [|:l. p|
+              p: (l splitOn: '=>').
+              p size > 1 ifTrue: [
+                p: ((l splitOn: '=>') at: 1) shrinkwrapped.
+                p: ((p splitOn: ' ') at: 0) shrinkwrapped.
+                sys sh: 'cp ', p, ' ', templateDirectory, '/lib']].
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
@@ -2199,15 +2236,49 @@ browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpres
          'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          destroyJail = ( |
+             c.
              fb.
+             ignore = bootstrap stub -> 'globals' -> 'true' -> ().
+             umount.
+             umountForced.
             | 
-            fb: [raiseError].
-            sys sh: 'umount ', baseDirectory, '/tmp'      IfFail: fb.
-            " /dev is mounted by jail(8) "
-            sys sh: 'umount ', baseDirectory, '/dev'      IfFail: fb.
-            sys sh: 'umount ', baseDirectory, '/objects'  IfFail: fb.
-            sys sh: 'umount ', baseDirectory, '/'         IfFail: fb.
-            sys sh: 'rmdir ', baseDirectory, '/'         IfFail: fb.
+            fb: raiseError.
+            c: sys mounts current.
+            umount: [|:mp|
+             c findFirst: [|:e| 
+                       " /rw offset is caused by mfbsd "
+                       e mountpoint = ('/rw', baseDirectory, mp)]
+               IfPresent: [|:e| e umountIfFail: [
+                                "Try again"
+                                process this sleep: 10.
+                                e umountIfFail: fb]]
+                IfAbsent: ignore].
+
+            sharedDirs do: umount.
+
+            umount value: '/tmp'.
+            umount value: '/objects'.
+
+            " /dev was mounted by jail(8) "
+            umount value: '/dev'.
+
+            " Wait for all umounts to have effect "
+            [
+              sys mounts current
+                anySatisfy: [|:e| e mountpoint matchesPattern: '/rw', baseDirectory, '/*']
+            ] whileTrue.
+
+            " Wait until nothing is using the filesystem, "
+            [|o| 
+            o: sys stdoutOfCommand: 'fuser ', baseDirectory.
+            o shrinkwrapped isEmpty
+            ] whileFalse.
+
+            " Not / as needs to be matched in umount block with mountpoint"
+            umount value: ''.
+
+            (sys sh: 'ls ', baseDirectory, '/' IfFail: 0) = 0
+              ifFalse: [sys sh: 'rmdir ', baseDirectory, '/' IfFail: fb].
             self).
         } | ) 
 
@@ -2279,6 +2350,115 @@ browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpres
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'Comment: for when we copied files into
+template rather than mounted them\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         old = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'old' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche worlds worldRecord runner old.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'old' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         buildTemplate = ( |
+             mkdir.
+            | 
+            mkdir: [|:dir| sys sh: 'mkdir -p ', templateDirectory, dir].
+
+            " Create directory "
+            mkdir value: '/'.
+
+            " Create structure "
+            ('/dev' & '/var' & '/var/run' & '/libexec' & '/lib' & '/etc' & '/tmp' & '/objects') asVector do: mkdir.
+
+
+            " Copy in needed files "
+            sys sh: 'cp -r /vm ', templateDirectory, '/'.
+            sys sh: 'tar -c /rescue/* | tar -xC ', templateDirectory, '/'.
+            sys sh: 'mv ', templateDirectory, '/rescue ', templateDirectory, '/bin'.
+            sys sh: 'cp -r /libexec/* ', templateDirectory, '/libexec/'.  
+
+            " dtach "
+            copyInBinary: '/usr/local/bin/dtach'.
+
+            " resolv.conf "
+            sys sh: 'cp /etc/resolv.conf ', templateDirectory, '/etc/resolv.conf'.
+
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'old' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         destroyJail = ( |
+             fb.
+            | 
+            fb: [raiseError].
+            sys sh: 'umount ', baseDirectory, '/tmp'      IfFail: fb.
+            " /dev is mounted by jail(8) "
+            sys sh: 'umount ', baseDirectory, '/dev'      IfFail: fb.
+            sys sh: 'umount ', baseDirectory, '/objects'  IfFail: fb.
+            sys sh: 'umount ', baseDirectory, '/'         IfFail: fb.
+            sys sh: 'rmdir ', baseDirectory, '/'         IfFail: fb.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'old' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         setupJail = ( |
+             m.
+            | 
+             " raiseError on errors - TODO - make proper handlers "
+            sys mkdir_p: baseDirectory IfFail: raiseError.
+
+            m: sys mounter copy.
+            m type: 'nullfs'. m options: 'ro'. m source: templateDirectory. m target: baseDirectory. 
+            m mount.
+
+            m options: ''. m source: worldDirectory. m target: baseDirectory, '/objects'.
+            m mount.
+
+            m type: 'tmpfs'. m options: ''. m source: 'tmpfs'. m target: baseDirectory, '/tmp'.
+            m mount.
+
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'old' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         startJail = ( |
+             d.
+             n.
+             s.
+            | 
+            n: hostName.    
+            d: baseDirectory.
+            s: dtachSocket.
+            sys sh: 'jail -cmr path=\'', d, '\' name=\'', n, '\' mount.devfs devfs_ruleset=5 host.hostname=\'', n,  '\' command=/bin/dtach -n \'', s, '\' /vm/Self -s /objects/snapshot'. 
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'old' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         stopJail = ( |
+            | 
+            sys sh: 'jail -r ', hostName IfFail: true.
+            " Waiting until nothing is using the filesystem,
+              ie untl the jail has properly stopped.
+            "
+            [|o| 
+            o: sys stdoutOfCommand: 'fuser ', baseDirectory.
+            o shrinkwrapped isEmpty
+            ] whileFalse.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
          'Category: connections\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
@@ -2305,10 +2485,13 @@ browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpres
             | 
              " raiseError on errors - TODO - make proper handlers "
             sys mkdir_p: baseDirectory IfFail: raiseError.
-
             m: sys mounter copy.
             m type: 'nullfs'. m options: 'ro'. m source: templateDirectory. m target: baseDirectory. 
             m mount.
+
+            sharedDirs do: [|:d|
+              m type: 'nullfs'. m options: 'ro'. m source: d. m target: baseDirectory, d. 
+              m mount].
 
             m options: ''. m source: worldDirectory. m target: baseDirectory, '/objects'.
             m mount.
@@ -2317,6 +2500,19 @@ browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpres
             m mount.
 
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sharedDirs = ( |
+            | 
+            (
+            '/bin' & '/lib' & '/libexec' & '/sbin' &
+            '/usr/bin' & '/usr/sbin' & '/usr/lib' & '/usr/libexec' & '/usr/share' & '/usr/libdata' & 
+            '/usr/local/bin' & '/usr/local/sbin' & '/usr/local/lib' & '/usr/local/libexec' & '/usr/local/share' & '/usr/local/libdata' & '/usr/local/etc' & 
+            '/vm' & '/etc'
+            ) asVector).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
@@ -2355,7 +2551,7 @@ browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpres
             n: hostName.    
             d: baseDirectory.
             s: dtachSocket.
-            sys sh: 'jail -cmr path=\'', d, '\' name=\'', n, '\' mount.devfs devfs_ruleset=5 host.hostname=\'', n,  '\' command=/bin/dtach -n \'', s, '\' /vm/Self -s /objects/snapshot'. 
+            sys sh: 'jail -cmr path=\'', d, '\' name=\'', n, '\' mount.devfs vnet=new devfs_ruleset=5 host.hostname=\'', n,  '\' command=/usr/local/bin/dtach -n \'', s, '\' /vm/Self -s /objects/snapshot'. 
             self).
         } | ) 
 
@@ -2397,8 +2593,13 @@ browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpres
          'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          stopTtyd = ( |
+             c.
+             f.
             | 
-            sys sh: 'kill ', ttydPid asFileContents IfFail: false.
+            f: ttydPid asInputFileIfError: [^ self].
+            c: f contents.
+            f close.
+            sys sh: 'kill ', c IfFail: false.
             self).
         } | ) 
 
