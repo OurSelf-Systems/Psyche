@@ -872,7 +872,14 @@ otherwise:
          configHeader = ( |
              h.
             | 
-            h: '%IP% {\n'.
+            h: '
+            # Redirect to https
+            http://%IP% {
+              redir https://%IP%{uri} permanent
+            }
+
+            %IP% {
+            '.
             h: h replace: '%IP%' With: sys caddy hostname.
             h).
         } | ) 
