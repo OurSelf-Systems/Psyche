@@ -1,4 +1,4 @@
- '2024.05.15.01'
+ '2024.05.22.01'
  '
 Copyright 2022-2023 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -77,9 +77,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.05.15.01\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.05.22.01\')\x7fVisibility: public'
         
-         revision <- '2024.05.15.01'.
+         revision <- '2024.05.22.01'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -241,7 +241,7 @@ See the LICENSE,d file for license information.
             p: askForSlotName: 'password' Default: 'pass123'.
             (sys outputOfCommand: 'caddy hash-password -p ', p 
                          Timeout: 60000
-                       IfTimeout: raiseError) shrinkwrapped).
+                       IfTimeout: raiseError) stdout shrinkwrapped).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> () From: ( | {
