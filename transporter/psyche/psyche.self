@@ -141,7 +141,7 @@ See the LICENSE,d file for license information.
              newValue <- ''.
             | 
             (str, ' [', defaultValue, ']: ') print.
-            newValue: 0 stdin preemptReadLine.
+            newValue: stdin preemptReadLine.
             newValue isEmpty 
                 ifTrue: defaultValue
                  False: newValue).
@@ -227,13 +227,21 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> () From: ( | {
          'Category: wizard\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          setPasswordHash = ( |
              p.
             | 
             p: askForSlotName: 'password' Default: 'pass123'.
-            (0 psyche sys stdoutOfCommand: 'caddy hash-password -p ', p) shrinkwrapped).
+            (sys outputOfCommand: 'caddy hash-password -p ', p 
+                         Timeout: 60000
+                       IfTimeout: raiseError) shrinkwrapped).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> () From: ( | {
@@ -254,6 +262,21 @@ See the LICENSE,d file for license information.
             ].
 
             c).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche sys.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -382,15 +405,6 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
          'Category: private\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          restartFlagFilename = '/RESTART_REQUESTED'.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         sys = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche sys.
-'.
-            | ) .
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'handleAlternateObjectRoot' -> () From: ( | {
@@ -2350,7 +2364,7 @@ browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpres
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
-         'Comment: for when we copied files into
+         'Comment: From when we copied files into
 template rather than mounted them\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          old = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'old' -> () From: ( |
