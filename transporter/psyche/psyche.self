@@ -1,4 +1,4 @@
- '2024.05.22.01'
+ '2024.05.23.01'
  '
 Copyright 2022-2023 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -77,9 +77,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.05.22.01\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.05.23.01\')\x7fVisibility: public'
         
-         revision <- '2024.05.22.01'.
+         revision <- '2024.05.23.01'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -446,9 +446,9 @@ otherwise:
          importWorldsZpoolIfFail: blk = ( |
              ignoreError.
             | 
-            sys sh: '/sbin/zpool import' IfFail: [blk value].
-            sys sh: '/sbin/zpool import worlds' IfFail: ignoreError.
-            sys sh: 'ls /worlds' IfFail: [blk value].
+            sys sh: '/sbin/zpool import> /dev/null' IfFail: [blk value].
+            sys sh: '/sbin/zpool import worlds > /dev/null' IfFail: ignoreError.
+            sys sh: 'ls /worlds > /dev/null' IfFail: [blk value].
             self).
         } | ) 
 
@@ -667,6 +667,27 @@ otherwise:
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'prepareStorage' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
+         message = '
+
+**************************************************************
+*                                                            *
+    Storage (zpool worlds) cannot be found.                   
+
+    Please create this manually, then \"exit\" when finished.
+    If you are running Psyche on a virtual machine, or with
+    a single hard drive, then your command is likely to be
+    
+    > zpool create worlds /dev/ada0
+
+*                                                            *
+**************************************************************
+
+'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'prepareStorage' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
          parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
         } | ) 
 
@@ -681,12 +702,12 @@ otherwise:
         
          value = ( |
             | 
-            'Storage (zpool worlds) cannot be found.' printLine.
-            'Please create manually, then we will reboot.' printLine.
-            '"exit" when finished.' printLine.
+            message print.
             sys sh: 'bash' IfFail: false.
-            'Thanks, rebooting now.' printLine.
-            sys reboot).
+            psyche importWorldsZpoolIfFail: [
+                '\n\nStill cannot import zpool, rebooting...' printLine.
+                sys reboot].
+            selF).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
