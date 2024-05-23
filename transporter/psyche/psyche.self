@@ -1340,10 +1340,10 @@ otherwise:
              s.
             | 
             [
-              s: sh: 'ifconfig em0 | grep -w inet | awk \'{print $2}\'' ResultInMs: 100 IfFail: ''.
+              s: sh: 'ifconfig em0 | grep -w inet | awk \'{print $2}\'' ResultInMs: 1000 IfFail: ''.
               s: s shrinkwrapped.
               '' = s
-            ] whileTrue: [ log info: 'Cannot determine ip4 address. Retrying.'. process sleep: 1000].
+            ] whileTrue: [ log info: 'Cannot determine ip4 address. Retrying.'.].
             s).
         } | ) 
 
