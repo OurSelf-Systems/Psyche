@@ -1659,7 +1659,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         
          restartPf = ( |
             | 
-            sh: 'pfctl -vnf /etc/pf.conf && pfctl -F all -f /etc/pf.conf' IfFail: [
+            sh: 'pfctl -qnf /etc/pf.conf && pfctl -q -F all -f /etc/pf.conf' IfFail: [
               log error: 'Could not restart pf'].
             self).
         } | ) 
