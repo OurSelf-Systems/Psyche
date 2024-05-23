@@ -202,15 +202,15 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'disabled\')'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'enabled\')'
         
-         systemDesktop <- 'disabled'.
+         systemDesktop <- 'enabled'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'unsafe\')'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'https\')'
         
-         systemDesktopAccessType <- 'unsafe'.
+         systemDesktopAccessType <- 'https'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
@@ -511,22 +511,23 @@ otherwise:
         
          value = ( |
              conf.
+             e.
             | 
+            e: [|:m|
+              log error: m.
+              '\n\n\nEMERGENCY SHELL\n\n\n' print.
+              sys sh: 'bash' IfFail: [
+                  '\n\nAll out oF ideas...\n\n' print.
+                  sys shutdown].
+              sys shutdown].
 
             message print.
 
             conf: psyche config setViaWizard.
 
-            sys mkdir_p: '/worlds/psyche' IfFail: [
-              log error: 'Could not create /worlds/psyche!'.
-              ^ self].
-            conf writeTo: '/worlds/psyche/psyche.conf' IfFail: [
-              log error: 'Did not save conf file!'.
-              ^ self].
-            psyche config loadIfFail: [
-              log error: 'Did not read conf file!'.
-              ^ self].
-
+            sys mkdir_p: '/worlds/psyche' IfFail: [e: 'Could not create /worlds/psyche!'].
+            conf writeTo: '/worlds/psyche/psyche.conf' IfFail: [e: 'Did not save conf file!'].
+            psyche config loadIfFail: [e: 'Did not read conf file!'].
 
             '\n\nThank you. We will now continue based on the config.\n\n\n' print.
 
