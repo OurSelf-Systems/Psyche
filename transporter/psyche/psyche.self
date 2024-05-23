@@ -478,6 +478,25 @@ otherwise:
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'installOS' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
+         message = '
+
+********************************************************************
+*                                                                  *
+    A config file (/worlds/psyche/psyche.conf) cannot be found.                   
+
+    The system will now ask you some questions to set up an
+    initial config.
+
+
+*                                                                  *
+********************************************************************
+
+'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'installOS' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
          parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
         } | ) 
 
@@ -494,8 +513,7 @@ otherwise:
              conf.
             | 
 
-            'psyche.conf not found.' printLine.
-            'Please answer these questions: ' printLine.
+            message print.
 
             conf: psyche config setViaWizard.
 
@@ -508,6 +526,9 @@ otherwise:
             psyche config loadIfFail: [
               log error: 'Did not read conf file!'.
               ^ self].
+
+
+            '\n\nThank you. We will now continue based on the config.\n\n\n' print.
 
             self).
         } | ) 
