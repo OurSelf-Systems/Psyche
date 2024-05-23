@@ -516,7 +516,7 @@ otherwise:
             e: [|:m|
               log error: m.
               '\n\n\nEMERGENCY SHELL\n\n\n' print.
-              sys sh: 'bash' IfFail: [
+              sys sh: 'bash -i' IfFail: [
                   '\n\nAll out oF ideas...\n\n' print.
                   sys shutdown].
               sys shutdown].
@@ -725,7 +725,7 @@ otherwise:
          value = ( |
             | 
             message print.
-            sys sh: 'bash' IfFail: false.
+            sys sh: 'bash -i' IfFail: false.
             sys sh: 'ls /worlds > /dev/null 2>&1' IfFail: [
                 '\n\nStill cannot import zpool, rebooting...' printLine.
                 sys reboot].
