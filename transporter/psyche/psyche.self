@@ -447,8 +447,8 @@ otherwise:
              ignoreError.
             | 
             sys sh: '/sbin/zpool import > /dev/null 2>&1' IfFail: [blk value].
-            sys sh: '/sbin/zpool import worlds > /dev/nulll 2>&1' IfFail: ignoreError.
-            sys sh: 'ls /worlds > /dev/nulll 2>&1' IfFail: [blk value].
+            sys sh: '/sbin/zpool import worlds > /dev/null 2>&1' IfFail: ignoreError.
+            sys sh: 'ls /worlds > /dev/null 2>&1' IfFail: [blk value].
             self).
         } | ) 
 
@@ -704,7 +704,7 @@ otherwise:
             | 
             message print.
             sys sh: 'bash' IfFail: false.
-            sys sh: 'ls /worlds > /dev/nulll 2>&1' IfFail: [
+            sys sh: 'ls /worlds > /dev/null 2>&1' IfFail: [
                 '\n\nStill cannot import zpool, rebooting...' printLine.
                 sys reboot].
             self).
