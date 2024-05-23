@@ -446,9 +446,9 @@ otherwise:
          importWorldsZpoolIfFail: blk = ( |
              ignoreError.
             | 
-            sys sh: '/sbin/zpool import> /dev/null' IfFail: [blk value].
-            sys sh: '/sbin/zpool import worlds > /dev/null' IfFail: ignoreError.
-            sys sh: 'ls /worlds > /dev/null' IfFail: [blk value].
+            sys sh: '/sbin/zpool import > /dev/null 2>&1' IfFail: [blk value].
+            sys sh: '/sbin/zpool import worlds > /dev/nulll 2>&1' IfFail: ignoreError.
+            sys sh: 'ls /worlds > /dev/nulll 2>&1' IfFail: [blk value].
             self).
         } | ) 
 
@@ -704,10 +704,10 @@ otherwise:
             | 
             message print.
             sys sh: 'bash' IfFail: false.
-            psyche importWorldsZpoolIfFail: [
+            sys sh: 'ls /worlds > /dev/nulll 2>&1' IfFail: [
                 '\n\nStill cannot import zpool, rebooting...' printLine.
                 sys reboot].
-            selF).
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
