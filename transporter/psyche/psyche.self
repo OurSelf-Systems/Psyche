@@ -868,10 +868,10 @@ otherwise:
             | 
             os command: 'daemon /usr/local/bin/Xvnc :1 -geometry ', systemDesktopSize, ' -depth 24 -SecurityTypes None,TLSNone'.
             "Pause until Xvnc has started "
-            [ 0 = (os command: 'ls /tmp/.X11-unix/X1')] whileFalse.
+            [ 0 = (os command: 'ls /tmp/.X11-unix/X1 >/dev/null 2>&1 ')] whileFalse.
             os command: 'daemon /usr/local/bin/vncconfig -display :1 -nowin'.
             os command: 'daemon autocutsel'.
-            process this sleep: 2000.
+            [process this sleep: 2000].
             os command: 'DISPLAY=:1 daemon /usr/local/bin/ratpoison'.
             self).
         } | ) 
