@@ -916,7 +916,6 @@ otherwise:
              h.
             | 
             h: '
-            # Redirect to https
             http://%IP% {
               redir https://%IP%{uri} permanent
             }
@@ -1318,6 +1317,52 @@ otherwise:
         
          wasSuccessful = ( |
             | exitCode = 0).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: fetch\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         fetch = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'fetch' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche sys fetch.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'fetch' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
+        
+         out <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'fetch' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'fetch' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         run = ( |
+             o.
+            | 
+            o: sys outputOfCommand: 'fetch -o ', out, ' ', url
+                           Timeout: 60 * 60 * 1000
+                         IfTimeout: raiseError.
+            o exitCode != 0 ifTrue: raiseError.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'fetch' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'fetch' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
+        
+         url <- ''.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
@@ -1756,6 +1801,13 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: files and directories\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         touch: fn IfFail: blk = ( |
+            | outputOfCommand: 'touch ', fn Timeout: 1000 IfTimeout: blk).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
          'Category: system\x7fCategory: uuid\x7fComment: A 32 character string (so it fits in usernames)\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          uuidgen = ( |
@@ -1798,12 +1850,73 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'zfs' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
+         createDataset: ds = ( |
+             o.
+            | 
+            o: sys outputOfCommand: 'zfs create ', ds Timeout: 1000 IfTimeout: raiseError.
+            o exitCode != 0 ifTrue: [raiseError value: o stderr].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'zfs' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         createSnapshotOf: ds Named: sn = ( |
+             o.
+            | 
+            o: sys outputOfCommand: 'zfs snapshot ', ds, '@', sn Timeout: 1000 IfTimeout: raiseError.
+            o exitCode != 0 ifTrue: [raiseError value: o stderr].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'zfs' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         datasetExists: ds = ( |
+             o.
+            | 
+            o: sys outputOfCommand: 'zfs list -o name -rpH ', ds Timeout: 1000 IfTimeout: raiseError.
+            o exitCode = 0
+               ifTrue: true
+                False: ['dataset does not exist' = ((o stderr splitOn: ':') at: 1)shrinkwrapped
+                           ifTrue: false
+                            False: raiseError]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'zfs' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
          datasetsAndChildrenUnder: ds = ( |
              o.
             | 
             o: sys outputOfCommand: 'zfs list -o name -rpH ', ds Timeout: 1000 IfTimeout: raiseError.
             o exitCode != 0 ifTrue: [raiseError value: o stderr].
             (o stdout shrinkwrapped splitOn: '\n') asSet).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'zfs' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         destroyDataset: ds = ( |
+             o.
+            | 
+            o: sys outputOfCommand: 'zfs destroy -r ', ds Timeout: 1000 IfTimeout: raiseError.
+            o exitCode != 0 ifTrue: [raiseError value: o stderr].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'zfs' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         duplicateDataset: ds To: nds = ( |
+             o.
+             s.
+            | 
+            s: sys uuidgen.
+            createSnapshotOf: ds Named: s.
+            o: sys outputOfCommand: 'zfs send ', ds, '@', s, ' | zfs recv ', nds Timeout: 1000 IfTimeout: raiseError.
+            o exitCode != 0 ifTrue: [raiseError value: o stderr].
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'zfs' -> () From: ( | {
@@ -2041,18 +2154,78 @@ browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpres
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         copyUpdatedFor: uuid = ( |
-            | 
-            (copy rawID: uuid) update).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          dataset = ( |
             | rawDataset ifNil: raiseError).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
+         'Category: actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         delete = ( |
+            | 
+            isAwake ifTrue: raiseError.
+            sys zfs destroyDataset: dataset.
+            updatedRecord).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
+         'Category: actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         duplicate = ( |
+             nds.
+             nid.
+             r.
+            | 
+            nid: sys uuidgen.
+            nds: worlds storeBaseDataset, '/', nid.
+            sys zfs duplicateDataset: dataset To: nds.
+            sys touch: (sys zfs mountpointOfDataset: nds), '/metadata' IfFail: raiseError.
+            r: copy.
+            r rawID: nid.
+            r update.
+            " Random password for console "
+            r password: sys uuidgen.
+            r update).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
+         'Category: actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         duplicateEmpty = ( |
+             ds.
+             nid.
+             r.
+            | 
+            nid: sys uuidgen.
+            ds: worlds storeBaseDataset, '/', nid.
+            sys zfs createDataset:  ds.
+            sys touch: (sys zfs mountpointOfDataset: ds), '/metadata' IfFail: raiseError.
+            r: copy.
+            r rawID: nid.
+            r update.
+            " Random password for console "
+            r password: sys uuidgen.
+            r update).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
+         'Category: actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         duplicateURL: url = ( |
+             fn.
+             wr.
+            | 
+            wr: duplicateEmpty.
+            fn: os_file temporaryFileName, '.tar.xz'.
+            ((sys fetch url: url) out: fn) run.
+            (url slice: -7 @ infinity) = '.tar.xz' ifTrue: [
+                sys sh: 'tar -xf ', fn, ' -C ', 
+                      (sys zfs mountpointOfDataset: wr dataset).
+                sys removeFile: fn IfFail: raiseError.
+            ] False: raiseError. "Don't know this type"
+            wr).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
@@ -2407,6 +2580,18 @@ browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpres
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         jailOptions = ( |
+             l.
+            | 
+            l: (sys stdoutOfCommand: 'ls ', baseDirectory, '/objects') splitOn: '\n'.
+            (l includes: 'snapshot') ifTrue: [^ '-s /objects/snapshot'].
+            (l includes: 'build.self') ifTrue: [^ '-f /objects/build.self'].
+            '').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
          'Category: worldRecord access\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          jailsBaseDirectory = ( |
@@ -2608,6 +2793,14 @@ template rather than mounted them\x7fModuleInfo: Module: psyche InitialContents:
          'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          startJail = ( |
+            | 
+            startJailWithSelfOptions: jailOptions).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         startJailWithSelfOptions: options = ( |
              d.
              n.
              s.
@@ -2615,7 +2808,7 @@ template rather than mounted them\x7fModuleInfo: Module: psyche InitialContents:
             n: hostName.    
             d: baseDirectory.
             s: dtachSocket.
-            sys sh: 'jail -cmr path=\'', d, '\' name=\'', n, '\' mount.devfs vnet=new devfs_ruleset=5 host.hostname=\'', n,  '\' command=/usr/local/bin/dtach -n \'', s, '\' /vm/Self -s /objects/snapshot'. 
+            sys sh: 'jail -cmr path=\'', d, '\' name=\'', n, '\' mount.devfs vnet=new devfs_ruleset=5 host.hostname=\'', n,  '\' command=/usr/local/bin/dtach -n \'', s, '\' /vm/Self ', options. 
             self).
         } | ) 
 
@@ -2758,11 +2951,8 @@ template rather than mounted them\x7fModuleInfo: Module: psyche InitialContents:
          'Category: internal\x7fCategory: updating\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          setExists = ( |
-             a.
             | 
-            a: (sys zfs datasetsAndChildrenUnder: worlds storeBaseDataset) asSequence.
-            rawExists: (a filterBy: [|:ds| ds = dataset]) isEmpty not.
-            self).
+            rawExists: sys zfs datasetExists: dataset. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
@@ -2777,6 +2967,7 @@ template rather than mounted them\x7fModuleInfo: Module: psyche InitialContents:
         
          setIsMountedForUse = ( |
             | 
+            (sys zfs datasetExists: dataset) ifFalse: [rawIsMountedForUse: false. ^ self].
             rawIsMountedForUse: sys mounts current anySatisfy: [|:md| 
               (md source = (sys zfs mountpointOfDataset: dataset)) && 
               [md mountpoint findSubstring: worlds jailsBaseDirectory IfPresent: true IfAbsent: false]].
@@ -2849,10 +3040,25 @@ template rather than mounted them\x7fModuleInfo: Module: psyche InitialContents:
         
          updateMetadata = ( |
             | 
+            (sys zfs datasetExists: dataset) ifFalse: [^ self].
             rawMetadata: metadataPrototype 
                     copyReadFrom: metadataFilename
                           IfFail: raiseError. 
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         updatedRecord = ( |
+            | copy update).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         updatedRecordFor: uuid = ( |
+            | (copy rawID: uuid) update).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
@@ -2942,7 +3148,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds wor
             | 
             knownWorlds: set copyRemoveAll.
             uuidsOfKnownWorlds do: [|:u|
-              knownWorlds add: worlds worldRecord copyUpdatedFor: u].
+              knownWorlds add: worlds worldRecord updatedRecordFor: u].
             snapshotTimestamp: time current.
             self).
         } | ) 
