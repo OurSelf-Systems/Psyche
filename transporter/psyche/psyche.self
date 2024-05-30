@@ -449,6 +449,8 @@ otherwise:
             sys sh: '/sbin/zpool import > /dev/null 2>&1' IfFail: [blk value].
             sys sh: '/sbin/zpool import worlds > /dev/null 2>&1' IfFail: ignoreError.
             sys sh: 'ls /worlds > /dev/null 2>&1' IfFail: [blk value].
+            sys sh: 'ls /worlds/psyche > /dev/null 2>&1' IfFail: [blk value].
+            sys sh: 'ls ', worlds storeBaseDirectory, ' > /dev/null 2>&1' IfFail: [blk value].
             self).
         } | ) 
 
@@ -525,7 +527,6 @@ otherwise:
 
             conf: psyche config setViaWizard.
 
-            sys mkdir_p: '/worlds/psyche' IfFail: [e: 'Could not create /worlds/psyche!'].
             conf writeTo: '/worlds/psyche/psyche.conf' IfFail: [e: 'Did not save conf file!'].
             psyche config loadIfFail: [e: 'Did not read conf file!'].
 
@@ -594,6 +595,16 @@ otherwise:
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'prepareStorage' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
+         createDatasetsIFFail: blk = ( |
+            | 
+            sys zfs createDataset: 'worlds/psyche' IfFail: blk.
+            sys zfs createDataset: psyche worlds storeBaseDataset IfFail: blk.
+            seld).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'prepareStorage' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
          message = '
 
 **************************************************************
@@ -633,6 +644,9 @@ otherwise:
             sys sh: 'bash -i' IfFail: false.
             sys sh: 'ls /worlds > /dev/null 2>&1' IfFail: [
                 '\n\nStill cannot import zpool, rebooting...' printLine.
+                sys reboot].
+            createDatasetsIFFaIl: [
+                '\n\nCannot create datasets, rebooting...' printLine.
                 sys reboot].
             self).
         } | ) 
