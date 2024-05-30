@@ -645,7 +645,7 @@ otherwise:
             sys sh: 'ls /worlds > /dev/null 2>&1' IfFail: [
                 '\n\nStill cannot import zpool, rebooting...' printLine.
                 sys reboot].
-            createDatasetsIFFaIl: [
+            createDatasetsIfFaIl: [
                 '\n\nCannot create datasets, rebooting...' printLine.
                 sys reboot].
             self).
