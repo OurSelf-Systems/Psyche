@@ -595,11 +595,11 @@ otherwise:
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'prepareStorage' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         createDatasetsIFFail: blk = ( |
+         createDatasetsIfFail: blk = ( |
             | 
             sys zfs createDataset: 'worlds/psyche' IfFail: blk.
             sys zfs createDataset: psyche worlds storeBaseDataset IfFail: blk.
-            seld).
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'prepareStorage' -> () From: ( | {
@@ -645,7 +645,7 @@ otherwise:
             sys sh: 'ls /worlds > /dev/null 2>&1' IfFail: [
                 '\n\nStill cannot import zpool, rebooting...' printLine.
                 sys reboot].
-            createDatasetsIfFaIl: [
+            createDatasetsIfFail: [
                 '\n\nCannot create datasets, rebooting...' printLine.
                 sys reboot].
             self).
