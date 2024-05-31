@@ -1769,7 +1769,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'zfs' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         createDataset: ds IfFFail: blk = ( |
+         createDataset: ds IfFail: blk = ( |
              o.
             | 
             o: sys outputOfCommand: 'zfs create ', ds Timeout: 1000 IfTimeout: [^ blk value].
