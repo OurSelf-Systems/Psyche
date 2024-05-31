@@ -1769,11 +1769,11 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'zfs' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         createDataset: ds = ( |
+         createDataset: ds IfFFail: blk = ( |
              o.
             | 
-            o: sys outputOfCommand: 'zfs create ', ds Timeout: 1000 IfTimeout: raiseError.
-            o exitCode != 0 ifTrue: [raiseError value: o stderr].
+            o: sys outputOfCommand: 'zfs create ', ds Timeout: 1000 IfTimeout: [^ blk value].
+            o exitCode != 0 ifTrue: [^ blk value: o stderr].
             self).
         } | ) 
 
@@ -2119,7 +2119,7 @@ browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpres
             | 
             nid: sys uuidgen.
             ds: worlds storeBaseDataset, '/', nid.
-            sys zfs createDataset:  ds.
+            sys zfs createDataset:  ds IfFail: raiseError.
             sys touch: (sys zfs mountpointOfDataset: ds), '/metadata' IfFail: raiseError.
             r: copy.
             r rawID: nid.
