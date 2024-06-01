@@ -1,4 +1,4 @@
- '2024.05.31.01'
+ '2024.06.01.01'
  '
 Copyright 2022-2023 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -77,9 +77,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.05.31.01\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.06.01.01\')\x7fVisibility: public'
         
-         revision <- '2024.05.31.01'.
+         revision <- '2024.06.01.01'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -184,6 +184,12 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'automatic\')'
+        
+         hostname <- 'automatic'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'/objects\')'
         
          objectsDirectory <- '/objects'.
@@ -254,10 +260,10 @@ See the LICENSE,d file for license information.
 
             'Enter values for the following keys: ' printLine.
 
-            c slotsToRead do: [|:str. newValue|
-              str = 'passwordHash' 
-                ifTrue: [c passwordHash: setPasswordHash]
-                 False: [newValue: askForSlotName: str Default: str sendTo: c.
+            wizardSlots do: [|:str. newValue|
+              case
+                if: str = 'passwordHash'  Then: [c passwordHash: setPasswordHash ]
+                Else: [newValue: askForSlotName: str Default: str sendTo: c.
                          (str, ':') sendTo: c With: newValue].
             ].
 
@@ -277,6 +283,13 @@ See the LICENSE,d file for license information.
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> () From: ( | {
+         'Category: wizard\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         wizardSlots = ( |
+            | ('hostname' & 'passwordHash') asVector).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -460,6 +473,7 @@ otherwise:
          initialCaddyConfig = ( |
              c.
             | 
+            sys caddy hostname: config current hostname.
             c: sys caddy caddyConfigPrototype copy.
             c registerPath: '/control/'
                   ForProxy: 'http://127.0.0.1:6080'
@@ -1052,7 +1066,7 @@ otherwise:
         
          hostname = ( |
             | 
-            localhost = rawHostname ifTrue: [rawHostname: sys local_ip4]. rawHostname).
+            'automatic' = rawHostname ifTrue:[^ sys local_ip4]. rawHostname).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
