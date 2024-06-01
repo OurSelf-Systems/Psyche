@@ -1061,7 +1061,7 @@ otherwise:
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
          'Category: hostname\x7fComment: This should be one of three types:
 - localhost, ie 127.0.0.1 (assuming ip4)
-- local ip, eg 192.168.1.114
+- local ip, eg 192.168.1.114 
 - global domain name set in psyche.conf\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          hostname = ( |
