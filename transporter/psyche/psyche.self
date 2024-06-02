@@ -2076,7 +2076,8 @@ browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpres
          'Category: URLs\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          consoleURL = ( |
-            | 'https://', sys caddy hostname, '/', id, '/console').
+            | 
+            'https://', sys caddy hostname, '/', id, '/console/').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
