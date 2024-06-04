@@ -2014,8 +2014,8 @@ browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpres
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         getSnapshotOfWorldsStatus = ( |
-            | worldsSnapshot copyUpdated).
+         importWorldFromURL: url = ( |
+            | worldRecord duplicateURL: url).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> () From: ( | {
@@ -2047,6 +2047,101 @@ browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpres
          'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> () From: ( | {
+         'Category: prototypes\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         systemRecord = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'systemRecord' -> () From: ( |
+             {} = 'Comment: I am a snapshot of the worlds known
+to the system and their status. I should
+be treated as immutable - if you think things
+have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds systemRecord.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'systemRecord' -> () From: ( | {
+         'Comment: Give me an updated snapshot.\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         copyUpdated = ( |
+            | 
+            copy update).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'systemRecord' -> () From: ( | {
+         'Category: internal state\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (set copyRemoveAll)'
+        
+         knownWorlds <- set copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'systemRecord' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'systemRecord' -> () From: ( | {
+         'Category: internal state\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (time origin)'
+        
+         snapshotTimestamp <- time origin.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'systemRecord' -> () From: ( | {
+         'Category: connections\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         storeBaseDataset = ( |
+            | worlds storeBaseDataset).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'systemRecord' -> () From: ( | {
+         'Category: connections\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         storeBaseDirectory = ( |
+            | worlds storeBaseDirectory).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'systemRecord' -> () From: ( | {
+         'Category: connections\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'systemRecord' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         update = ( |
+             c.
+            | 
+            knownWorlds: set copyRemoveAll.
+            uuidsOfKnownWorlds do: [|:u|
+              knownWorlds add: worlds worldRecord updatedRecordFor: u].
+            snapshotTimestamp: time current.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'systemRecord' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         uuidsOfKnownWorlds = ( |
+            | 
+            ((sys zfs datasetsAndChildrenUnder: storeBaseDataset) asSequence
+              filterBy: [|:ds| ds != storeBaseDataset])
+              mapBy: [|:ds| ds slice: (storeBaseDataset size + 1) @ infinity]
+            " +1 because we need to remove separator / ").
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'systemRecord' -> () From: ( | {
+         'Category: connections\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         worlds = bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         updatedSystemRecord = ( |
+            | systemRecord copyUpdated).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> () From: ( | {
@@ -2903,94 +2998,6 @@ browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpres
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
          'Category: internal\x7fCategory: connections\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         worlds = bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> () From: ( | {
-         'Category: prototypes\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         worldsSnapshot = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldsSnapshot' -> () From: ( |
-             {} = 'Comment: I am a snapshot of the worlds known
-to the system and their status. I should
-be treated as immutable - if you think things
-have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds worldsSnapshot.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldsSnapshot' -> () From: ( | {
-         'Comment: Give me an updated snapshot.\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         copyUpdated = ( |
-            | 
-            copy update).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldsSnapshot' -> () From: ( | {
-         'Category: internal state\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (set copyRemoveAll)'
-        
-         knownWorlds <- set copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldsSnapshot' -> () From: ( | {
-         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldsSnapshot' -> () From: ( | {
-         'Category: internal state\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (time origin)'
-        
-         snapshotTimestamp <- time origin.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldsSnapshot' -> () From: ( | {
-         'Category: connections\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         storeBaseDataset = ( |
-            | worlds storeBaseDataset).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldsSnapshot' -> () From: ( | {
-         'Category: connections\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         storeBaseDirectory = ( |
-            | worlds storeBaseDirectory).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldsSnapshot' -> () From: ( | {
-         'Category: connections\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldsSnapshot' -> () From: ( | {
-         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         update = ( |
-             c.
-            | 
-            knownWorlds: set copyRemoveAll.
-            uuidsOfKnownWorlds do: [|:u|
-              knownWorlds add: worlds worldRecord updatedRecordFor: u].
-            snapshotTimestamp: time current.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldsSnapshot' -> () From: ( | {
-         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         uuidsOfKnownWorlds = ( |
-            | 
-            ((sys zfs datasetsAndChildrenUnder: storeBaseDataset) asSequence
-              filterBy: [|:ds| ds != storeBaseDataset])
-              mapBy: [|:ds| ds slice: (storeBaseDataset size + 1) @ infinity]
-            " +1 because we need to remove separator / ").
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldsSnapshot' -> () From: ( | {
-         'Category: connections\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          worlds = bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> ().
         } | ) 
