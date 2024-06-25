@@ -1495,7 +1495,7 @@ otherwise:
         
          umountForcedIfFail: fb = ( |
             | 
-            sys sh: 'umount -F ', mountpoint IfFail: [|:e| ^ fb value: e].
+            sys sh: 'umount -f ', mountpoint IfFail: [|:e| ^ fb value: e].
             self).
         } | ) 
 
@@ -2062,14 +2062,6 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'systemRecord' -> () From: ( | {
-         'Comment: Give me an updated snapshot.\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         copyUpdated = ( |
-            | 
-            copy update).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'systemRecord' -> () From: ( | {
          'Category: internal state\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (set copyRemoveAll)'
         
          knownWorlds <- set copyRemoveAll.
@@ -2121,6 +2113,13 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'systemRecord' -> () From: ( | {
+         'Comment: Give me an updated snapshot.\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         updatedRecord = ( |
+            | copy update).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'systemRecord' -> () From: ( | {
          'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          uuidsOfKnownWorlds = ( |
@@ -2141,7 +2140,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          updatedSystemRecord = ( |
-            | systemRecord copyUpdated).
+            | systemRecord updatedRecord).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> () From: ( | {
@@ -2440,14 +2439,31 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
             mkdir value: '/'.
 
             " Create structure "
-            ('/dev' & '/var' & '/var/run' & '/libexec' & '/lib' & '/etc' & '/tmp' & '/objects') asVector do: mkdir.
+            ('/dev' & '/var' & '/var/run' & '/libexec' & '/lib' & '/etc' & '/tmp' & '/root' & '/objects' & '/firmware') asVector do: mkdir.
 
             sharedDirs do: mkdir.
 
             " resolv.conf "
             sys sh: 'cp /etc/resolv.conf ', templateDirectory, '/etc/resolv.conf'.
 
+            copyInFirmware.
+            copyInCaddyfile.
+
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         caddyfile = '
+{ 
+  auto_https off
+}
+:80 {
+  bind unix//tmp/morphic-1.sock
+  reverse_proxy http://127.0.0.1:6080
+}
+'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
@@ -2476,6 +2492,30 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         copyInCaddyfile = ( |
+             f.
+            | 
+            f: os_file openForWriting: templateDirectory, '/firmware/caddyfile' IfFail: raiseError.
+            f write: caddyfile asString.
+            f close.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         copyInFirmware = ( |
+             f.
+            | 
+            f: os_file openForWriting: templateDirectory, '/firmware/firmware.self' IfFail: raiseError.
+            f write: firmware asString.
+            f close.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          copyOnWorldRecord: wr = ( |
@@ -2487,6 +2527,15 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
         
          dataset = ( |
             | worldRecord dataset).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'Category: desktops\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         deregisterDesktopsWithCaddy = ( |
+            | 
+            psyche sys caddy deregisterPath: '/', id, '/desktop/1/'.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
@@ -2516,13 +2565,11 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
                        e mountpoint = ('/rw', baseDirectory, mp)]
                IfPresent: [|:e| e umountIfFail: [
                                 "Try again"
-                                process this sleep: 10.
-                                e umountIfFail: fb]]
+                                e umountForcedIfFail: fb]]
                 IfAbsent: ignore].
 
             sharedDirs do: umount.
-
-            umount value: '/tmp'.
+            tmpDirs do: umount.
             umount value: '/objects'.
 
             " /dev was mounted by jail(8) "
@@ -2595,6 +2642,48 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         firmware = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'firmware' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche worlds worldRecord runner firmware.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'firmware' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         asString = ( |
+            | startup).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'firmware' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         startup = '
+lobby _AddSlots: (|
+    firmware = ().
+|).
+lobby firmware _AddSlots: (|
+  parent* = traits oddball.
+  startup = (
+     os command: \'daemon Xvnc :1 -geometry 1000x7000 -depth 24 -SecurityTypes None\'.
+     \"Pause until Xvnc has started \"
+     [ 0 = (os command: \'ls /tmp/.X11-unix/X1 >/dev/null 2>&1 \')] whileFalse.
+     os command: \'DISPLAY=:1 daemon /usr/local/bin/ratpoison\'.
+     os command: \'daemon -f /opt/noVNC/utils/novnc_proxy --listen 6080 --vnc :5901\'.
+     startCaddy.
+     self).
+  startCaddy = (
+     os command: \'daemon caddy run --config /firmware/caddyfile --adapter caddyfile\'.
+     self
+  )
+|).
+lobby firmware startup.
+'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
          'Category: settings\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          hostName = ( |
@@ -2615,8 +2704,8 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
              l.
             | 
             l: (sys stdoutOfCommand: 'ls ', baseDirectory, '/objects') splitOn: '\n'.
-            (l includes: 'snapshot') ifTrue: [^ '-s /objects/snapshot'].
-            (l includes: 'build.self') ifTrue: [^ '-f /objects/build.self'].
+            (l includes: 'snapshot') ifTrue: [^ '-s /objects/snapshot -f /firmware/firmware.self'].
+            (l includes: 'build.self') ifTrue: [^ '-f /objects/build.self -f2 /firmware/firmware.self'].
             '').
         } | ) 
 
@@ -2631,6 +2720,19 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
          'Category: connections\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'Category: desktops\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         registerDesktopsWithCaddy = ( |
+            | 
+            psyche sys caddy 
+               registerPath: '/', id, '/desktop/1/'
+                   ForProxy: 'unix/', baseDirectory, '/tmp/morphic-1.sock'
+                   Username: 'desktop'
+               PasswordHash: worldRecord consolePasswordHash.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
@@ -2665,8 +2767,9 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
             m options: ''. m source: worldDirectory. m target: baseDirectory, '/objects'.
             m mount.
 
-            m type: 'tmpfs'. m options: ''. m source: 'tmpfs'. m target: baseDirectory, '/tmp'.
-            m mount.
+            tmpDirs do: [|:d|
+              m type: 'tmpfs'. m options: ''. m source: 'tmpfs'. m target: baseDirectory, d.
+              m mount].
 
             self).
         } | ) 
@@ -2680,7 +2783,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
             '/bin' & '/lib' & '/libexec' & '/sbin' &
             '/usr/bin' & '/usr/sbin' & '/usr/lib' & '/usr/libexec' & '/usr/share' & '/usr/libdata' & 
             '/usr/local/bin' & '/usr/local/sbin' & '/usr/local/lib' & '/usr/local/libexec' & '/usr/local/share' & '/usr/local/libdata' & '/usr/local/etc' & 
-            '/vm' & '/etc'
+            '/vm' & '/etc' & '/opt'
             ) asVector).
         } | ) 
 
@@ -2693,6 +2796,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
             destroyJail. 
             stopTtyd. 
             deregisterTtydWithCaddy.
+            deregisterDesktopsWithCaddy.
             self).
         } | ) 
 
@@ -2722,13 +2826,33 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
         
          startJailWithSelfOptions: options = ( |
              d.
+             epair.
+             ip_a.
+             ip_b.
+             jid.
              n.
              s.
             | 
             n: hostName.    
             d: baseDirectory.
             s: dtachSocket.
-            sys sh: 'jail -cmr path=\'', d, '\' name=\'', n, '\' mount.devfs vnet=new devfs_ruleset=5 host.hostname=\'', n,  '\' command=/usr/local/bin/dtach -n \'', s, '\' /vm/Self ', options. 
+            " Create epair "
+            epair: (sys stdoutOfCommand: 'ifconfig epair create') shrinkwrapped slice: 0 @ -1. " Drop final 'a' "
+            " Start jail "
+            sys sh: 'jail -cmr path=\'', d, '\' name=\'', n, '\' persist mount.devfs vnet devfs_ruleset=5 host.hostname=\'', n,  '\' exec.start="/bin/sh /etc/rc"'.
+            " Get jid "
+            jid: ((sys stdoutOfCommand: 'jls -n -j ', n, ' jid') shrinkwrapped splitOn: '=') at: 1.
+            " Copy in epair "
+            sys sh: 'ifconfig ', epair, 'b vnet ', jid.
+            " Create ip based on jid"
+            " NOTE: ONLY 120 JAILS ALLOWED!!!!! "
+            ip_a: '10.0.0.', jid, '/8'.
+            ip_b: '10.0.1.', (jid asInteger + 128) asString, '/8'.
+            " Assign ip to jail"
+            sys sh: 'ifconfig ', epair, 'a ', ip_a, ' up'.
+            sys sh: 'jexec ', jid, ' ifconfig ', epair, 'b ', ip_b, ' up'.
+            " Start Self "
+            sys sh: 'jexec ', n, ' /usr/local/bin/dtach -n \'', s, '\' /vm/Self ', options. 
             self).
         } | ) 
 
@@ -2793,6 +2917,13 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         tmpDirs = ( |
+            | ('/tmp' & '/var' & '/root') asVector).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
          'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          ttydPid = ( |
@@ -2830,6 +2961,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
             startJail. 
             startTtyd.
             registerTtydWithCaddy.
+            registerDesktopsWithCaddy.
             self).
         } | ) 
 
