@@ -293,6 +293,176 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: daemons\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         daemons = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche daemons.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         caddy = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche daemons caddy.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
+         'Category: loop manager\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         abortHandlingProcess = ( |
+            | running abortIfLive. running: deadProcess. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
+         'Category: loop manager\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         deadProcess = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> 'deadProcess' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche daemons caddy deadProcess.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
+         'Category: loop manager\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         ensureRunning = ( |
+            | 
+            running isAlive ifFalse: [startRunning]. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
+         'Category: loop manager\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         handleLoop = ( |
+            | 
+            [process this sleep: 1000.
+            ] loop).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
+         'Category: loop manager\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         hup = ( |
+            | abortHandlingProcess ensureRunning).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'prototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'prototype' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche daemons prototype parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
+         'Category: shared\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'prototype' -> 'parent' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         reload = ( |
+            | stop. start. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
+         'Category: loop manager\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (log dispatcher deadProcess)'
+        
+         running <- bootstrap stub -> 'globals' -> 'log' -> 'dispatcher' -> 'deadProcess' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         start = ( |
+            | 
+            ensureRunning.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
+         'Category: loop manager\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         startRunning = ( |
+            | 
+            running: (
+              process copySend: (message copy receiver: self Selector: 'handleLoop')
+                  CauseOfBirth: 'caddy daemon') resume. 
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         stop = ( |
+            | abortHandlingProcess. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         transactor = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'transactor' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche traits transactor.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
+         'Category: shared\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sync* = bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'transactor' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
+         'Category: shared\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         prototype = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'prototype' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche daemons prototype.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'prototype' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'prototype' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         reload = ( |
+            | self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'prototype' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         start = ( |
+            | self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'prototype' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         stop = ( |
+            | self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: development support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          deprecated = ( |
@@ -882,6 +1052,24 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> () From: ( | {
+         'Category: reading\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parseConfig: c = ( |
+             cc.
+            | 
+            cc: copy.
+            (c splitOn: '\n') do: [|:l|
+             (l isEmpty not && [l first = '#']) ifTrue: [|s|
+                s: l splitOn: ' '.
+                "We may not have username or passwordHash"
+                cc registerPath: (s at: 1)
+                       ForProxy: (s at: 2)
+                       Username: (s at: 3 IfAbsent: '')
+                   PasswordHash: (s at: 4 IfAbsent: '')]].
+            cc).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> () From: ( | {
          'Category: proxy\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (dictionary copyRemoveAll)'
         
          proxies <- dictionary copyRemoveAll.
@@ -894,6 +1082,14 @@ otherwise:
              {} = 'ModuleInfo: Creator: globals psyche sys caddy caddyConfigPrototype proxyEntryPrototype.
 '.
             | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> 'proxyEntryPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         isPasswordProtected = ( |
+            | 
+            '' != username).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> 'proxyEntryPrototype' -> () From: ( | {
@@ -929,6 +1125,21 @@ otherwise:
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
+         registerPath: path ForProxy: proxy = ( |
+            | 
+            proxies at: path
+                   Put: (
+            (((proxyEntryPrototype copy
+                    path: path)
+                   proxy: proxy)
+                username: '')
+            passwordHash: '').
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
          registerPath: path ForProxy: proxy Username: user PasswordHash: ph = ( |
             | 
             proxies at: path
@@ -945,25 +1156,32 @@ otherwise:
          'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          renderConfig = ( |
-             b.
+             ba.
+             hp.
              s.
             | 
             s: ''.
-            b: '    handle_path %PATH%* {
+            hp: '    handle_path %PATH%* {
                   reverse_proxy %PROXY%
                 }
-                basicauth %PATH%* bcrypt %PATH% {
+            '.
+            ba: '    basicauth %PATH%* bcrypt %PATH% {
                   %USER% %HASH%
                 }
             '.
 
             proxies do: [|:p. c|
-              c: b copy.
+              c: hp copy.
               c: c replace: '%PATH%' With: p path.
               c: c replace: '%PROXY%' With: p proxy.
-              c: c replace: '%USER%' With: p username.
-              c: c replace: '%HASH%' With: p passwordHash.
-              s: s, c].
+              s: s, c.
+              p isPasswordProtected ifTrue: [
+                c: ba copy.
+                c: c replace: '%PATH%' With: p path.
+                c: c replace: '%PROXY%' With: p proxy.
+                c: c replace: '%USER%' With: p username.
+                c: c replace: '%HASH%' With: p passwordHash.
+                s: s, c]].
             s).
         } | ) 
 
@@ -994,10 +1212,27 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         changeConfig: changeBlock = ( |
+             n.
+             o.
+            | 
+            o: config.
+            n: config copy.
+            changeBlock value: n.
+            isRunningIfFail: [raiseError].
+            config: n.
+            validateConfig ifFalse: [config: o. raiseError].
+            reloadConfigIfFail: [raiseError].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
          'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          config = ( |
-            | parseConfig: text_config).
+            | caddyConfigPrototype parseConfig: text_config).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
@@ -1100,23 +1335,6 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
-         'Category: config\x7fCategory: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         parseConfig: c = ( |
-             cc.
-            | 
-            cc: caddyConfigPrototype copy.
-            (c splitOn: '\n') do: [|:l|
-             (l isEmpty not && [l first = '#']) ifTrue: [|s|
-                s: l splitOn: ' '.
-                cc registerPath: (s at: 1)
-                       ForProxy: (s at: 2)
-                       Username: (s at: 3)
-                   PasswordHash: (s at: 4)]].
-            cc).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
          'Category: hostname\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (psyche sys caddy localhost)'
         
          rawHostname <- psyche sys caddy localhost.
@@ -1125,17 +1343,23 @@ otherwise:
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         registerPath: path ForProxy: proxy Username: user PasswordHash: ph = ( |
-             n.
-             o.
+         registerPath: path ForProxy: proxy = ( |
             | 
-            o: config.
-            n: config copy.
-            n registerPath: path ForProxy: proxy Username: user PasswordHash: ph.
-            isRunningIfFail: [raiseError].
-            config: n.
-            validateConfig ifFalse: [config: o. raiseError].
-            reloadConfigIfFail: [raiseError].
+            changeConfig: [|:n|
+            n registerPath: path ForProxy: proxy].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         registerPath: path ForProxy: proxy Username: user PasswordHash: ph = ( |
+            | 
+            changeConfig: [|:c|
+              c registerPath: path
+                    ForProxy: proxy
+                    Username: user 
+                PasswordHash: ph].
             self).
         } | ) 
 
@@ -1979,6 +2203,20 @@ browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpres
             self).
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'transactor' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         ! blk = ( |
+            | 
+            psycheTransactorLock protect: blk).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'transactor' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (lock copy)'
+        
+         psycheTransactorLock <- lock copy.
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
@@ -2460,7 +2698,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
   auto_https off
 }
 :80 {
-  bind unix//tmp/morphic-1.sock
+  bind unix//tmp/morphic.0.socket
   reverse_proxy http://127.0.0.1:6080
 }
 '.
@@ -2727,11 +2965,13 @@ lobby firmware startup.
         
          registerDesktopsWithCaddy = ( |
             | 
+            5 do: [|:i| 
+
             psyche sys caddy 
-               registerPath: '/', id, '/desktop/1/'
-                   ForProxy: 'unix/', baseDirectory, '/tmp/morphic-1.sock'
-                   Username: 'desktop'
-               PasswordHash: worldRecord consolePasswordHash.
+               registerPath: '/', id, '/desktop/', i asString, '/'
+                   ForProxy: 'unix/', baseDirectory, '/tmp/morphic.', i asString, '.socket'.
+
+            ].
             self).
         } | ) 
 
