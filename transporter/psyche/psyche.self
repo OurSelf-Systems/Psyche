@@ -2892,33 +2892,20 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          asString = ( |
-            | startup).
+            | rawString).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'firmware' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         startup = '
-lobby _AddSlots: (|
-    firmware = ().
-|).
-lobby firmware _AddSlots: (|
-  parent* = traits oddball.
-  startup = (
-     os command: \'daemon Xvnc :1 -geometry 1000x7000 -depth 24 -SecurityTypes None\'.
-     \"Pause until Xvnc has started \"
-     [ 0 = (os command: \'ls /tmp/.X11-unix/X1 >/dev/null 2>&1 \')] whileFalse.
-     os command: \'DISPLAY=:1 daemon /usr/local/bin/ratpoison\'.
-     os command: \'daemon -f /opt/noVNC/utils/novnc_proxy --listen 6080 --vnc :5901\'.
-     startCaddy.
-     self).
-  startCaddy = (
-     os command: \'daemon caddy run --config /firmware/caddyfile --adapter caddyfile\'.
-     self
-  )
-|).
-lobby firmware startup.
-'.
+         load = ( |
+            | rawString: '/jailTemplate/firmware/firmware.self' asFileContents. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'firmware' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
+        
+         rawString <- ''.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
