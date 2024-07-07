@@ -2903,9 +2903,138 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'firmware' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         rawString <- ''.
+         rawString <- bootstrap setObjectAnnotationOf: ( ' \'30.21.0\'
+ \'
+Copyright 1992-2016 AUTHORS.
+See the legal/LICENSE file for license information and legal/AUTHORS for authors.
+\'
+[\"preFileIn\" self] value
+
+
+ \'-- Module body\'
+
+ bootstrap addSlotsTo: bootstrap stub -> () From: ( | {
+         \'ModuleInfo: Module: firmware InitialContents: FollowSlot\'
+        
+         firmware = bootstrap setObjectAnnotationOf: bootstrap stub -> \'firmware\' -> () From: ( |
+             {} = \'ModuleInfo: Creator: firmware.
+\'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'firmware\' -> () From: ( | {
+         \'ModuleInfo: Module: firmware InitialContents: FollowSlot\'
+        
+         parent* = bootstrap stub -> \'traits\' -> \'oddball\' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'firmware\' -> () From: ( | {
+         \'ModuleInfo: Module: firmware InitialContents: FollowSlot\'
+        
+         startCaddy = ( |
+            | 
+            os command: \'daemon caddy run --config /firmware/caddyfile --adapter caddyfile\'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'firmware\' -> () From: ( | {
+         \'ModuleInfo: Module: firmware InitialContents: FollowSlot\'
+        
+         startup = ( |
+            | 
+            os command: \'daemon Xvnc :1 -geometry 1000x7000 -depth 24 -SecurityTypes None\'.
+            \"Pause until Xvnc has started \"
+            [ 0 = (os command: \'ls /tmp/.X11-unix/X1 >/dev/null 2>&1 \')] whileFalse.
+            os command: \'DISPLAY=:1 daemon /usr/local/bin/ratpoison\'.
+            os command: \'daemon -f /opt/noVNC/utils/novnc_proxy --listen 6080 --vnc :5901\'.
+            startCaddy.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> () From: ( | {
+         \'ModuleInfo: Module: firmware InitialContents: FollowSlot\'
+        
+         firmware = bootstrap define: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () ToBe: bootstrap addSlotsTo: (
+             bootstrap remove: \'directory\' From:
+             bootstrap remove: \'fileInTimeString\' From:
+             bootstrap remove: \'myComment\' From:
+             bootstrap remove: \'postFileIn\' From:
+             bootstrap remove: \'revision\' From:
+             bootstrap remove: \'subpartNames\' From:
+             bootstrap remove: \'tree\' From:
+             globals modules init copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( |
+             {} = \'ModuleInfo: Creator: globals modules firmware.
+
+CopyDowns:
+globals modules init. copy 
+SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNames tree.
+
+\\x7fIsComplete: \'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
+         \'ModuleInfo: Module: firmware InitialContents: FollowSlot\\x7fVisibility: public\'
+        
+         directory <- \'\'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
+         \'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (_CurrentTimeString)\\x7fVisibility: public\'
+        
+         fileInTimeString <- _CurrentTimeString.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
+         \'ModuleInfo: Module: firmware InitialContents: FollowSlot\'
+        
+         myComment <- \'\'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
+         \'ModuleInfo: Module: firmware InitialContents: FollowSlot\'
+        
+         postFileIn = ( |
+            | 
+            registerTree: \'firmware\' At: \'/tmp/firmware\'.
+            firmware startup.
+            resend.postFileIn).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
+         \'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'30.21.0\\\')\\x7fVisibility: public\'
+        
+         revision <- \'30.21.0\'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
+         \'ModuleInfo: Module: firmware InitialContents: FollowSlot\\x7fVisibility: private\'
+        
+         subpartNames <- \'\'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
+         \'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'firmware\\\')\'
+        
+         tree <- \'firmware\'.
+        } | ) 
+
+
+
+ \'-- Side effects\'
+
+ globals modules firmware postFileIn
+' copyMutable) From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche worlds worldRecord runner firmware rawString.
+
+CopyDowns:
+globals byteVector. copy 
+SlotsToOmit: parent.
+
+\x7fIsComplete: '.
+            | ) .
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
