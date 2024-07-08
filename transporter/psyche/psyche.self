@@ -643,7 +643,6 @@ otherwise:
          initialCaddyConfig = ( |
              c.
             | 
-            sys caddy hostname: config current hostname.
             c: sys caddy caddyConfigPrototype copy.
             c registerPath: '/control/'
                   ForProxy: 'http://127.0.0.1:6080'
@@ -729,6 +728,7 @@ otherwise:
             config loadIfFail: installOS.
             conf: config current.
             handleAlternateObjectRoot withConf: conf.
+            setHostname.
             conf systemDesktop = 'enabled' ifTrue: [
               setFirewall: conf systemDesktopAccessType.
               openDesktop].
@@ -874,6 +874,13 @@ otherwise:
                     log error: 'Unknown desktop access method: ', type.
                     process this sleep: 10 * 1000].
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: network\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         setHostname = ( |
+            | sys caddy hostname: config current hostname. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -2772,7 +2779,8 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
         
          deregisterDesktopsWithCaddy = ( |
             | 
-            psyche sys caddy deregisterPath: '/', id, '/desktop/1/'.
+            5 do: [|:i| 
+              psyche sys caddy deregisterPath: '/', id, '/desktop/', i asString, '/'].
             self).
         } | ) 
 
