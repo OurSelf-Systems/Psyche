@@ -2913,7 +2913,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'firmware' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         rawString <- bootstrap setObjectAnnotationOf: ( ' \'30.21.0\'
+         rawString <- bootstrap setObjectAnnotationOf: ( ' \'0.0.1\'
  \'
 Copyright 1992-2016 AUTHORS.
 See the legal/LICENSE file for license information and legal/AUTHORS for authors.
@@ -2933,9 +2933,44 @@ See the legal/LICENSE file for license information and legal/AUTHORS for authors
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'firmware\' -> () From: ( | {
+         \'Category: caddyfile\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
+        
+         caddyFilename = \'/tmp/caddyFile\'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'firmware\' -> () From: ( | {
+         \'Category: caddyfile\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
+        
+         caddyfileContents = bootstrap setObjectAnnotationOf: ( \'
+{ 
+  auto_https off
+}
+:80 {
+  bind unix//tmp/morphic.0.socket
+  reverse_proxy http://127.0.0.1:6080
+}
+\' copyMutable) From: ( |
+             {} = \'ModuleInfo: Creator: firmware caddyfileContents.
+
+CopyDowns:
+globals byteVector. copy 
+SlotsToOmit: parent.
+
+\\x7fIsComplete: \'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'firmware\' -> () From: ( | {
          \'ModuleInfo: Module: firmware InitialContents: FollowSlot\'
         
          parent* = bootstrap stub -> \'traits\' -> \'oddball\' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'firmware\' -> () From: ( | {
+         \'Category: caddyfile\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
+        
+         saveCaddyfile = ( |
+            | caddyFilename setFileContentsTo: caddyfileContents. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'firmware\' -> () From: ( | {
@@ -2996,9 +3031,13 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
-         \'ModuleInfo: Module: firmware InitialContents: FollowSlot\'
+         \'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'This module is provided by the base
+system. Filing htis out is unlikely to do 
+what you think it will.\\\')\'
         
-         myComment <- \'\'.
+         myComment <- \'This module is provided by the base
+system. Filing htis out is unlikely to do 
+what you think it will.\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
@@ -3012,9 +3051,9 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
-         \'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'30.21.0\\\')\\x7fVisibility: public\'
+         \'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'0.0.1\\\')\\x7fVisibility: public\'
         
-         revision <- \'30.21.0\'.
+         revision <- \'0.0.1\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
