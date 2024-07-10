@@ -2911,9 +2911,234 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'firmware' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\' \\\'0.0.2\\\'
+ \\\'
+Copyright 1992-2016 AUTHORS.
+See the legal/LICENSE file for license information and legal/AUTHORS for authors.
+\\\'
+[\\\"preFileIn\\\" self] value
+
+
+ \\\'-- Module body\\\'
+
+ bootstrap addSlotsTo: bootstrap stub -> () From: ( | {
+         \\\'ModuleInfo: Module: firmware InitialContents: FollowSlot\\\'
         
-         rawString <- bootstrap setObjectAnnotationOf: ( ' \'0.0.1\'
+         firmware = bootstrap setObjectAnnotationOf: bootstrap stub -> \\\'firmware\\\' -> () From: ( |
+             {} = \\\'ModuleInfo: Creator: firmware.
+\\\'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'firmware\\\' -> () From: ( | {
+         \\\'Category: caddyfile\\\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\\\'
+        
+         caddyFilename = \\\'/tmp/caddyFile\\\'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'firmware\\\' -> () From: ( | {
+         \\\'Category: caddyfile\\\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\\\'
+        
+         caddyfile = bootstrap setObjectAnnotationOf: bootstrap stub -> \\\'firmware\\\' -> \\\'caddyfile\\\' -> () From: ( |
+             {} = \\\'ModuleInfo: Creator: firmware caddyfile.
+\\\'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'firmware\\\' -> \\\'caddyfile\\\' -> () From: ( | {
+         \\\'ModuleInfo: Module: firmware InitialContents: FollowSlot\\\'
+        
+         asString = ( |
+            | 
+            header, 
+            desktops,
+            footer).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'firmware\\\' -> \\\'caddyfile\\\' -> () From: ( | {
+         \\\'ModuleInfo: Module: firmware InitialContents: FollowSlot\\\'
+        
+         desktops = \\\'
+  bind unix//tmp/morphic.1.socket
+  reverse_proxy http://127.0.0.1:6081
+\\\'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'firmware\\\' -> \\\'caddyfile\\\' -> () From: ( | {
+         \\\'ModuleInfo: Module: firmware InitialContents: FollowSlot\\\'
+        
+         footer = \\\'
+}
+\\\'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'firmware\\\' -> \\\'caddyfile\\\' -> () From: ( | {
+         \\\'ModuleInfo: Module: firmware InitialContents: FollowSlot\\\'
+        
+         header = \\\'
+{
+  auto_https off
+}
+:80 {
+\\\'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'firmware\\\' -> \\\'caddyfile\\\' -> () From: ( | {
+         \\\'ModuleInfo: Module: firmware InitialContents: FollowSlot\\\'
+        
+         parent* = bootstrap stub -> \\\'traits\\\' -> \\\'oddball\\\' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'firmware\\\' -> () From: ( | {
+         \\\'ModuleInfo: Module: firmware InitialContents: FollowSlot\\\'
+        
+         parent* = bootstrap stub -> \\\'traits\\\' -> \\\'oddball\\\' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'firmware\\\' -> () From: ( | {
+         \\\'Category: caddyfile\\\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\\\'
+        
+         saveCaddyfile = ( |
+            | 
+            caddyFilename setFileContentsTo: caddyfile asString. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'firmware\\\' -> () From: ( | {
+         \\\'ModuleInfo: Module: firmware InitialContents: FollowSlot\\\'
+        
+         startCaddy = ( |
+            | 
+            os command: \\\'daemon caddy run --config \\\', caddyFilename, \\\' --adapter caddyfile\\\'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'firmware\\\' -> () From: ( | {
+         \\\'Category: xvnc\\\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\\\'
+        
+         startXvncOn: slot = ( |
+             n.
+            | 
+            n: slot asString.
+            os command: \\\'daemon Xvnc :\\\', n, \\\' -geometry 1000x7000 -depth 24 -SecurityTypes None\\\'.
+            \\\"Pause until Xvnc has started \\\"
+            [ 0 = (os command: \\\'ls /tmp/.X11-unix/X\\\', n, \\\' >/dev/null 2>&1 \\\')] whileFalse.
+            os command: \\\'DISPLAY=:\\\', n, \\\' daemon /usr/local/bin/ratpoison\\\'.
+            os command: \\\'daemon -f /opt/noVNC/utils/novnc_proxy --listen 608\\\', n, \\\' --vnc :590\\\', n.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'firmware\\\' -> () From: ( | {
+         \\\'ModuleInfo: Module: firmware InitialContents: FollowSlot\\\'
+        
+         startup = ( |
+            | 
+            startXvncOn: 1.
+            saveCaddyfile.
+            startCaddy.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> () From: ( | {
+         \\\'ModuleInfo: Module: firmware InitialContents: FollowSlot\\\'
+        
+         firmware = bootstrap define: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () ToBe: bootstrap addSlotsTo: (
+             bootstrap remove: \\\'directory\\\' From:
+             bootstrap remove: \\\'fileInTimeString\\\' From:
+             bootstrap remove: \\\'myComment\\\' From:
+             bootstrap remove: \\\'postFileIn\\\' From:
+             bootstrap remove: \\\'revision\\\' From:
+             bootstrap remove: \\\'subpartNames\\\' From:
+             bootstrap remove: \\\'tree\\\' From:
+             globals modules init copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () From: ( |
+             {} = \\\'ModuleInfo: Creator: globals modules firmware.
+
+CopyDowns:
+globals modules init. copy 
+SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNames tree.
+
+\\\\x7fIsComplete: \\\'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () From: ( | {
+         \\\'ModuleInfo: Module: firmware InitialContents: FollowSlot\\\\x7fVisibility: public\\\'
+        
+         directory <- \\\'\\\'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () From: ( | {
+         \\\'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (_CurrentTimeString)\\\\x7fVisibility: public\\\'
+        
+         fileInTimeString <- _CurrentTimeString.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () From: ( | {
+         \\\'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'This module is provided by the base
+system. Filing htis out is unlikely to do 
+what you think it will.\\\\\\\')\\\'
+        
+         myComment <- \\\'This module is provided by the base
+system. Filing htis out is unlikely to do 
+what you think it will.\\\'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () From: ( | {
+         \\\'ModuleInfo: Module: firmware InitialContents: FollowSlot\\\'
+        
+         postFileIn = ( |
+            | 
+            registerTree: \\\'firmware\\\' At: \\\'/tmp/firmware\\\'.
+            firmware startup.
+            resend.postFileIn).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () From: ( | {
+         \\\'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'0.0.2\\\\\\\')\\\\x7fVisibility: public\\\'
+        
+         revision <- \\\'0.0.2\\\'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () From: ( | {
+         \\\'ModuleInfo: Module: firmware InitialContents: FollowSlot\\\\x7fVisibility: private\\\'
+        
+         subpartNames <- \\\'\\\'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () From: ( | {
+         \\\'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'firmware\\\\\\\')\\\'
+        
+         tree <- \\\'firmware\\\'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'userProfile\\\' -> \\\'parent\\\' -> () From: ( | {
+         \\\'Category: firmware\\\\x7fComment: This is provided by the firmware
+from the underlying system. 
+IT IS PROVISIONAL - DONT USE THIS\\\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\\\'
+        
+         password: p = ( |
+             ph.
+            | 
+            ph: (os outputOfCommand: \\\'caddy hash-password -p \\\', p
+                            Timeout: 10 * 1000
+                             IfFail: raiseError).
+            passwordHash: ph shrinkwrapped.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'userProfile\\\' -> () From: ( | {
+         \\\'Category: firmware\\\\x7fModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'\\\\\\\')\\\'
+        
+         passwordHash <- \\\'\\\'.
+        } | ) 
+
+
+
+ \\\'-- Side effects\\\'
+
+ globals modules firmware postFileIn
+\' copyMutable)'
+        
+         rawString <- ' \'0.0.2\'
  \'
 Copyright 1992-2016 AUTHORS.
 See the legal/LICENSE file for license information and legal/AUTHORS for authors.
@@ -2941,23 +3166,54 @@ See the legal/LICENSE file for license information and legal/AUTHORS for authors
  bootstrap addSlotsTo: bootstrap stub -> \'firmware\' -> () From: ( | {
          \'Category: caddyfile\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
         
-         caddyfileContents = bootstrap setObjectAnnotationOf: ( \'
-{ 
+         caddyfile = bootstrap setObjectAnnotationOf: bootstrap stub -> \'firmware\' -> \'caddyfile\' -> () From: ( |
+             {} = \'ModuleInfo: Creator: firmware caddyfile.
+\'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'firmware\' -> \'caddyfile\' -> () From: ( | {
+         \'ModuleInfo: Module: firmware InitialContents: FollowSlot\'
+        
+         asString = ( |
+            | 
+            header, 
+            desktops,
+            footer).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'firmware\' -> \'caddyfile\' -> () From: ( | {
+         \'ModuleInfo: Module: firmware InitialContents: FollowSlot\'
+        
+         desktops = \'
+  bind unix//tmp/morphic.1.socket
+  reverse_proxy http://127.0.0.1:6081
+\'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'firmware\' -> \'caddyfile\' -> () From: ( | {
+         \'ModuleInfo: Module: firmware InitialContents: FollowSlot\'
+        
+         footer = \'
+}
+\'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'firmware\' -> \'caddyfile\' -> () From: ( | {
+         \'ModuleInfo: Module: firmware InitialContents: FollowSlot\'
+        
+         header = \'
+{
   auto_https off
 }
 :80 {
-  bind unix//tmp/morphic.0.socket
-  reverse_proxy http://127.0.0.1:6080
-}
-\' copyMutable) From: ( |
-             {} = \'ModuleInfo: Creator: firmware caddyfileContents.
+\'.
+        } | ) 
 
-CopyDowns:
-globals byteVector. copy 
-SlotsToOmit: parent.
-
-\\x7fIsComplete: \'.
-            | ) .
+ bootstrap addSlotsTo: bootstrap stub -> \'firmware\' -> \'caddyfile\' -> () From: ( | {
+         \'ModuleInfo: Module: firmware InitialContents: FollowSlot\'
+        
+         parent* = bootstrap stub -> \'traits\' -> \'oddball\' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'firmware\' -> () From: ( | {
@@ -2970,7 +3226,8 @@ SlotsToOmit: parent.
          \'Category: caddyfile\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
         
          saveCaddyfile = ( |
-            | caddyFilename setFileContentsTo: caddyfileContents. self).
+            | 
+            caddyFilename setFileContentsTo: caddyfile asString. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'firmware\' -> () From: ( | {
@@ -2978,7 +3235,22 @@ SlotsToOmit: parent.
         
          startCaddy = ( |
             | 
-            os command: \'daemon caddy run --config /firmware/caddyfile --adapter caddyfile\'.
+            os command: \'daemon caddy run --config \', caddyFilename, \' --adapter caddyfile\'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'firmware\' -> () From: ( | {
+         \'Category: xvnc\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
+        
+         startXvncOn: slot = ( |
+             n.
+            | 
+            n: slot asString.
+            os command: \'daemon Xvnc :\', n, \' -geometry 1000x7000 -depth 24 -SecurityTypes None\'.
+            \"Pause until Xvnc has started \"
+            [ 0 = (os command: \'ls /tmp/.X11-unix/X\', n, \' >/dev/null 2>&1 \')] whileFalse.
+            os command: \'DISPLAY=:\', n, \' daemon /usr/local/bin/ratpoison\'.
+            os command: \'daemon -f /opt/noVNC/utils/novnc_proxy --listen 608\', n, \' --vnc :590\', n.
             self).
         } | ) 
 
@@ -2987,11 +3259,8 @@ SlotsToOmit: parent.
         
          startup = ( |
             | 
-            os command: \'daemon Xvnc :1 -geometry 1000x7000 -depth 24 -SecurityTypes None\'.
-            \"Pause until Xvnc has started \"
-            [ 0 = (os command: \'ls /tmp/.X11-unix/X1 >/dev/null 2>&1 \')] whileFalse.
-            os command: \'DISPLAY=:1 daemon /usr/local/bin/ratpoison\'.
-            os command: \'daemon -f /opt/noVNC/utils/novnc_proxy --listen 6080 --vnc :5901\'.
+            startXvncOn: 1.
+            saveCaddyfile.
             startCaddy.
             self).
         } | ) 
@@ -3051,9 +3320,9 @@ what you think it will.\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
-         \'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'0.0.1\\\')\\x7fVisibility: public\'
+         \'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'0.0.2\\\')\\x7fVisibility: public\'
         
-         revision <- \'0.0.1\'.
+         revision <- \'0.0.2\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
@@ -3068,20 +3337,33 @@ what you think it will.\'.
          tree <- \'firmware\'.
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'userProfile\' -> \'parent\' -> () From: ( | {
+         \'Category: firmware\\x7fComment: This is provided by the firmware
+from the underlying system. 
+IT IS PROVISIONAL - DONT USE THIS\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
+        
+         password: p = ( |
+             ph.
+            | 
+            ph: (os outputOfCommand: \'caddy hash-password -p \', p
+                            Timeout: 10 * 1000
+                             IfFail: raiseError).
+            passwordHash: ph shrinkwrapped.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'userProfile\' -> () From: ( | {
+         \'Category: firmware\\x7fModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'\\\')\'
+        
+         passwordHash <- \'\'.
+        } | ) 
+
 
 
  \'-- Side effects\'
 
  globals modules firmware postFileIn
-' copyMutable) From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche worlds worldRecord runner firmware rawString.
-
-CopyDowns:
-globals byteVector. copy 
-SlotsToOmit: parent.
-
-\x7fIsComplete: '.
-            | ) .
+' copyMutable.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
@@ -3128,7 +3410,7 @@ SlotsToOmit: parent.
         
          registerDesktopsWithCaddy = ( |
             | 
-            5 do: [|:i| 
+            1 to: 5 Do: [|:i| 
 
             psyche sys caddy 
                registerPath: '/', id, '/desktop/', i asString, '/'
