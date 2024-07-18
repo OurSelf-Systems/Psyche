@@ -2779,8 +2779,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
         
          deregisterDesktopsWithCaddy = ( |
             | 
-            5 do: [|:i| 
-              psyche sys caddy deregisterPath: '/', id, '/desktop/', i asString, '/'].
+            psyche sys caddy deregisterPath: '/', id, '/desktop/'.
             self).
         } | ) 
 
@@ -2911,7 +2910,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'firmware' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\' \\\'0.0.4\\\'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\' \\\'0.0.5\\\'
  \\\'
 Copyright 1992-2016 AUTHORS.
 See the legal/LICENSE file for license information and legal/AUTHORS for authors.
@@ -2964,6 +2963,9 @@ See the legal/LICENSE file for license information and legal/AUTHORS for authors
             \\\'
               handle_path /\\\', u name asString, \\\'/* {
                 reverse_proxy http://127.0.0.1:608\\\', (desktopNumberForUser: u IfAbsent: [^ blk value]) asString, \\\'
+              }
+              basicauth /\\\', u name asString, \\\'/* bcrypt \\\', u name asString, \\\' {
+                \\\', u name asString, \\\' \\\', u passwordHash, \\\'
               }
             \\\').
         } | ) 
@@ -3028,6 +3030,7 @@ caddyConfigForUsers works.\\\\x7fModuleInfo: Module: firmware InitialContents: F
 }
 :80 {
     bind unix//tmp/desktop.socket
+
 \\\'.
         } | ) 
 
@@ -3202,11 +3205,11 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
 
  bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () From: ( | {
          \\\'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'This module is provided by the base
-system. Filing htis out is unlikely to do 
+system. Filing this out is unlikely to do 
 what you think it will.\\\\\\\')\\\'
         
          myComment <- \\\'This module is provided by the base
-system. Filing htis out is unlikely to do 
+system. Filing this out is unlikely to do 
 what you think it will.\\\'.
         } | ) 
 
@@ -3221,9 +3224,9 @@ what you think it will.\\\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () From: ( | {
-         \\\'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'0.0.4\\\\\\\')\\\\x7fVisibility: public\\\'
+         \\\'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'0.0.5\\\\\\\')\\\\x7fVisibility: public\\\'
         
-         revision <- \\\'0.0.4\\\'.
+         revision <- \\\'0.0.5\\\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () From: ( | {
@@ -3289,8 +3292,8 @@ IT IS PROVISIONAL - DONT USE THIS\\\\x7fModuleInfo: Module: firmware InitialCont
              Choices: availableUsers
              Results:  availableHands.
             safelyDoIfWorld: [ closeFromHand: chosenHand].
-            userQuery report: \\\'Access for \\\', chosenHand userInfo name, \\\' removed.\\\'.
             firmware reloadCaddy.
+            userQuery report: \\\'Access for \\\', chosenHand userInfo name, \\\' removed.\\\'.
             self).
         } | ) 
 
@@ -3324,8 +3327,8 @@ on that display.\\\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\
             freeDisplays isEmpty ifTrue: [userQuery report: \\\'There are no free displays.\\\'. ^ self].
             chosenDisplay: freeDisplays first.
             addWindowOnDisplay: chosenDisplay Bounds: (0@0)##(3000@3000) User: chosenUser Limited: false.
-            reportThatUser: chosenUser CanAccessDisplay: chosenDisplay.
             firmware reloadCaddy.
+            reportThatUser: chosenUser CanAccessDisplay: chosenDisplay.
             self).
         } | ) 
 
@@ -3334,7 +3337,7 @@ on that display.\\\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\
         
          reportThatUser: u CanAccessDisplay: d = ( |
             | 
-            userQuery report: u name, \\\' may now connect on desktop \\\', (d slice: 1 @ infinity).
+            userQuery report: u name, \\\' may now connect on desktop /[world id]/desktop/\\\', u name, \\\'/\\\'.
             self).
         } | ) 
 
@@ -3345,7 +3348,7 @@ on that display.\\\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\
  globals modules firmware postFileIn
 \' copyMutable)'
         
-         rawString <- ' \'0.0.4\'
+         rawString <- ' \'0.0.5\'
  \'
 Copyright 1992-2016 AUTHORS.
 See the legal/LICENSE file for license information and legal/AUTHORS for authors.
@@ -3398,6 +3401,9 @@ See the legal/LICENSE file for license information and legal/AUTHORS for authors
             \'
               handle_path /\', u name asString, \'/* {
                 reverse_proxy http://127.0.0.1:608\', (desktopNumberForUser: u IfAbsent: [^ blk value]) asString, \'
+              }
+              basicauth /\', u name asString, \'/* bcrypt \', u name asString, \' {
+                \', u name asString, \' \', u passwordHash, \'
               }
             \').
         } | ) 
@@ -3462,6 +3468,7 @@ caddyConfigForUsers works.\\x7fModuleInfo: Module: firmware InitialContents: Fol
 }
 :80 {
     bind unix//tmp/desktop.socket
+
 \'.
         } | ) 
 
@@ -3636,11 +3643,11 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
 
  bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
          \'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'This module is provided by the base
-system. Filing htis out is unlikely to do 
+system. Filing this out is unlikely to do 
 what you think it will.\\\')\'
         
          myComment <- \'This module is provided by the base
-system. Filing htis out is unlikely to do 
+system. Filing this out is unlikely to do 
 what you think it will.\'.
         } | ) 
 
@@ -3655,9 +3662,9 @@ what you think it will.\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
-         \'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'0.0.4\\\')\\x7fVisibility: public\'
+         \'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'0.0.5\\\')\\x7fVisibility: public\'
         
-         revision <- \'0.0.4\'.
+         revision <- \'0.0.5\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
@@ -3723,8 +3730,8 @@ IT IS PROVISIONAL - DONT USE THIS\\x7fModuleInfo: Module: firmware InitialConten
              Choices: availableUsers
              Results:  availableHands.
             safelyDoIfWorld: [ closeFromHand: chosenHand].
-            userQuery report: \'Access for \', chosenHand userInfo name, \' removed.\'.
             firmware reloadCaddy.
+            userQuery report: \'Access for \', chosenHand userInfo name, \' removed.\'.
             self).
         } | ) 
 
@@ -3758,8 +3765,8 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
             freeDisplays isEmpty ifTrue: [userQuery report: \'There are no free displays.\'. ^ self].
             chosenDisplay: freeDisplays first.
             addWindowOnDisplay: chosenDisplay Bounds: (0@0)##(3000@3000) User: chosenUser Limited: false.
-            reportThatUser: chosenUser CanAccessDisplay: chosenDisplay.
             firmware reloadCaddy.
+            reportThatUser: chosenUser CanAccessDisplay: chosenDisplay.
             self).
         } | ) 
 
@@ -3768,7 +3775,7 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
         
          reportThatUser: u CanAccessDisplay: d = ( |
             | 
-            userQuery report: u name, \' may now connect on desktop \', (d slice: 1 @ infinity).
+            userQuery report: u name, \' may now connect on desktop /[world id]/desktop/\', u name, \'/\'.
             self).
         } | ) 
 
