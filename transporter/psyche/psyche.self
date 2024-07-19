@@ -2595,7 +2595,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
          password: p = ( |
              h.
             | 
-            h: (sys stdoutOfCommand: 'caddy hash-password -p ', p) shrinkwrapped.
+            h: (sys stdoutOfCommand: 'caddy hash-password -p ', p Timeout: 60 * 1000 IfTimeout: raiseError) shrinkwrapped.
             rawMetadata consolePasswordHash: h.
             rawMetadata writeTo: metadataFilename IfFail: raiseError.
             copy update).
