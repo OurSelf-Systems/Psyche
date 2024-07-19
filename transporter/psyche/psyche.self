@@ -2910,7 +2910,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'firmware' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\' \\\'0.0.5\\\'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\' \\\'0.0.6\\\'
  \\\'
 Copyright 1992-2016 AUTHORS.
 See the legal/LICENSE file for license information and legal/AUTHORS for authors.
@@ -3224,9 +3224,9 @@ what you think it will.\\\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () From: ( | {
-         \\\'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'0.0.5\\\\\\\')\\\\x7fVisibility: public\\\'
+         \\\'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'0.0.6\\\\\\\')\\\\x7fVisibility: public\\\'
         
-         revision <- \\\'0.0.5\\\'.
+         revision <- \\\'0.0.6\\\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () From: ( | {
@@ -3269,6 +3269,12 @@ IT IS PROVISIONAL - DONT USE THIS\\\\x7fModuleInfo: Module: firmware InitialCont
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'userProfile\\\' -> () From: ( | {
+         \\\'Category: firmware\\\\x7fModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'\\\\\\\')\\\'
+        
+         passwordHash <- \\\'\\\'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'users\\\' -> \\\'owner\\\' -> () From: ( | {
          \\\'Category: firmware\\\\x7fModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'\\\\\\\')\\\'
         
          passwordHash <- \\\'\\\'.
@@ -3348,7 +3354,7 @@ on that display.\\\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\
  globals modules firmware postFileIn
 \' copyMutable)'
         
-         rawString <- ' \'0.0.5\'
+         rawString <- ' \'0.0.6\'
  \'
 Copyright 1992-2016 AUTHORS.
 See the legal/LICENSE file for license information and legal/AUTHORS for authors.
@@ -3662,9 +3668,9 @@ what you think it will.\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
-         \'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'0.0.5\\\')\\x7fVisibility: public\'
+         \'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'0.0.6\\\')\\x7fVisibility: public\'
         
-         revision <- \'0.0.5\'.
+         revision <- \'0.0.6\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
@@ -3707,6 +3713,12 @@ IT IS PROVISIONAL - DONT USE THIS\\x7fModuleInfo: Module: firmware InitialConten
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'userProfile\' -> () From: ( | {
+         \'Category: firmware\\x7fModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'\\\')\'
+        
+         passwordHash <- \'\'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'users\' -> \'owner\' -> () From: ( | {
          \'Category: firmware\\x7fModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'\\\')\'
         
          passwordHash <- \'\'.
