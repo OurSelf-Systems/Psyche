@@ -1,4 +1,4 @@
- '2024.07.18.01'
+ '2024.07.19.01'
  '
 Copyright 2022-2023 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -77,9 +77,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.07.18.01\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.07.19.01\')\x7fVisibility: public'
         
-         revision <- '2024.07.18.01'.
+         revision <- '2024.07.19.01'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -2595,7 +2595,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
          password: p = ( |
              h.
             | 
-            h: (sys stdoutOfCommand: 'caddy hash-password -p ', p Timeout: 60 * 1000 IfTimeout: raiseError) shrinkwrapped.
+            h: (sys outputOfCommand: 'caddy hash-password -p ', p Timeout: 60 * 1000 IfTimeout: raiseError) stdout shrinkwrapped.
             rawMetadata consolePasswordHash: h.
             rawMetadata writeTo: metadataFilename IfFail: raiseError.
             copy update).
