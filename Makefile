@@ -1,6 +1,6 @@
-SELF=/usr/local/bin/Self
-BASE=./self/objects
-ROOT=$(PWD)
+SELF ?= /usr/local/bin/Self
+BASE ?= ./self/objects
+ROOT ?= $(PWD)
 
 all: snapshot
 
