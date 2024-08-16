@@ -1,6 +1,6 @@
- '2024.07.19.01'
+ '2024.08.17.01'
  '
-Copyright 2022-2023 OurSelf-Systems.
+Copyright 2022-2024 OurSelf-Systems.
 See the LICENSE,d file for license information.
 '
 ["preFileIn" self] value
@@ -33,12 +33,12 @@ SlotsToOmit: copyright directory fileInTimeString myComment postFileIn revision 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
          'Category: state\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'
-Copyright 2022-2023 OurSelf-Systems.
+Copyright 2022-2024 OurSelf-Systems.
 See the LICENSE,d file for license information.
 \')\x7fVisibility: public'
         
          copyright <- '
-Copyright 2022-2023 OurSelf-Systems.
+Copyright 2022-2024 OurSelf-Systems.
 See the LICENSE,d file for license information.
 '.
         } | ) 
@@ -77,9 +77,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.07.19.01\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.08.17.01\')\x7fVisibility: public'
         
-         revision <- '2024.07.19.01'.
+         revision <- '2024.08.17.01'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -225,6 +225,12 @@ See the LICENSE,d file for license information.
          systemDesktopSSHKey <- 'rsa'.
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
+        
+         unixConsolePasswordHash <- ''.
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
@@ -241,13 +247,19 @@ See the LICENSE,d file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> () From: ( | {
          'Category: wizard\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         setPasswordHash = ( |
+         setPasswordHash: c = ( |
              p.
             | 
             p: askForSlotName: 'password' Default: 'pass123'.
-            (sys outputOfCommand: 'caddy hash-password -p ', p 
-                         Timeout: 60000
-                       IfTimeout: raiseError) stdout shrinkwrapped).
+            c passwordHash: 
+                (sys outputOfCommand: 'caddy hash-password -p ', p 
+                             Timeout: 60000
+                           IfTimeout: raiseError) stdout shrinkwrapped.
+            c unixConsolePasswordHash: 
+                (sys outputOfCommand: 'echo -n \'', p, '\' | openssl passwd -6 -stdin' 
+                             Timeout: 60000
+                           IfTimeout: raiseError) stdout shrinkwrapped.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> () From: ( | {
@@ -262,7 +274,8 @@ See the LICENSE,d file for license information.
 
             wizardSlots do: [|:str. newValue|
               case
-                if: str = 'passwordHash'  Then: [c passwordHash: setPasswordHash ]
+                if: str = 'passwordHash'  Then: [setPasswordHash: c ]
+                If: str = 'unixConsolePasswordHasH'  Then: ["Ignore - set with passwordHash" self]
                 Else: [newValue: askForSlotName: str Default: str sendTo: c.
                          (str, ':') sendTo: c With: newValue].
             ].
@@ -729,6 +742,7 @@ otherwise:
             conf: config current.
             handleAlternateObjectRoot withConf: conf.
             setHostname.
+            setRootPassword: conf unixConsolePasswordHash.
             conf systemDesktop = 'enabled' ifTrue: [
               setFirewall: conf systemDesktopAccessType.
               openDesktop].
@@ -881,6 +895,15 @@ otherwise:
         
          setHostname = ( |
             | sys caddy hostname: config current hostname. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         setRootPassword: hash = ( |
+            | 
+            sys sh: 'chpass -p \'', hash, '\' root'.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -2595,7 +2618,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
          password: p = ( |
              h.
             | 
-            h: (sys outputOfCommand: 'caddy hash-password -p ', p Timeout: 60 * 1000 IfTimeout: raiseError) stdout shrinkwrapped.
+            h: (sys stdoutOfCommand: 'caddy hash-password -p ', p) shrinkwrapped.
             rawMetadata consolePasswordHash: h.
             rawMetadata writeTo: metadataFilename IfFail: raiseError.
             copy update).
@@ -2910,7 +2933,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'firmware' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\' \\\'0.0.6\\\'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\' \\\'0.0.5\\\'
  \\\'
 Copyright 1992-2016 AUTHORS.
 See the legal/LICENSE file for license information and legal/AUTHORS for authors.
@@ -3224,9 +3247,9 @@ what you think it will.\\\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () From: ( | {
-         \\\'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'0.0.6\\\\\\\')\\\\x7fVisibility: public\\\'
+         \\\'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'0.0.5\\\\\\\')\\\\x7fVisibility: public\\\'
         
-         revision <- \\\'0.0.6\\\'.
+         revision <- \\\'0.0.5\\\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () From: ( | {
@@ -3269,12 +3292,6 @@ IT IS PROVISIONAL - DONT USE THIS\\\\x7fModuleInfo: Module: firmware InitialCont
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'userProfile\\\' -> () From: ( | {
-         \\\'Category: firmware\\\\x7fModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'\\\\\\\')\\\'
-        
-         passwordHash <- \\\'\\\'.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'users\\\' -> \\\'owner\\\' -> () From: ( | {
          \\\'Category: firmware\\\\x7fModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'\\\\\\\')\\\'
         
          passwordHash <- \\\'\\\'.
@@ -3354,7 +3371,7 @@ on that display.\\\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\
  globals modules firmware postFileIn
 \' copyMutable)'
         
-         rawString <- ' \'0.0.6\'
+         rawString <- ' \'0.0.5\'
  \'
 Copyright 1992-2016 AUTHORS.
 See the legal/LICENSE file for license information and legal/AUTHORS for authors.
@@ -3668,9 +3685,9 @@ what you think it will.\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
-         \'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'0.0.6\\\')\\x7fVisibility: public\'
+         \'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'0.0.5\\\')\\x7fVisibility: public\'
         
-         revision <- \'0.0.6\'.
+         revision <- \'0.0.5\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
@@ -3713,12 +3730,6 @@ IT IS PROVISIONAL - DONT USE THIS\\x7fModuleInfo: Module: firmware InitialConten
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'userProfile\' -> () From: ( | {
-         \'Category: firmware\\x7fModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'\\\')\'
-        
-         passwordHash <- \'\'.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'users\' -> \'owner\' -> () From: ( | {
          \'Category: firmware\\x7fModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'\\\')\'
         
          passwordHash <- \'\'.
