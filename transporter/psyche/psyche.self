@@ -1,4 +1,4 @@
- '2024.08.17.01'
+ '2024.09.06.01'
  '
 Copyright 2022-2024 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -73,13 +73,14 @@ See the LICENSE,d file for license information.
             snapshotAction schedulerInitialMessages:
               snapshotAction schedulerInitialMessages copyFilteredBy: [|:m|
                 'mainInputLoop' != m selector].
+            psyche gui initializePrototypes.
             self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.08.17.01\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.09.06.01\')\x7fVisibility: public'
         
-         revision <- '2024.08.17.01'.
+         revision <- '2024.09.06.01'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -92,6 +93,12 @@ See the LICENSE,d file for license information.
          'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'psyche\')'
         
          tree <- 'psyche'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'morph' -> () From: ( | {
+         'Category: Basic Morph State\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (set copyRemoveAll)'
+        
+         roles <- set copyRemoveAll.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> () From: ( | {
@@ -564,6 +571,665 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         gui = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> () From: ( | {
+         'Category: building\x7fComment: Rebuilds the morphs.
+Needed because transporter doesn\'t always
+play well with deeply nested morph structures.\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         initializePrototypes = ( |
+            | 
+            windowMorph initializePrototype.
+            managerAppMorph initializePrototype.
+            managerMorph initializePrototype.
+            worldRecordMorph initializePrototype.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         managerAppMorph = bootstrap define: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerAppMorph' -> () ToBe: bootstrap addSlotsTo: (
+             bootstrap remove: 'parent' From:
+             bootstrap remove: 'prototype' From:
+             globals frameMorph copyRemoveAllMorphs ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerAppMorph' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui managerAppMorph.
+
+CopyDowns:
+globals frameMorph. copyRemoveAllMorphs 
+SlotsToOmit: parent prototype.
+
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerAppMorph' -> () From: ( | {
+         'Category: Window Morph State\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (morph)'
+        
+         frameHolderForCollapsed <- bootstrap stub -> 'globals' -> 'morph' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui windowMorph parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerAppMorph' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerAppMorph' -> () From: ( | {
+         'Category: filing out\x7fModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
+        
+         prototype = ( |
+            | 
+            psyche gui windowMorph).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         managerMorph = bootstrap define: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerMorph' -> () ToBe: bootstrap addSlotsTo: (
+             bootstrap remove: 'parent' From:
+             globals columnMorph copyRemoveAllMorphs ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerMorph' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui managerMorph.
+
+CopyDowns:
+globals columnMorph. copyRemoveAllMorphs 
+SlotsToOmit: parent.
+
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerMorph' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerMorph' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui managerMorph parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         buildMenuBar = ( |
+             mb.
+            | 
+            mb: rowMorph copyTransparent.
+            mb addMorphLast:
+              (((ui2Button copy label: 'Refresh')
+                 scriptBlock: [target refresh])
+                 target: self).
+            mb addMorphLast: transparentSpacerMorph copyH: 6.
+            mb addMorphLast:
+              (((ui2Button copy label: 'Open Unix Terminal')
+                 scriptBlock: [event sourceHand attach:
+                                  terminalEmulator terminalMorph copy])
+                 target: self).
+            mb addMorphLast: transparentSpacerMorph copy.
+            mb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         horizontalRule = ( |
+            | 
+            spacerMorph copyV: 2 Color: paint named: 'gray').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         initializePrototype = ( |
+             cm.
+            | 
+            removeAllMorphs.
+            color: paint named: 'outlinerGray'.
+            beShrinkWrapVertically beFlexibleHorizontally.
+            borderWidth: 0.
+            addMorphLast: buildMenuBar.
+            addMorphLast: horizontalRule.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerMorph' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
+        
+         parent* = bootstrap stub -> 'traits' -> 'columnMorph' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerMorph' -> 'parent' -> () From: ( | {
+         'Category: actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         refresh = ( |
+            | 
+            morphsWithRole: worldRecordRole 
+                        Do: [|:m| removeMorph: m]
+                  IfAbsent: true.
+            psyche worlds updatedSystemRecord knownWorlds do: [|:w. m |
+              m: psyche gui worldRecordMorph copyOn: w.
+              m addRole: worldRecordRole.
+              addMorphLast: m].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerMorph' -> 'parent' -> () From: ( | {
+         'Category: actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         setWindowLabel = ( |
+            | 
+            "Change closest window (in case nested).
+             If not in windowMorph, ignore."
+            ownersWithRole: psyche gui windowMorph windowRole 
+                        Do: [|:m| m windowLabel: 'Psyche System Manager'. ^ self]
+                  IfAbsent: [].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerMorph' -> 'parent' -> () From: ( | {
+         'Category: roles\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         worldRecordRole = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerMorph' -> 'parent' -> 'worldRecordRole' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui managerMorph parent worldRecordRole.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerMorph' -> 'parent' -> 'worldRecordRole' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         windowMorph = bootstrap define: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> () ToBe: bootstrap addSlotsTo: (
+             bootstrap remove: 'parent' From:
+             bootstrap remove: 'prototype' From:
+             globals frameMorph copyRemoveAllMorphs ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui windowMorph.
+
+CopyDowns:
+globals frameMorph. copyRemoveAllMorphs 
+SlotsToOmit: parent prototype.
+
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> () From: ( | {
+         'Category: Window Morph State\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (morph)'
+        
+         frameHolderForCollapsed <- bootstrap stub -> 'globals' -> 'morph' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         buildInsetFrame = ( |
+             rm.
+            | 
+            rm: frameMorph copy.
+            rm color: paint named: 'outlinerGray'.
+            rm frameStyle: rm insetBezelStyle.
+            rm borderWidth: 3.
+            rm beShrinkWrapVertically beFlexibleHorizontally.
+            rm addRole: contentMorphHolderRole.
+            rm).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         closeButtonOn: m = ( |
+             b.
+            | 
+            b: ui2Button copy.
+            b label: 'X'.
+            b target: m.
+            b scriptBlock: [target animatedDelete].
+            b).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( | {
+         'Category: expand\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         collapse: etc = ( |
+             cm.
+            | 
+            cm: morphs first.
+            frameHolderForCollapsed: cm morphs last.
+            cm removeMorph: frameHolderForCollapsed.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         contentMorphHolderRole = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> 'contentMorphHolderRole' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui windowMorph parent contentMorphHolderRole.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> 'contentMorphHolderRole' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( | {
+         'Category: content\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         contentsMorph = ( |
+            | 
+            morphsWithRole: contentMorphHolderRole 
+                        Do: [|:m | ^ m morphs first]
+                  IfAbsent: raiseError).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( | {
+         'Category: content\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         contentsMorph: cm = ( |
+            | 
+            morphsWithRole: contentMorphHolderRole 
+                        Do: [|:m | m addMorph: cm. ^ self]  
+                  IfAbsent: raiseError).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         copy = ( |
+             m.
+            | 
+            m: resend.copy.
+            m  contentsMorph: psyche gui managerMorph copy.
+            m  contentsMorph setWindowLabel.
+            m).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         defaultWindowLabel = 'Unset Window Title'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( | {
+         'Category: expand\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         expand: evt = ( |
+            | 
+            morphs first addMorphLast: frameHolderForCollapsed.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         expanderAction = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> 'expanderAction' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui windowMorph parent expanderAction.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> 'expanderAction' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         actionFrom: source Target: target Event: evt = ( |
+             e.
+             o.
+            | 
+            e: source isExpanded.
+            o: target.
+
+            e  &&  [ o isInWorld ]  ifTrue: [ o world moveToFront: o ].
+
+            e ifTrue:[ target expand:    evt]
+               False:[ target collapse:  evt].
+            target).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         headerMorphLabel = ( |
+             em.
+             m.
+            | 
+            m: rowMorph copy.
+            m color: paint named: 'outlinerGray'.
+            m borderWidth: 6.
+            em:  (expanderMorph copyTarget: self Action: expanderAction).
+            em expand: true. 
+            m addMorphLast: em.
+            m addMorphLast: transparentSpacerMorph copyH: 6.
+            m addMorphLast: (labelMorph copy label: defaultWindowLabel) addRole: windowLabelRole.
+            m addMorphLast: spacer.
+            m addMorphLast: closeButtonOn: self.
+            m beFlexible.
+            m).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         initializePrototype = ( |
+             cm.
+             fm.
+             m.
+            | 
+            removeAllMorphs.
+            borderWidth: 3.
+            color: paint named: 'outlinerGray'.
+
+            cm: columnMorph copyTransparent borderWidth: 0.
+            cm addMorphLast: headerMorphLabel.
+
+            fm: buildInsetFrame.
+
+            cm addMorphLast: fm.
+            cm borderWidth: 0.
+            cm beShrinkWrapVertically.
+            cm beFlexibleHorizontally.
+
+            addMorph: cm.
+            beShrinkWrap.
+            addRole: windowRole.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( | {
+         'Category: basics\x7fModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
+        
+         morphTypeName = 'windowMorph'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
+        
+         parent* = bootstrap stub -> 'traits' -> 'frameMorph' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         spacer = ( |
+            | 
+            transparentSpacerMorph copyV: 6).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( | {
+         'Category: content\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         windowLabel = ( |
+            | 
+            morphsWithRole: windowLabelRole 
+                        Do: [|:m | ^ m label]
+                  IfAbsent: raiseError).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( | {
+         'Category: content\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         windowLabel: l = ( |
+            | 
+            morphsWithRole: windowLabelRole 
+                        Do: [|:m | m label: l. ^ self]    
+                  IfAbsent: raiseError).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         windowLabelRole = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> 'windowLabelRole' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui windowMorph parent windowLabelRole.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> 'windowLabelRole' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         windowRole = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> 'windowRole' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui windowMorph parent windowRole.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> 'windowRole' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> () From: ( | {
+         'Category: filing out\x7fModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
+        
+         prototype = ( |
+            | 
+            psyche gui windowMorph).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         worldRecordMorph = bootstrap define: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> () ToBe: bootstrap addSlotsTo: (
+             bootstrap remove: 'parent' From:
+             bootstrap remove: 'prototype' From:
+             globals rowMorph copyRemoveAllMorphs ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui worldRecordMorph.
+
+CopyDowns:
+globals rowMorph. copyRemoveAllMorphs 
+SlotsToOmit: parent prototype.
+
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui worldRecordMorph parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         buildIDHolder = ( |
+             l.
+            | 
+            l: labelMorph copyLabel: defaultID.
+            l addRole: idHolderRole.
+            l).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         buildNameHolder = ( |
+             h.
+            | 
+            h: columnMorph copyTransparent leftJustify.
+            h addMorphLast: buildShortNameHolder.
+            h addMorphLast: buildIDHolder.
+            h).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         buildShortNameHolder = ( |
+             l.
+            | 
+            l: labelMorph copyLabel: defaultShortName.
+            l addRole: shortNameHolderRole.
+            l).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         copyOn: aWorldRecord = ( |
+             m.
+            | 
+            m: copy worldRecord: aWorldRecord.
+            m morphsWithRole: shortNameHolderRole Do: [|:i| i label: aWorldRecord shortName] IfAbsent: raiseError.
+            m morphsWithRole:        idHolderRole Do: [|:i| i label: aWorldRecord id       ] IfAbsent: raiseError.
+            m morphsWithRole: wakeSleepStatusRole 
+                          Do: [|:i| aWorldRecord isAwake
+                                        ifTrue: [  (i label: 'awake') color: paint named: 'forest'       ] 
+                                         False: [  (i label: 'asleep') color: paint named: 'darkGray'    ]]
+                    IfAbsent: raiseError.
+            m).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'Category: defaults\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         defaultID = 'xxx-xxx-xxx-xxx'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'Category: defaults\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         defaultShortName = '(Short Name)'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'Category: roles\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         idHolderRole = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> 'idHolderRole' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui worldRecordMorph parent idHolderRole.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> 'idHolderRole' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         initiaizePrototype = ( |
+             l.
+            | 
+            removeAllMorphs.
+            color: paint named: 'white'.
+            addMorphLast: buildNameHolder.
+            addMorphLast: spacer.
+            l: (labelMorph copy label: '(unknown)') color: paint named: 'gray'.
+            l addRole: wakeSleepStatusRole.
+            addMorphLast: l.
+            addMorphLast: transparentSpacerMorph copyH: 4.
+            addMorphLast: ((ui2Button copy label: '=') target: self) script: 'event sourceHand attach: event sourceHand world outlinerForMirror: reflect: target worldRecord'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
+        
+         morphTypeName = 'worldRecordMorph'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
+        
+         parent* = bootstrap stub -> 'traits' -> 'rowMorph' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'Category: roles\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         shortNameHolderRole = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> 'shortNameHolderRole' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui worldRecordMorph parent shortNameHolderRole.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> 'shortNameHolderRole' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         spacer = ( |
+            | 
+            transparentSpacerMorph copyH: 40).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'Category: roles\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         wakeSleepStatusRole = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> 'wakeSleepStatusRole' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui worldRecordMorph parent wakeSleepStatusRole.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> 'wakeSleepStatusRole' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> () From: ( | {
+         'Category: filing out\x7fModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
+        
+         prototype = ( |
+            | psyche gui worldRecordMorph).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> () From: ( | {
+         'Category: prototypes\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         worldRecord = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche worlds worldRecord.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> () From: ( | {
+         'Category: World Record State\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (psyche worlds worldRecord)'
+        
+         worldRecord <- bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          handleAlternateObjectRoot = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'handleAlternateObjectRoot' -> () From: ( |
@@ -768,6 +1434,7 @@ otherwise:
             startX.
             startNoVNC.
             startCaddy.
+            preferences desktop backgroundColor: (paint named: 'azure').
             desktop isOpen 
              ifTrue: [desktop restartSuppressedFlag: false. 
                       desktop returnFromSnapshot]
@@ -2411,15 +3078,6 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
             | systemRecord updatedRecord).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> () From: ( | {
-         'Category: prototypes\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         worldRecord = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche worlds worldRecord.
-'.
-            | ) .
-        } | ) 
-
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
@@ -3961,21 +4619,10 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
             n: hostName.    
             d: baseDirectory.
             s: dtachSocket.
-            " Create epair "
-            epair: (sys stdoutOfCommand: 'ifconfig epair create') shrinkwrapped slice: 0 @ -1. " Drop final 'a' "
             " Start jail "
             sys sh: 'jail -cmr path=\'', d, '\' name=\'', n, '\' persist mount.devfs vnet devfs_ruleset=5 host.hostname=\'', n,  '\' exec.start="/bin/sh /etc/rc"'.
             " Get jid "
             jid: ((sys stdoutOfCommand: 'jls -n -j ', n, ' jid') shrinkwrapped splitOn: '=') at: 1.
-            " Copy in epair "
-            sys sh: 'ifconfig ', epair, 'b vnet ', jid.
-            " Create ip based on jid"
-            " NOTE: ONLY 120 JAILS ALLOWED!!!!! "
-            ip_a: '10.0.0.', jid, '/8'.
-            ip_b: '10.0.1.', (jid asInteger + 128) asString, '/8'.
-            " Assign ip to jail"
-            sys sh: 'ifconfig ', epair, 'a ', ip_a, ' up'.
-            sys sh: 'jexec ', jid, ' ifconfig ', epair, 'b ', ip_b, ' up'.
             " Start Self "
             sys sh: 'jexec ', n, ' /usr/local/bin/dtach -n \'', s, '\' /vm/Self ', options. 
             self).
@@ -4111,6 +4758,551 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'Category: connections\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         worlds = bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
+         'Category: internal\x7fCategory: running\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         runnerWithNetwork = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche worlds worldRecord runnerWithNetwork.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: settings\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         baseDirectory = ( |
+            | 
+            jailsBaseDirectory, '/', id).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         buildTemplate = ( |
+             mkdir.
+            | 
+            mkdir: [|:dir| sys sh: 'mkdir -p ', templateDirectory, dir].
+
+            " Create directory "
+            mkdir value: '/'.
+
+            " Create structure "
+            ('/dev' & '/var' & '/var/run' & '/libexec' & '/lib' & '/etc' & '/tmp' & '/root' & '/objects' & '/firmware') asVector do: mkdir.
+
+            sharedDirs do: mkdir.
+
+            " resolv.conf "
+            sys sh: 'cp /etc/resolv.conf ', templateDirectory, '/etc/resolv.conf'.
+
+            copyInFirmware.
+            copyInCaddyfile.
+
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         caddyfile = '
+{ 
+  auto_https off
+}
+:80 {
+  bind unix//tmp/morphic.0.socket
+  reverse_proxy http://127.0.0.1:6080
+}
+'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         cleanTemplate = ( |
+            | 
+            sys sh: 'rm -rf ', templateDirectory. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         copyInBinary: path = ( |
+             s.
+            | 
+            sys sh: 'cp ', path, ' ', templateDirectory, '/bin'.
+            s: sys stdoutOfCommand: 'ldd ', path.
+            (s splitOn: '\n') do: [|:l. p|
+              p: (l splitOn: '=>').
+              p size > 1 ifTrue: [
+                p: ((l splitOn: '=>') at: 1) shrinkwrapped.
+                p: ((p splitOn: ' ') at: 0) shrinkwrapped.
+                sys sh: 'cp ', p, ' ', templateDirectory, '/lib']].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         copyInCaddyfile = ( |
+             f.
+            | 
+            f: os_file openForWriting: templateDirectory, '/firmware/caddyfile' IfFail: raiseError.
+            f write: caddyfile asString.
+            f close.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         copyInFirmware = ( |
+             f.
+            | 
+            f: os_file openForWriting: templateDirectory, '/firmware/firmware.self' IfFail: raiseError.
+            f write: firmware asString.
+            f close.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         copyOnWorldRecord: wr = ( |
+            | copy worldRecord: wr).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: worldRecord access\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         dataset = ( |
+            | worldRecord dataset).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: desktops\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         deregisterDesktopsWithCaddy = ( |
+            | 
+            psyche sys caddy deregisterPath: '/', id, '/desktop/'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         deregisterTtydWithCaddy = ( |
+            | 
+            psyche sys caddy deregisterPath: '/', id, '/console/'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         destroyJail = ( |
+             c.
+             fb.
+             ignore = bootstrap stub -> 'globals' -> 'true' -> ().
+             umount.
+             umountForced.
+            | 
+            fb: raiseError.
+            c: sys mounts current.
+            umount: [|:mp|
+             c findFirst: [|:e| 
+                       " /rw offset is caused by mfbsd "
+                       e mountpoint = ('/rw', baseDirectory, mp)]
+               IfPresent: [|:e| e umountIfFail: [
+                                "Try again"
+                                e umountForcedIfFail: fb]]
+                IfAbsent: ignore].
+
+            sharedDirs do: umount.
+            tmpDirs do: umount.
+            umount value: '/objects'.
+
+            " /dev was mounted by jail(8) "
+            umount value: '/dev'.
+
+            " Wait for all umounts to have effect "
+            [
+              sys mounts current
+                anySatisfy: [|:e| e mountpoint matchesPattern: '/rw', baseDirectory, '/*']
+            ] whileTrue.
+
+            " Wait until nothing is using the filesystem, "
+            [|o| 
+            o: sys stdoutOfCommand: 'fuser ', baseDirectory.
+            o shrinkwrapped isEmpty
+            ] whileFalse.
+
+            " Not / as needs to be matched in umount block with mountpoint"
+            umount value: ''.
+
+            (sys sh: 'ls ', baseDirectory, '/' IfFail: 0) = 0
+              ifFalse: [sys sh: 'rmdir ', baseDirectory, '/' IfFail: fb].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: settings\x7fComment: In jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         dtachSocket = ( |
+            | sockDirectory, '/', id, '.sock').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         ensureDtachSocketDirectory = ( |
+            | 
+            sys sh: 'mkdir -p ', sockDirectory. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Comment: I am sent on boot to ensure directories exist etc\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         ensureProperSetupOnBoot = ( |
+            | 
+            cleanTemplate.
+            ensureTemplate.
+            ensureDtachSocketDirectory.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         ensureTemplate = ( |
+            | 
+            (os_file exists: templateDirectory) ifFalse: [buildTemplate].
+            (os_file exists: templateDirectory) ifFalse: raiseError.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         ensureTtydDirectories = ( |
+            | 
+            sys sh: 'mkdir -p ', ttydPidDirectory.
+            sys sh: 'mkdir -p ', ttydSockDirectory.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         firmware = bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'firmware' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: settings\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         hostName = ( |
+            | id).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: worldRecord access\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         id = ( |
+            | worldRecord id).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         jailOptions = ( |
+             l.
+            | 
+            l: (sys stdoutOfCommand: 'ls ', baseDirectory, '/objects') splitOn: '\n'.
+            (l includes: 'snapshot') ifTrue: [^ '-s /objects/snapshot -f /firmware/firmware.self'].
+            (l includes: 'build.self') ifTrue: [^ '-f /objects/build.self -f2 /firmware/firmware.self'].
+            '').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: worldRecord access\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         jailsBaseDirectory = ( |
+            | worldRecord jailsBaseDirectory).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: connections\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: desktops\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         registerDesktopsWithCaddy = ( |
+            | 
+            psyche sys caddy 
+               registerPath: '/', id, '/desktop/'
+                   ForProxy: 'unix/', baseDirectory, '/tmp/desktop.socket'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         registerTtydWithCaddy = ( |
+            | 
+            psyche sys caddy 
+               registerPath: '/', id, '/console/'
+                   ForProxy: 'unix/', ttydSock
+                   Username: 'console'
+               PasswordHash: worldRecord consolePasswordHash.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         setupJail = ( |
+             m.
+            | 
+             " raiseError on errors - TODO - make proper handlers "
+            sys mkdir_p: baseDirectory IfFail: raiseError.
+            m: sys mounter copy.
+            m type: 'nullfs'. m options: 'ro'. m source: templateDirectory. m target: baseDirectory. 
+            m mount.
+
+            sharedDirs do: [|:d|
+              m type: 'nullfs'. m options: 'ro'. m source: d. m target: baseDirectory, d. 
+              m mount].
+
+            m options: ''. m source: worldDirectory. m target: baseDirectory, '/objects'.
+            m mount.
+
+            tmpDirs do: [|:d|
+              m type: 'tmpfs'. m options: ''. m source: 'tmpfs'. m target: baseDirectory, d.
+              m mount].
+
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sharedDirs = ( |
+            | 
+            (
+            '/bin' & '/lib' & '/libexec' & '/sbin' &
+            '/usr/bin' & '/usr/sbin' & '/usr/lib' & '/usr/libexec' & '/usr/share' & '/usr/libdata' & 
+            '/usr/local/bin' & '/usr/local/sbin' & '/usr/local/lib' & '/usr/local/libexec' & '/usr/local/share' & '/usr/local/libdata' & '/usr/local/etc' & 
+            '/vm' & '/etc' & '/opt'
+            ) asVector).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sleep = ( |
+            | 
+            stopJail. 
+            destroyJail. 
+            stopTtyd. 
+            deregisterTtydWithCaddy.
+            deregisterDesktopsWithCaddy.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: jail template\x7fComment: In jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sockDirectory = '/tmp'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sockDirectoryOutside = ( |
+            | baseDirectory, sockDirectory).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         startJail = ( |
+            | 
+            startJailWithSelfOptions: jailOptions).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         startJailWithSelfOptions: options = ( |
+             d.
+             epair.
+             ip_a.
+             ip_b.
+             jid.
+             n.
+             s.
+            | 
+            n: hostName.    
+            d: baseDirectory.
+            s: dtachSocket.
+            [
+            " Create epair "
+            epair: (sys stdoutOfCommand: 'ifconfig epair create') shrinkwrapped slice: 0 @ -1. " Drop final 'a' "
+            " Start jail "
+            sys sh: 'jail -cmr path=\'', d, '\' name=\'', n, '\' persist mount.devfs vnet devfs_ruleset=5 host.hostname=\'', n,  '\' exec.start="/bin/sh /etc/rc"'.
+            " Get jid "
+            jid: ((sys stdoutOfCommand: 'jls -n -j ', n, ' jid') shrinkwrapped splitOn: '=') at: 1.
+            " Copy in epair "
+            sys sh: 'ifconfig ', epair, 'b vnet ', jid.
+            " Create ip based on jid"
+            " NOTE: ONLY 120 JAILS ALLOWED!!!!! "
+            ip_a: '10.0.0.', jid, '/8'.
+            ip_b: '10.0.1.', (jid asInteger + 128) asString, '/8'.
+            " Assign ip to jail"
+            sys sh: 'ifconfig ', epair, 'a ', ip_a, ' up'.
+            sys sh: 'jexec ', jid, ' ifconfig ', epair, 'b ', ip_b, ' up'.
+            ].
+            " Start Self "
+            sys sh: 'jexec ', n, ' /usr/local/bin/dtach -n \'', s, '\' /vm/Self ', options. 
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         startTtyd = ( |
+             cmd.
+             daemon.
+             dtach.
+             ttyd.
+            | 
+            ensureTtydDirectories.
+            dtach: 'dtach -a ', baseDirectory, dtachSocket, ' '.
+            ttyd: 'ttyd -W -i ', ttydSock, ' '.
+            daemon: 'daemon -f -p ', ttydPid, ' '.
+            cmd: daemon, ttyd, dtach.
+            sys sh: cmd.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         stopJail = ( |
+            | 
+            sys sh: 'jail -r ', hostName IfFail: true.
+            " Waiting until nothing is using the filesystem,
+              ie untl the jail has properly stopped.
+            "
+            [|o| 
+            o: sys stdoutOfCommand: 'fuser ', baseDirectory.
+            o shrinkwrapped isEmpty
+            ] whileFalse.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         stopTtyd = ( |
+             c.
+             f.
+            | 
+            f: ttydPid asInputFileIfError: [^ self].
+            c: f contents.
+            f close.
+            sys sh: 'kill ', c IfFail: false.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: connections\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         templateDirectory = '/jailTemplate'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         tmpDirs = ( |
+            | ('/tmp' & '/var' & '/root') asVector).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         ttydPid = ( |
+            | 
+            ttydPidDirectory, id, '.pid').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         ttydPidDirectory = '/var/ttyd/pid/'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         ttydSock = ( |
+            | 
+            ttydSockDirectory, id, '.sock').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         ttydSockDirectory = '/var/ttyd/sock/'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         wake = ( |
+            | 
+            ensureTemplate. 
+            setupJail. 
+            startJail. 
+            startTtyd.
+            registerTtydWithCaddy.
+            registerDesktopsWithCaddy.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: settings\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         worldDataset = ( |
+            | dataset).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: settings\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         worldDirectory = ( |
+            | sys zfs mountpointOfDataset: worldDataset).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
+         'Category: worldRecord access\x7fComment: The world I will operate on.\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (psyche worlds worldRecord)'
+        
+         worldRecord <- bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
          'Category: connections\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          worlds = bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> ().
@@ -4267,6 +5459,107 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
             log info: 'Psyche Scheduler started (according to snapshotAction schedulerInitial)'.
             psyche preventPromptStart.
             schedulerInitialMessages do: [|:msg| msg fork resume].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'morph' -> () From: ( | {
+         'Category: roles\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         addRole: anObject = ( |
+            | 
+            (roles includes: anObject) ifFalse: [
+                roles: roles copy add: anObject].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'morph' -> () From: ( | {
+         'Category: roles\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         hasRole: anObject = ( |
+            | roles includes: anObject).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'morph' -> () From: ( | {
+         'Category: roles\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         morphsWithRole: r Do: blk IfAbsent: absentBlk = ( |
+             found <- bootstrap stub -> 'globals' -> 'false' -> ().
+            | 
+            allMorphsDo: [|:m|
+              (m hasRole: r) ifTrue: [found: true. blk value: m]].
+            found
+              ifTrue: [self]
+               False: [absentBlk value]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'morph' -> () From: ( | {
+         'Category: roles\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         ownersWithRole: r Do: blk IfAbsent: absentBlk = ( |
+             found <- bootstrap stub -> 'globals' -> 'false' -> ().
+             m.
+             stop <- bootstrap stub -> 'globals' -> 'false' -> ().
+            | 
+            "This is all rather low level isn't it?"
+            m: owner.
+            [ stop ] whileFalse: [
+               (m hasRole: r) ifTrue: [found: true. blk value: m].
+               m isRoot ifTrue: [stop: true].
+               m: m owner].
+            found 
+              ifTrue: [self]
+               False: [absentBlk value]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'morph' -> () From: ( | {
+         'Category: roles\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         removeRole: anObject = ( |
+            | 
+            (roles includes: anObject) ifTrue: [
+              roles: roles copy remove: anObject].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'proxyMorph' -> () From: ( | {
+         'Category: basics\x7fModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
+        
+         addMorphNameFramed: framed = ( |
+             f.
+             l.
+             s.
+            | 
+            s: ' ', realMorph morphTypeName.
+            realMorph roles isEmpty ifFalse: [
+              s: s, ' ('.
+              s: s, ((realMorph roles copy mapBy: [|:r| r asString]) asVector joinUsing: ', ').
+              s: s, ')'].
+            s: s, ' '.
+            l: labelMorph copyLabel: s.
+            l fontSpec: outlinerPreferences mediumFontSpec.
+            f: frameMorph copy color: color.
+            f beFlexible leftJustify.
+            f frameStyle: f bezelStyle.
+            f borderWidth: 1.
+            f addMorph: l.
+            framed
+                ifTrue: [ addMorphLast: f ]
+                 False: [ addMorphLast: l ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'worldMorph' -> () From: ( | {
+         'Category: running\x7fModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
+        
+         addInitialMorphs = ( |
+             m.
+            | 
+            "add outliner on the shell"
+            m: psyche gui managerAppMorph copy.
+            m position: 50@20.
+            addMorph: m.
+
+            saveDesktop.
+
             self).
         } | ) 
 
