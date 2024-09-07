@@ -639,15 +639,6 @@ SlotsToOmit: parent prototype.
             psyche gui windowMorph).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerAppMorph' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         roles <- bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerAppMorph' -> 'roles' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche gui managerAppMorph roles.
-\x7fIsComplete: '.
-            | ) .
-        } | ) 
-
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
@@ -1042,15 +1033,6 @@ SlotsToOmit: parent prototype.
          prototype = ( |
             | 
             psyche gui windowMorph).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         roles <- bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'roles' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche gui windowMorph roles.
-\x7fIsComplete: '.
-            | ) .
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> () From: ( | {
@@ -5543,7 +5525,7 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
          'Category: roles\x7fComment: Temp - copy downs will cover in future\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          roles = ( |
-            | _AddSlots: (| roles <- set copyRemoveAll |). roles).
+            | _AddSlots: (| roles |). roles: set copyRemoveAll. roles).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'proxyMorph' -> () From: ( | {

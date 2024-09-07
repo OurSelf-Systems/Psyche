@@ -3,7 +3,7 @@
 modules init
 
     registerTree: 'terminalEmulator'
-              At: 'transporter/TerminalEmulator'.
+              At: './transporter/TerminalEmulator'.
 
   bootstrap read: 'terminalEmulator'
           InTree: 'terminalEmulator'.
@@ -11,7 +11,7 @@ modules init
 modules init
 
     registerTree: 'psyche'
-              At: 'transporter/psyche'.
+              At: './transporter/psyche'.
 
   bootstrap read: 'psyche'
           InTree: 'psyche'.
