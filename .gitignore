@@ -4,3 +4,5 @@ jail_for_xvnc
 base.tgz
 *.OLD
 self
+transporter/TerminalEmulator
+
