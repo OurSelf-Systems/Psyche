@@ -1,4 +1,4 @@
- '2024.09.06.01'
+ '2024.09.07.01'
  '
 Copyright 2022-2024 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -78,9 +78,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.09.06.01\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.09.07.01\')\x7fVisibility: public'
         
-         revision <- '2024.09.06.01'.
+         revision <- '2024.09.07.01'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -639,6 +639,15 @@ SlotsToOmit: parent prototype.
             psyche gui windowMorph).
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerAppMorph' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         roles <- bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerAppMorph' -> 'roles' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui managerAppMorph roles.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
@@ -1035,6 +1044,15 @@ SlotsToOmit: parent prototype.
             psyche gui windowMorph).
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         roles <- bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'roles' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui windowMorph roles.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
@@ -1142,7 +1160,7 @@ SlotsToOmit: parent prototype.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
          'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         initiaizePrototype = ( |
+         initializePrototype = ( |
              l.
             | 
             removeAllMorphs.
@@ -5519,6 +5537,13 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
             (roles includes: anObject) ifTrue: [
               roles: roles copy remove: anObject].
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'morph' -> () From: ( | {
+         'Category: roles\x7fComment: Temp - copy downs will cover in future\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         roles = ( |
+            | _AddSlots: (| roles <- set copyRemoveAll |). roles).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'proxyMorph' -> () From: ( | {
