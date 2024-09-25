@@ -95,12 +95,6 @@ See the LICENSE,d file for license information.
          tree <- 'psyche'.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'morph' -> () From: ( | {
-         'Category: Basic Morph State\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (set copyRemoveAll)'
-        
-         roles <- set copyRemoveAll.
-        } | ) 
-
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> () From: ( | {
          'Category: psyche\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
@@ -580,6 +574,219 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         importerMorph = bootstrap define: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> () ToBe: bootstrap addSlotsTo: (
+             bootstrap remove: 'parent' From:
+             bootstrap remove: 'prototype' From:
+             globals columnMorph copyRemoveAllMorphs ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui importerMorph.
+
+CopyDowns:
+globals columnMorph. copyRemoveAllMorphs 
+SlotsToOmit: parent prototype.
+
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui importerMorph parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> () From: ( | {
+         'Category: actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         addNote: m = ( |
+            | 
+            safelyDo: [
+              addMorphLast: labelMorph copy label: m].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         buildExplanation = ( |
+            | labelMorph copyLabel: 'URL of Self world to import:').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         buildInput = ( |
+             em.
+            | 
+            em: ((editorMorph copy borderWidth: 4) setString: defaultValue) selectAll.
+            em addRole: editorRole.
+            ((frameMorph copy frameStyle: frameMorph insetBezelStyle)
+              color: paint named: 'outlinerGray')
+              addMorphLast: em).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         buildOKButton = ( |
+             b.
+             rm.
+            | 
+            b: ui2Button copy label: 'Import'.
+            b target: self.
+            b scriptBlock: [target importAction].
+            b addRole: okButtonRole.
+
+            rm: rowMorph copyTransparent.
+            rm addMorphLast: transparentSpacerMorph copy beFlexibleHorizontally.
+            rm addMorphLast: b.
+            rm).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         buildSpacer = ( |
+            | 
+            transparentSpacerMorph copyV: 8).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> () From: ( | {
+         'Category: settings\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         defaultValue = 'https://ourself.io/downloads/worlds/world.psyche'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> () From: ( | {
+         'Category: roles\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         editorRole = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> 'editorRole' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui importerMorph parent editorRole.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> 'editorRole' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> () From: ( | {
+         'Category: actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         greyButton: bool = ( |
+            | 
+            morphsWithRole: okButtonRole 
+                        Do: [|:m| m isGrayedOut: bool]
+                  IfAbsent: raiseError.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> () From: ( | {
+         'Category: actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         importAction = ( |
+            | 
+            "Import From URL"
+            greyButton: true.
+            (message copy receiver: self
+                          Selector: 'importProcess') fork.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> () From: ( | {
+         'Category: model\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         importProcess = ( |
+             reporter.
+             wr.
+            | 
+            reporter: [|:m| addNote: m].
+            addNote: 'Started to import...'.
+            wr: psyche worlds worldRecord duplicateURL: url ReportingTo: reporter.
+            greyButton: false.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         initializePrototype = ( |
+             cm.
+            | 
+            removeAllMorphs.
+            color: paint named: 'outlinerGray'.
+            beShrinkWrapVertically beFlexibleHorizontally.
+            leftJustify.
+            borderWidth: 8.
+            (  buildExplanation &
+               buildSpacer      &
+               buildInput       &
+               buildSpacer      &
+               buildOKButton
+            ) asSequence do: [|:m| addMorphLast: m].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> () From: ( | {
+         'Category: roles\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         okButtonRole = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> 'okButtonRole' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui importerMorph parent okButtonRole.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> 'okButtonRole' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
+        
+         parent* = bootstrap stub -> 'traits' -> 'columnMorph' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> () From: ( | {
+         'Category: actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         setWindowLabel = ( |
+            | 
+            "Change closest window (in case nested).
+             If not in windowMorph, ignore."
+            ownersWithRole: psyche gui windowMorph windowRole 
+                        Do: [|:m| m windowLabel: 'Psyche Importer'. ^ self]
+                  IfAbsent: [].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> () From: ( | {
+         'Category: model\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         url = ( |
+             u.
+            | 
+            morphsWithRole: editorRole 
+                        Do: [|:m| u: m contentsString]
+                  IfAbsent: raiseError.
+            u).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> () From: ( | {
+         'Category: filing out\x7fModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
+        
+         prototype = ( |
+            | psyche gui importerMorph).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> () From: ( | {
          'Category: building\x7fComment: Rebuilds the morphs.
 Needed because transporter doesn\'t always
 play well with deeply nested morph structures.\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
@@ -587,56 +794,10 @@ play well with deeply nested morph structures.\x7fModuleInfo: Module: psyche Ini
          initializePrototypes = ( |
             | 
             windowMorph initializePrototype.
-            managerAppMorph initializePrototype.
             managerMorph initializePrototype.
             worldRecordMorph initializePrototype.
+            importerMorph initializePrototype.
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         managerAppMorph = bootstrap define: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerAppMorph' -> () ToBe: bootstrap addSlotsTo: (
-             bootstrap remove: 'parent' From:
-             bootstrap remove: 'prototype' From:
-             globals frameMorph copyRemoveAllMorphs ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerAppMorph' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche gui managerAppMorph.
-
-CopyDowns:
-globals frameMorph. copyRemoveAllMorphs 
-SlotsToOmit: parent prototype.
-
-\x7fIsComplete: '.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerAppMorph' -> () From: ( | {
-         'Category: Window Morph State\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (morph)'
-        
-         frameHolderForCollapsed <- bootstrap stub -> 'globals' -> 'morph' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche gui windowMorph parent.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerAppMorph' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerAppMorph' -> () From: ( | {
-         'Category: filing out\x7fModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
-        
-         prototype = ( |
-            | 
-            psyche gui windowMorph).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> () From: ( | {
@@ -677,9 +838,25 @@ SlotsToOmit: parent.
                  target: self).
             mb addMorphLast: transparentSpacerMorph copyH: 6.
             mb addMorphLast:
+              (((ui2Button copy label: 'Import...')
+                 scriptBlock: [event sourceHand attach:
+                                 psyche gui windowMorph copyWrapping: psyche gui importerMorph copy])
+                 target: self).
+            mb addMorphLast: transparentSpacerMorph copyH: 6.
+            mb addMorphLast:
               (((ui2Button copy label: 'Open Unix Terminal')
                  scriptBlock: [event sourceHand attach:
                                   terminalEmulator terminalMorph copy])
+                 target: self).
+            mb addMorphLast: transparentSpacerMorph copyH: 6.
+            mb addMorphLast:
+              (((ui2Button copy label: 'Shutdown')
+                 scriptBlock: [psyche sys shutdown])
+                 target: self).
+            mb addMorphLast: transparentSpacerMorph copyH: 6.
+            mb addMorphLast:
+              (((ui2Button copy label: 'Reboot')
+                 scriptBlock: [psyche sys reboot])
                  target: self).
             mb addMorphLast: transparentSpacerMorph copy.
             mb).
@@ -705,7 +882,23 @@ SlotsToOmit: parent.
             borderWidth: 0.
             addMorphLast: buildMenuBar.
             addMorphLast: horizontalRule.
+            addRole: managerRole.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerMorph' -> 'parent' -> () From: ( | {
+         'Category: roles\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         managerRole = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerMorph' -> 'parent' -> 'managerRole' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui managerMorph parent managerRole.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerMorph' -> 'parent' -> 'managerRole' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'managerMorph' -> 'parent' -> () From: ( | {
@@ -778,6 +971,15 @@ SlotsToOmit: parent prototype.
          'Category: Window Morph State\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (morph)'
         
          frameHolderForCollapsed <- bootstrap stub -> 'globals' -> 'morph' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui windowMorph parent.
+'.
+            | ) .
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( | {
@@ -858,11 +1060,11 @@ SlotsToOmit: parent prototype.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'windowMorph' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         copy = ( |
+         copyWrapping: c = ( |
              m.
             | 
             m: resend.copy.
-            m  contentsMorph: psyche gui managerMorph copy.
+            m  contentsMorph: c.
             m  contentsMorph setWindowLabel.
             m).
         } | ) 
@@ -1064,6 +1266,18 @@ SlotsToOmit: parent prototype.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
          'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
+         buildConsoleURLHolder = ( |
+             l.
+            | 
+            l: labelMorph copyLabel: defaultConsoleURL.
+            l color: paint named: 'lightGray'.
+            l addRole: consoleURLHolderRole.
+            l).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
          buildIDHolder = ( |
              l.
             | 
@@ -1081,6 +1295,7 @@ SlotsToOmit: parent prototype.
             h: columnMorph copyTransparent leftJustify.
             h addMorphLast: buildShortNameHolder.
             h addMorphLast: buildIDHolder.
+            h addMorphLast: buildConsoleURLHolder.
             h).
         } | ) 
 
@@ -1096,6 +1311,28 @@ SlotsToOmit: parent prototype.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'Category: roles\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         consoleURLHolderRole = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> 'consoleURLHolderRole' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche gui worldRecordMorph parent consoleURLHolderRole.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> 'consoleURLHolderRole' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'Category: menu\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         copyConsoleURLFromMenu: evt = ( |
+            | worldRecord copyConsoleURLToClipboard. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          copyOn: aWorldRecord = ( |
@@ -1104,12 +1341,23 @@ SlotsToOmit: parent prototype.
             m: copy worldRecord: aWorldRecord.
             m morphsWithRole: shortNameHolderRole Do: [|:i| i label: aWorldRecord shortName] IfAbsent: raiseError.
             m morphsWithRole:        idHolderRole Do: [|:i| i label: aWorldRecord id       ] IfAbsent: raiseError.
+            m morphsWithRole: consoleURLHolderRole 
+                          Do: [|:i| aWorldRecord isAwake
+                                        ifTrue: [  (i label: aWorldRecord consoleURL) color: paint named: 'blue'          ] 
+                                         False: [  (i label: defaultConsoleURL) color: paint named: 'lightGray'    ]]
+                    IfAbsent: raiseError.
             m morphsWithRole: wakeSleepStatusRole 
                           Do: [|:i| aWorldRecord isAwake
                                         ifTrue: [  (i label: 'awake') color: paint named: 'forest'       ] 
                                          False: [  (i label: 'asleep') color: paint named: 'darkGray'    ]]
                     IfAbsent: raiseError.
             m).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'Category: defaults\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'https://[...]/[...]/console\')'
+        
+         defaultConsoleURL <- 'https://[...]/[...]/console'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
@@ -1122,6 +1370,22 @@ SlotsToOmit: parent prototype.
          'Category: defaults\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          defaultShortName = '(Short Name)'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'Category: menu\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         deleteFromMenu: evt = ( |
+            | 
+            worldRecord delete. refreshManager. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'Category: menu\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         duplicateFromMenu: evt = ( |
+            | 
+            worldRecord duplicate. refreshManager. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
@@ -1158,6 +1422,14 @@ SlotsToOmit: parent prototype.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'Category: menu\x7fModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
+        
+         middleMouseDown: evt = ( |
+            | 
+            popUpMenu: evt).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
         
          morphTypeName = 'worldRecordMorph'.
@@ -1167,6 +1439,41 @@ SlotsToOmit: parent prototype.
          'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
         
          parent* = bootstrap stub -> 'traits' -> 'rowMorph' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'Category: menu\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         popUpMenu: evt = ( |
+             m.
+            | 
+            m: ui2Menu copy color: nonpluggableOutliner menuColor.
+            m addButtonTarget: self ScriptBlock: [target copyConsoleURLFromMenu: event] Label: 'Copy console URL'.
+            worldRecord isAwake ifFalse: [m grayOut: true ButtonLabeled: 'Copy console URL'].
+            m addDivider.
+            m addButtonTarget: self ScriptBlock: [target wakeFromMenu: event] Label: 'Wake'.
+            worldRecord isAwake ifTrue: [m grayOut: true ButtonLabeled: 'Wake'].
+            m addButtonTarget: self ScriptBlock: [target sleepFromMenu: event] Label: 'Sleep'.
+            worldRecord isAwake ifFalse: [m grayOut: true ButtonLabeled: 'Sleep'].
+            m addDivider.
+            m addButtonTarget: self ScriptBlock: [target duplicateFromMenu: event] Label: 'Duplicate'.
+            m addDivider.
+            m addButtonTarget: self ScriptBlock: [target deleteFromMenu: event] Label: 'Delete'.
+            m popUp: evt.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'Category: menu\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         refreshManager = ( |
+            | 
+            "Change closest window (in case nested).
+             If not in windowMorph, ignore."
+            ownersWithRole: psyche gui managerMorph managerRole 
+                        Do: [|:m| m refresh. ^ self]
+                  IfAbsent: [].
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
@@ -1185,11 +1492,27 @@ SlotsToOmit: parent prototype.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'Category: menu\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sleepFromMenu: evt = ( |
+            | 
+            worldRecord sleep. refreshManager. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
          'Category: building\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          spacer = ( |
             | 
             transparentSpacerMorph copyH: 40).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
+         'Category: menu\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         wakeFromMenu: evt = ( |
+            | 
+            worldRecord wake. refreshManager. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'worldRecordMorph' -> 'parent' -> () From: ( | {
@@ -2197,13 +2520,13 @@ otherwise:
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'fetch' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         run = ( |
+         runIfFail: blk = ( |
              o.
             | 
             o: sys outputOfCommand: 'fetch -o ', out, ' ', url
                            Timeout: 60 * 60 * 1000
-                         IfTimeout: raiseError.
-            o exitCode != 0 ifTrue: raiseError.
+                         IfTimeout: [^ blk value: 'Fetch timed out'].
+            o exitCode != 0 ifTrue: [^ blk value: 'Fetch returned exit code ', o exitCode asString, ' ', o stderr].
             self).
         } | ) 
 
@@ -3168,18 +3491,30 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
          'Category: actions\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          duplicateURL: url = ( |
+            | 
+            duplicateURL: url ReportingTo: [|:m| self]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
+         'Category: actions\x7fComment: For interactive reporting\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         duplicateURL: url ReportingTo: blk = ( |
+             err.
              fn.
              wr.
             | 
-            wr: duplicateEmpty.
+            err: [|:m | blk value: 'Failed: ', m asString. ^ self ].
             fn: os_file temporaryFileName, '.tar.xz'.
-            ((sys fetch url: url) out: fn) run.
+            ((sys fetch url: url) out: fn) runIfFail: err.
+            blk value: 'Fetched URL'.
+            wr: duplicateEmpty.
             (url slice: -7 @ infinity) = '.tar.xz' ifTrue: [
                 sys sh: 'tar -xf ', fn, ' -C ', 
                       (sys zfs mountpointOfDataset: wr dataset).
-                sys removeFile: fn IfFail: raiseError.
-            ] False: raiseError. "Don't know this type"
-            wr).
+                sys removeFile: fn IfFail: err.
+            ] False: err. "Don't know this type"
+            blk value: 'Unpacked world'.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
@@ -5561,7 +5896,7 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
              m.
             | 
             "add outliner on the shell"
-            m: psyche gui managerAppMorph copy.
+            m: psyche gui windowMorph copyWrapping: psyche gui managerMorph copy.
             m position: 50@20.
             addMorph: m.
 
