@@ -1,4 +1,4 @@
- '2024.09.25.01'
+ '2024.09.27.01'
  '
 Copyright 2022-2024 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -78,9 +78,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.09.25.01\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.09.27.01\')\x7fVisibility: public'
         
-         revision <- '2024.09.25.01'.
+         revision <- '2024.09.27.01'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -658,7 +658,7 @@ SlotsToOmit: parent prototype.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> () From: ( | {
          'Category: settings\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         defaultValue = 'https://ourself.io/downloads/worlds/world.psyche'.
+         defaultValue = 'https://ourself.io/downloads/worlds/latest.psyche'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'gui' -> 'importerMorph' -> 'parent' -> () From: ( | {
@@ -709,6 +709,7 @@ SlotsToOmit: parent prototype.
             reporter: [|:m| addNote: m].
             addNote: 'Started to import...'.
             wr: psyche worlds worldRecord duplicateURL: url ReportingTo: reporter.
+            addNote: 'Finished importing. Please refresh System Manager.'.
             greyButton: false.
             self).
         } | ) 
@@ -915,7 +916,11 @@ SlotsToOmit: parent.
             morphsWithRole: worldRecordRole 
                         Do: [|:m| removeMorph: m]
                   IfAbsent: true.
-            psyche worlds updatedSystemRecord knownWorlds do: [|:w. m |
+            (psyche worlds updatedSystemRecord knownWorlds 
+              asSequence sortBy: (|
+               element: e1 Precedes: e2 = (e1 shortName < e2 shortName)
+             |))
+            do: [|:w. m |
               m: psyche gui worldRecordMorph copyOn: w.
               m addRole: worldRecordRole.
               addMorphLast: m].
@@ -2185,7 +2190,7 @@ otherwise:
                   reverse_proxy %PROXY%
                 }
             '.
-            ba: '    basicauth %PATH%* bcrypt %PATH% {
+            ba: '    basic_auth %PATH%* bcrypt %PATH% {
                   %USER% %HASH%
                 }
             '.
@@ -3505,14 +3510,12 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
             | 
             err: [|:m | blk value: 'Failed: ', m asString. ^ self ].
             fn: os_file temporaryFileName, '.tar.xz'.
-            ((sys fetch url: url) out: fn) runIfFail: err.
+            ((sys fetch url: url) out: fn) runIfFail: [|:e| ^ err value: e].
             blk value: 'Fetched URL'.
             wr: duplicateEmpty.
-            (url slice: -7 @ infinity) = '.tar.xz' ifTrue: [
-                sys sh: 'tar -xf ', fn, ' -C ', 
+            sys sh: 'tar -xf ', fn, ' -C ', 
                       (sys zfs mountpointOfDataset: wr dataset).
-                sys removeFile: fn IfFail: err.
-            ] False: err. "Don't know this type"
+                sys removeFile: fn IfFail: [^ err value: 'Could not unpack'].
             blk value: 'Unpacked world'.
             self).
         } | ) 
@@ -3926,7 +3929,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'firmware' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\' \\\'0.0.5\\\'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\' \\\'0.0.7\\\'
  \\\'
 Copyright 1992-2016 AUTHORS.
 See the legal/LICENSE file for license information and legal/AUTHORS for authors.
@@ -3980,7 +3983,7 @@ See the legal/LICENSE file for license information and legal/AUTHORS for authors
               handle_path /\\\', u name asString, \\\'/* {
                 reverse_proxy http://127.0.0.1:608\\\', (desktopNumberForUser: u IfAbsent: [^ blk value]) asString, \\\'
               }
-              basicauth /\\\', u name asString, \\\'/* bcrypt \\\', u name asString, \\\' {
+              basic_auth /\\\', u name asString, \\\'/* bcrypt \\\', u name asString, \\\' {
                 \\\', u name asString, \\\' \\\', u passwordHash, \\\'
               }
             \\\').
@@ -4240,9 +4243,9 @@ what you think it will.\\\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () From: ( | {
-         \\\'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'0.0.5\\\\\\\')\\\\x7fVisibility: public\\\'
+         \\\'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'0.0.7\\\\\\\')\\\\x7fVisibility: public\\\'
         
-         revision <- \\\'0.0.5\\\'.
+         revision <- \\\'0.0.7\\\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () From: ( | {
@@ -4284,10 +4287,17 @@ IT IS PROVISIONAL - DONT USE THIS\\\\x7fModuleInfo: Module: firmware InitialCont
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'userProfile\\\' -> () From: ( | {
-         \\\'Category: firmware\\\\x7fModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'\\\\\\\')\\\'
+ bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'userProfile\\\' -> \\\'parent\\\' -> () From: ( | {
+         \\\'Category: firmware\\\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\\\'
         
-         passwordHash <- \\\'\\\'.
+         passwordHash = \\\'\\\'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'userProfile\\\' -> \\\'parent\\\' -> () From: ( | {
+         \\\'Category: firmware\\\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\\\'
+        
+         passwordHash: h = ( |
+            | _AddSlots: (| passwordHash |). passwordHash: h. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \\\'traits\\\' -> \\\'worldMorph\\\' -> () From: ( | {
@@ -4364,7 +4374,7 @@ on that display.\\\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\
  globals modules firmware postFileIn
 \' copyMutable)'
         
-         rawString <- ' \'0.0.5\'
+         rawString <- ' \'0.0.7\'
  \'
 Copyright 1992-2016 AUTHORS.
 See the legal/LICENSE file for license information and legal/AUTHORS for authors.
@@ -4418,7 +4428,7 @@ See the legal/LICENSE file for license information and legal/AUTHORS for authors
               handle_path /\', u name asString, \'/* {
                 reverse_proxy http://127.0.0.1:608\', (desktopNumberForUser: u IfAbsent: [^ blk value]) asString, \'
               }
-              basicauth /\', u name asString, \'/* bcrypt \', u name asString, \' {
+              basic_auth /\', u name asString, \'/* bcrypt \', u name asString, \' {
                 \', u name asString, \' \', u passwordHash, \'
               }
             \').
@@ -4678,9 +4688,9 @@ what you think it will.\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
-         \'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'0.0.5\\\')\\x7fVisibility: public\'
+         \'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'0.0.7\\\')\\x7fVisibility: public\'
         
-         revision <- \'0.0.5\'.
+         revision <- \'0.0.7\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
@@ -4722,10 +4732,17 @@ IT IS PROVISIONAL - DONT USE THIS\\x7fModuleInfo: Module: firmware InitialConten
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'userProfile\' -> () From: ( | {
-         \'Category: firmware\\x7fModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'\\\')\'
+ bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'userProfile\' -> \'parent\' -> () From: ( | {
+         \'Category: firmware\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
         
-         passwordHash <- \'\'.
+         passwordHash = \'\'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'userProfile\' -> \'parent\' -> () From: ( | {
+         \'Category: firmware\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
+        
+         passwordHash: h = ( |
+            | _AddSlots: (| passwordHash |). passwordHash: h. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'traits\' -> \'worldMorph\' -> () From: ( | {
@@ -4872,6 +4889,11 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
          setupJail = ( |
              m.
             | 
+            " Prevent restarting manager in jail. This is UGLY.
+              But we cant mount with more granularity atm. 
+            "
+            sys sh: 'cp /dev/null /bin/psyche_boot.sh'.
+
              " raiseError on errors - TODO - make proper handlers "
             sys mkdir_p: baseDirectory IfFail: raiseError.
             m: sys mounter copy.
@@ -5773,6 +5795,7 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
              r.
             | 
             isAwake ifTrue: raiseError.
+            '' = consolePasswordHash ifTrue: [error: 'Please set Console Password'].
             r: runner copyOnWorldRecord: self.
             r wake.
             c: copy update.
