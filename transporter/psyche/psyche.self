@@ -2343,8 +2343,8 @@ otherwise:
              r.
             | 
             " Sometimes this takes a while"
-            r: sys sh: 'service caddy onestatus' ResultInMs: 10000 IfFail: [^ fb value: 'Check for running Caddy failed.'].
-            r shrinkwrapped != 'caddy is not running.').
+            r: sys outputOfCommand: 'service caddy onestatus' Timeout: sys standardTimeout IfTimeout: [^ fb value: 'Check for running Caddy failed.'].
+            r stdout shrinkwrapped != 'caddy is not running.').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
@@ -2567,8 +2567,10 @@ otherwise:
              s.
             | 
             [
-              s: sh: 'ifconfig em0 | grep -w inet | awk \'{print $2}\'' ResultInMs: 1000 IfFail: ''.
-              s: s shrinkwrapped.
+              s: outputOfCommand: 'ifconfig em0 | grep -w inet | awk \'{print $2}\'' 
+                         Timeout: standardTimeout 
+                       IfTimeout: ''.
+              s: s stdout shrinkwrapped.
               '' = s
             ] whileTrue: [ log info: 'Cannot determine ip4 address. Retrying.'.].
             s).
@@ -2898,13 +2900,13 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
              errMsg = 'Could not run jls'.
              r.
             | 
-            r: sh: 'jls -d name' ResultInMs: 100 IfFail: [log error: errMsg].
-            r: (r splitOn: '\n') filterBy: [|:l| l != ''].
+            r: outputOfCommand: 'jls -d name' Timeout: standardTimeout IfTimeout: [log error: errMsg. ^ sequence copyRemoveAll].
+            r: (r stdout splitOn: '\n') filterBy: [|:l| l != ''].
             r).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
-         'Category: support\x7fComment: Only use this manually\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: support\x7fCategory: command\x7fComment: Only use this manually\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          sh: cmd = ( |
             | 
@@ -2912,7 +2914,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
-         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: support\x7fCategory: command\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          sh: cmd IfFail: blk = ( |
              r.
@@ -2923,14 +2925,6 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
-         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         sh: cmd ResultInMs: ms IfFail: blk = ( |
-            | 
-            os outputOfCommand: cmd Timeout: ms IfFail: [blk value: 'Cmd ', cmd, ' failed']).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
          'Category: system\x7fCategory: shutdown\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          shutdown = ( |
@@ -2938,6 +2932,12 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
              sh: 'shutdown -p now' IfFail: [
               log error: 'Shutdown failed'].
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: support\x7fCategory: command with result\x7fComment: 10 seconds\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         standardTimeout = 10000.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
@@ -2966,7 +2966,8 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
          'Category: support\x7fCategory: command with result\x7fComment: Only use interactively - ignores errors\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          stdoutOfCommand: c = ( |
-            | (outputOfCommand: c Timeout: 1000 IfTimeout: raiseError) stdout).
+            | 
+            (outputOfCommand: c Timeout: standardTimeout IfTimeout: raiseError) stdout).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
