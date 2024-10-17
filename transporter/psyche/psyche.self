@@ -1,4 +1,4 @@
- '2024.09.27.01'
+ '2024.10.17.01'
  '
 Copyright 2022-2024 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -78,9 +78,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.09.27.01\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.10.17.01\')\x7fVisibility: public'
         
-         revision <- '2024.09.27.01'.
+         revision <- '2024.10.17.01'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -2935,9 +2935,9 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
-         'Category: support\x7fCategory: command with result\x7fComment: 10 seconds\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: support\x7fCategory: command with result\x7fComment: 2 minutes (for running on very slow systems)\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         standardTimeout = 10000.
+         standardTimeout = 120000.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
