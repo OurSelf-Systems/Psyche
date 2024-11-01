@@ -1,4 +1,4 @@
- '2024.10.17.01'
+ '2024.11.01.01'
  '
 Copyright 2022-2024 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -78,9 +78,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.10.17.01\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.11.01.01\')\x7fVisibility: public'
         
-         revision <- '2024.10.17.01'.
+         revision <- '2024.11.01.01'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -252,10 +252,7 @@ See the LICENSE,d file for license information.
              p.
             | 
             p: askForSlotName: 'password' Default: 'pass123'.
-            c passwordHash: 
-                (sys outputOfCommand: 'caddy hash-password -p ', p 
-                             Timeout: 60000
-                           IfTimeout: raiseError) stdout shrinkwrapped.
+            c passwordHash: sys hashPassword: p IfFail: raiseError.
             c unixConsolePasswordHash: 
                 (sys outputOfCommand: 'echo -n \'', p, '\' | openssl passwd -6 -stdin' 
                              Timeout: 60000
@@ -2319,6 +2316,18 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         hashPassword: p IfFail: blk = ( |
+            | 
+            " 1 minute timeout for slow (eg emulated) systems "
+            (sys outputOfCommand: 'caddy hash-password -p ', p 
+                         Timeout: 60000
+                       IfTimeout: [^ blk value: 'timeout']
+            ) stdout shrinkwrapped).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
          'Category: hostname\x7fComment: This should be one of three types:
 - localhost, ie 127.0.0.1 (assuming ip4)
 - local ip, eg 192.168.1.114 
@@ -3615,7 +3624,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
          password: p = ( |
              h.
             | 
-            h: (sys stdoutOfCommand: 'caddy hash-password -p ', p) shrinkwrapped.
+            h: sys caddy hashPassword: p IfFail: raiseError.
             rawMetadata consolePasswordHash: h.
             rawMetadata writeTo: metadataFilename IfFail: raiseError.
             copy update).
