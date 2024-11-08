@@ -1,4 +1,4 @@
- '2024.11.08.01'
+ '2024.11.09.01'
  '
 Copyright 2022-2024 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -78,9 +78,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.11.08.01\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.11.09.01\')\x7fVisibility: public'
         
-         revision <- '2024.11.08.01'.
+         revision <- '2024.11.09.01'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -252,7 +252,7 @@ See the LICENSE,d file for license information.
              p.
             | 
             p: askForSlotName: 'password' Default: 'pass123'.
-            c passwordHash: sys hashPassword: p IfFail: raiseError.
+            c passwordHash: sys caddy hashPassword: p IfFail: raiseError.
             c unixConsolePasswordHash: 
                 (sys outputOfCommand: 'echo -n \'', p, '\' | openssl passwd -6 -stdin' 
                              Timeout: 60000
