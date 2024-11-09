@@ -1,4 +1,4 @@
- '2024.11.09.01'
+ '2024.11.09.02'
  '
 Copyright 2022-2024 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -78,9 +78,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.11.09.01\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.11.09.02\')\x7fVisibility: public'
         
-         revision <- '2024.11.09.01'.
+         revision <- '2024.11.09.02'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -2447,7 +2447,8 @@ otherwise:
          'Category: config\x7fCategory: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          text_config = ( |
-            | configFilename asFileContents).
+            | 
+            sys readFileFrom: configFilename IfFail: raiseError).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
@@ -2810,9 +2811,9 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
               " Return output of command "
               (os_file exists: flag) ifTrue: [| o |
                     o: commandOutput copy.
-                    o exitCode: exitCode asFileContents shrinkwrapped asInteger.
-                    o stdout: stdout asFileContents.
-                    o stderr: stderr asFileContents.
+                    o exitCode: (readFileFrom: exitCode IfFail: raiseError) shrinkwrapped asInteger.
+                    o stdout: (readFileFrom: stdout IfFail: raiseError).
+                    o stderr: (readFileFrom: stderr IfFail: raiseError).
                     o]
                 False: [fb value: 'Timed out'].
             ] onReturn: [
@@ -2864,6 +2865,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
             f: fileName asInputFileIfError: [
                 f closeIfFail: false.
                 ^ blk value: 'Error: could not open file: ', fileName].
+            0 = f size ifTrue: [^ ''].
             [eof] whileFalse: [
               b: b, (f readIfFail: [|:err|
                 f closeIfFail: false.
