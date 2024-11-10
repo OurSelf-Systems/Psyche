@@ -1,4 +1,4 @@
- '2024.11.09.02'
+ '2024.11.11.01'
  '
 Copyright 2022-2024 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -78,9 +78,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.11.09.02\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.11.11.01\')\x7fVisibility: public'
         
-         revision <- '2024.11.09.02'.
+         revision <- '2024.11.11.01'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -3941,7 +3941,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'firmware' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\' \\\'0.0.7\\\'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\' \\\'0.0.8\\\'
  \\\'
 Copyright 1992-2016 AUTHORS.
 See the legal/LICENSE file for license information and legal/AUTHORS for authors.
@@ -3990,7 +3990,8 @@ See the legal/LICENSE file for license information and legal/AUTHORS for authors
         
          caddyConfigForUser: u IfAbsent: blk = ( |
             | 
-
+            \\\'\\\' = u passwordHash ifTrue: [
+              log warn: \\\'Skipping user \\\', u name asString, \\\' as empty password.\\\'. ^ \\\'\\\'].
             \\\'
               handle_path /\\\', u name asString, \\\'/* {
                 reverse_proxy http://127.0.0.1:608\\\', (desktopNumberForUser: u IfAbsent: [^ blk value]) asString, \\\'
@@ -4255,9 +4256,9 @@ what you think it will.\\\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () From: ( | {
-         \\\'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'0.0.7\\\\\\\')\\\\x7fVisibility: public\\\'
+         \\\'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'0.0.8\\\\\\\')\\\\x7fVisibility: public\\\'
         
-         revision <- \\\'0.0.7\\\'.
+         revision <- \\\'0.0.8\\\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () From: ( | {
@@ -4296,6 +4297,7 @@ IT IS PROVISIONAL - DONT USE THIS\\\\x7fModuleInfo: Module: firmware InitialCont
                             Timeout: 10 * 1000
                              IfFail: raiseError).
             passwordHash: ph shrinkwrapped.
+            firmware reloadCaddy.
             self).
         } | ) 
 
@@ -4386,7 +4388,7 @@ on that display.\\\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\
  globals modules firmware postFileIn
 \' copyMutable)'
         
-         rawString <- ' \'0.0.7\'
+         rawString <- ' \'0.0.8\'
  \'
 Copyright 1992-2016 AUTHORS.
 See the legal/LICENSE file for license information and legal/AUTHORS for authors.
@@ -4435,7 +4437,8 @@ See the legal/LICENSE file for license information and legal/AUTHORS for authors
         
          caddyConfigForUser: u IfAbsent: blk = ( |
             | 
-
+            \'\' = u passwordHash ifTrue: [
+              log warn: \'Skipping user \', u name asString, \' as empty password.\'. ^ \'\'].
             \'
               handle_path /\', u name asString, \'/* {
                 reverse_proxy http://127.0.0.1:608\', (desktopNumberForUser: u IfAbsent: [^ blk value]) asString, \'
@@ -4700,9 +4703,9 @@ what you think it will.\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
-         \'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'0.0.7\\\')\\x7fVisibility: public\'
+         \'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'0.0.8\\\')\\x7fVisibility: public\'
         
-         revision <- \'0.0.7\'.
+         revision <- \'0.0.8\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
@@ -4741,6 +4744,7 @@ IT IS PROVISIONAL - DONT USE THIS\\x7fModuleInfo: Module: firmware InitialConten
                             Timeout: 10 * 1000
                              IfFail: raiseError).
             passwordHash: ph shrinkwrapped.
+            firmware reloadCaddy.
             self).
         } | ) 
 
