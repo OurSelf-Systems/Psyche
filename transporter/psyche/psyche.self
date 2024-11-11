@@ -1,4 +1,4 @@
- '2024.11.11.01'
+ '2024.11.11.02'
  '
 Copyright 2022-2024 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -78,9 +78,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.11.11.01\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.11.11.02\')\x7fVisibility: public'
         
-         revision <- '2024.11.11.01'.
+         revision <- '2024.11.11.02'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -255,7 +255,6 @@ See the LICENSE,d file for license information.
             c passwordHash: sys caddy hashPassword: p IfFail: raiseError.
             c unixConsolePasswordHash: 
                 (sys outputOfCommand: 'echo -n \'', p, '\' | openssl passwd -6 -stdin' 
-                             Timeout: 60000
                            IfTimeout: raiseError) stdout shrinkwrapped.
             self).
         } | ) 
@@ -2322,7 +2321,6 @@ otherwise:
             | 
             " 1 minute timeout for slow (eg emulated) systems "
             (sys outputOfCommand: 'caddy hash-password -p ', p 
-                         Timeout: 60000
                        IfTimeout: [^ blk value: 'timeout']
             ) stdout shrinkwrapped).
         } | ) 
@@ -2352,7 +2350,7 @@ otherwise:
              r.
             | 
             " Sometimes this takes a while"
-            r: sys outputOfCommand: 'service caddy onestatus' Timeout: sys standardTimeout IfTimeout: [^ fb value: 'Check for running Caddy failed.'].
+            r: sys outputOfCommand: 'service caddy onestatus' IfTimeout: [^ fb value: 'Check for running Caddy failed.'].
             r stdout shrinkwrapped != 'caddy is not running.').
         } | ) 
 
@@ -2539,7 +2537,7 @@ otherwise:
              o.
             | 
             o: sys outputOfCommand: 'fetch -o ', out, ' ', url
-                           Timeout: 60 * 60 * 1000
+                           Timeout: 60 * 60 * 1000 "Extra long timeout"
                          IfTimeout: [^ blk value: 'Fetch timed out'].
             o exitCode != 0 ifTrue: [^ blk value: 'Fetch returned exit code ', o exitCode asString, ' ', o stderr].
             self).
@@ -2578,7 +2576,6 @@ otherwise:
             | 
             [
               s: outputOfCommand: 'ifconfig em0 | grep -w inet | awk \'{print $2}\'' 
-                         Timeout: standardTimeout 
                        IfTimeout: ''.
               s: s stdout shrinkwrapped.
               '' = s
@@ -2632,7 +2629,6 @@ otherwise:
             options = '' ifFalse: [ c: c, '-o ', options, ' '].
             c: c, source, ' ', target.
             o: sys outputOfCommand: c
-                           Timeout: 1000 "This shouldn't take more than 1 sec"
                          IfTimeout: [^ handleMountFailed value: 'Timed out'].
             o wasSuccessful ifFalse: [^ handleMountFailed value: 'Returned error: ', o exitCode asString].
             self).
@@ -2688,7 +2684,7 @@ otherwise:
         
          current = ( |
             | 
-            ((sys outputOfCommand: 'mount -p' Timeout: 10 * 1000 IfTimeout: raiseError) stdout shrinkwrapped splitOn: '\n')
+            ((sys outputOfCommand: 'mount -p' IfTimeout: raiseError) stdout shrinkwrapped splitOn: '\n')
               mapBy: [|:line| mountDescriptor copyOnMountOutput: line]).
         } | ) 
 
@@ -2779,6 +2775,14 @@ otherwise:
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: support\x7fCategory: command with result\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         outputOfCommand: commandSource IfTimeout: fb = ( |
+            | outputOfCommand: commandSource
+            Timeout: standardTimeout IfTimeout: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
@@ -2911,7 +2915,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
              errMsg = 'Could not run jls'.
              r.
             | 
-            r: outputOfCommand: 'jls -d name' Timeout: standardTimeout IfTimeout: [log error: errMsg. ^ sequence copyRemoveAll].
+            r: outputOfCommand: 'jls -d name' IfTimeout: [log error: errMsg. ^ sequence copyRemoveAll].
             r: (r stdout splitOn: '\n') filterBy: [|:l| l != ''].
             r).
         } | ) 
@@ -2978,7 +2982,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         
          stdoutOfCommand: c = ( |
             | 
-            (outputOfCommand: c Timeout: standardTimeout IfTimeout: raiseError) stdout).
+            (outputOfCommand: c IfTimeout: raiseError) stdout).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
@@ -2998,7 +3002,8 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
          'Category: system\x7fCategory: files and directories\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          touch: fn IfFail: blk = ( |
-            | outputOfCommand: 'touch ', fn Timeout: 1000 IfTimeout: blk).
+            | 
+            outputOfCommand: 'touch ', fn IfTimeout: blk).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
@@ -3006,7 +3011,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         
          uuidgen = ( |
             | 
-            ((outputOfCommand: 'uuidgen' Timeout: 1000 IfTimeout: raiseError) 
+            ((outputOfCommand: 'uuidgen' IfTimeout: raiseError) 
               stdout shrinkwrapped splitOn: '-') joinUsing: '').
         } | ) 
 
@@ -3047,7 +3052,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
          createDataset: ds IfFail: blk = ( |
              o.
             | 
-            o: sys outputOfCommand: 'zfs create ', ds Timeout: 1000 IfTimeout: [^ blk value].
+            o: sys outputOfCommand: 'zfs create ', ds IfTimeout: [^ blk value].
             o exitCode != 0 ifTrue: [^ blk value: o stderr].
             self).
         } | ) 
@@ -3058,7 +3063,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
          createSnapshotOf: ds Named: sn = ( |
              o.
             | 
-            o: sys outputOfCommand: 'zfs snapshot ', ds, '@', sn Timeout: 1000 IfTimeout: raiseError.
+            o: sys outputOfCommand: 'zfs snapshot ', ds, '@', sn IfTimeout: raiseError.
             o exitCode != 0 ifTrue: [raiseError value: o stderr].
             self).
         } | ) 
@@ -3069,7 +3074,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
          datasetExists: ds = ( |
              o.
             | 
-            o: sys outputOfCommand: 'zfs list -o name -rpH ', ds Timeout: 1000 IfTimeout: raiseError.
+            o: sys outputOfCommand: 'zfs list -o name -rpH ', ds IfTimeout: raiseError.
             o exitCode = 0
                ifTrue: true
                 False: ['dataset does not exist' = ((o stderr splitOn: ':') at: 1)shrinkwrapped
@@ -3083,7 +3088,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
          datasetsAndChildrenUnder: ds = ( |
              o.
             | 
-            o: sys outputOfCommand: 'zfs list -o name -rpH ', ds Timeout: 1000 IfTimeout: raiseError.
+            o: sys outputOfCommand: 'zfs list -o name -rpH ', ds IfTimeout: raiseError.
             o exitCode != 0 ifTrue: [raiseError value: o stderr].
             (o stdout shrinkwrapped splitOn: '\n') asSet).
         } | ) 
@@ -3094,7 +3099,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
          destroyDataset: ds = ( |
              o.
             | 
-            o: sys outputOfCommand: 'zfs destroy -r ', ds Timeout: 1000 IfTimeout: raiseError.
+            o: sys outputOfCommand: 'zfs destroy -r ', ds IfTimeout: raiseError.
             o exitCode != 0 ifTrue: [raiseError value: o stderr].
             self).
         } | ) 
@@ -3108,7 +3113,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
             | 
             s: sys uuidgen.
             createSnapshotOf: ds Named: s.
-            o: sys outputOfCommand: 'zfs send ', ds, '@', s, ' | zfs recv ', nds Timeout: 1000 IfTimeout: raiseError.
+            o: sys outputOfCommand: 'zfs send ', ds, '@', s, ' | zfs recv ', nds IfTimeout: raiseError.
             o exitCode != 0 ifTrue: [raiseError value: o stderr].
             self).
         } | ) 
@@ -3119,7 +3124,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
          mountpointOfDataset: ds = ( |
              o.
             | 
-            o: sys outputOfCommand: 'zfs get -o value -H mountpoint ', ds Timeout: 1000 IfTimeout: raiseError.
+            o: sys outputOfCommand: 'zfs get -o value -H mountpoint ', ds IfTimeout: raiseError.
             o exitCode != 0 ifTrue: [raiseError value: o stderr].
             o stdout shrinkwrapped).
         } | ) 
