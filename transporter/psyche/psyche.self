@@ -1882,6 +1882,16 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         setFontPath = ( |
+            | 
+            os command: 'mkfontdir /usr/local/share/fonts/100dpi'.
+            os command: 'DISPLAY=:1 xset fp+ /usr/local/share/fonts/100dpi'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: network\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          setHostname = ( |
@@ -1997,6 +2007,7 @@ otherwise:
             os command: 'daemon autocutsel'.
             [process this sleep: 2000].
             os command: 'DISPLAY=:1 daemon /usr/local/bin/ratpoison'.
+            setFontPath.
             self).
         } | ) 
 
