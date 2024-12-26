@@ -1998,6 +1998,13 @@ otherwise:
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
+         startRatpoison = ( |
+            | os command: 'DISPLAY=:1 daemon /usr/local/bin/ratpoison'. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
          startX = ( |
             | 
             os command: 'daemon /usr/local/bin/Xvnc :1 -geometry ', systemDesktopSize, ' -depth 24 -SecurityTypes None,TLSNone'.
@@ -2006,7 +2013,7 @@ otherwise:
             os command: 'daemon /usr/local/bin/vncconfig -display :1 -nowin'.
             os command: 'daemon autocutsel'.
             [process this sleep: 2000].
-            os command: 'DISPLAY=:1 daemon /usr/local/bin/ratpoison'.
+            startRatpoison.
             setFontPath.
             self).
         } | ) 
