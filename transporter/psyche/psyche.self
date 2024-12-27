@@ -1,4 +1,4 @@
- '2024.11.11.02'
+ '2024.12.27.01'
  '
 Copyright 2022-2024 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -78,9 +78,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.11.11.02\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.12.27.01\')\x7fVisibility: public'
         
-         revision <- '2024.11.11.02'.
+         revision <- '2024.12.27.01'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
