@@ -1,4 +1,4 @@
- '2024.12.27.01'
+ '2024.11.11.02'
  '
 Copyright 2022-2024 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -78,9 +78,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.12.27.01\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.11.11.02\')\x7fVisibility: public'
         
-         revision <- '2024.12.27.01'.
+         revision <- '2024.11.11.02'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -224,6 +224,18 @@ See the LICENSE,d file for license information.
          'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'rsa\')'
         
          systemDesktopSSHKey <- 'rsa'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'disabled\')'
+        
+         tailscale <- 'disabled'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
+        
+         tailscale_auth_key <- ''.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> 'default' -> () From: ( | {
@@ -1738,6 +1750,8 @@ otherwise:
               openDesktop].
             conf developmentMachine = 'enabled'
                ifTrue: setupForDevelopment.
+            conf tailscale = 'enabled'
+               ifTrue: [ startTailscaleWithKey: conf tailscale_auth_key ].
             worlds worldRecord runner ensureProperSetupOnBoot.
             welcomeMessage print.
             self).
@@ -2000,6 +2014,20 @@ otherwise:
         
          startRatpoison = ( |
             | os command: 'DISPLAY=:1 daemon /usr/local/bin/ratpoison'. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: network\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         startTailscaleWithKey: k = ( |
+            | 
+            (k includesSubstring: 'tskey-auth-') ifFalse: [
+              log error: 'Tailscale enabled but bad or no auth key'.
+              ^ self].
+            sys sh: 'tailscaled onestart'.
+            sys sh: 'tailscale up --auth-key=', k.
+            log info: 'Started tailscale'.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -2589,11 +2617,24 @@ otherwise:
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
          'Category: system\x7fCategory: ifconfig\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
+         local_interface = ( |
+             lines.
+             s.
+            | 
+            s: outputOfCommand: 'ifconfig' IfTimeout: ''.
+            lines: s stdout splitOn: '\n'.
+            [ todo ].
+            'em0').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: ifconfig\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
          local_ip4 = ( |
              s.
             | 
             [
-              s: outputOfCommand: 'ifconfig em0 | grep -w inet | awk \'{print $2}\'' 
+              s: outputOfCommand: 'ifconfig ', local_interface, ' | grep -w inet | awk \'{print $2}\'' 
                        IfTimeout: ''.
               s: s stdout shrinkwrapped.
               '' = s
