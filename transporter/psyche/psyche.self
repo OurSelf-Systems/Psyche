@@ -1,4 +1,4 @@
- '2024.11.11.02'
+ '2025.02.12.01'
  '
 Copyright 2022-2024 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -69,6 +69,7 @@ See the LICENSE,d file for license information.
             resend.postFileIn.
             snapshotAction addSchedulerInitialMessage:
               message copy receiver: psyche Selector: 'boot'.
+            [ boot ]. " To make it easier to find "
             " Prevent prompt.self from starting a second mainInputLoop "
             snapshotAction schedulerInitialMessages:
               snapshotAction schedulerInitialMessages copyFilteredBy: [|:m|
@@ -78,9 +79,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2024.11.11.02\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2025.02.12.01\')\x7fVisibility: public'
         
-         revision <- '2024.11.11.02'.
+         revision <- '2025.02.12.01'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -533,10 +534,11 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
             | 
             'You can access the desktop for this world at:
                 https://', sys caddy hostname, '/control/
-            with the username \'control\' and the password chosen at installation.
-
-
-            ').
+            ',
+            (sys tailscale isUp ifTrue: ['or\n    https://', (sys tailscale fullyQualifiedDomainNameIfFail: [
+                                                     log warn: 'Couldn\'t find Tailscale FQN'.
+                                                     'unknown.example.com']), '/control/'] False: ''),
+            '\nwith the username \'control\' and the password chosen at installation.\n\n\n').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -1745,13 +1747,13 @@ otherwise:
             handleAlternateObjectRoot withConf: conf.
             setHostname.
             setRootPassword: conf unixConsolePasswordHash.
+            conf tailscale = 'enabled'
+               ifTrue: [ startTailscaleWithKey: conf tailscale_auth_key ].
             conf systemDesktop = 'enabled' ifTrue: [
               setFirewall: conf systemDesktopAccessType.
               openDesktop].
             conf developmentMachine = 'enabled'
                ifTrue: setupForDevelopment.
-            conf tailscale = 'enabled'
-               ifTrue: [ startTailscaleWithKey: conf tailscale_auth_key ].
             worlds worldRecord runner ensureProperSetupOnBoot.
             welcomeMessage print.
             self).
@@ -2031,7 +2033,7 @@ otherwise:
                          IfTimeout: [|:output| output].
             o wasSuccessful
               ifTrue: [log info: 'Started tailscale']
-               False: [log warn: o stderr].
+               False: [log warn: 'tailscale: ', o stderr].
             self).
         } | ) 
 
@@ -2081,7 +2083,8 @@ otherwise:
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          configFooter = ( |
-            | '\n}').
+            | 
+            '\n').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> () From: ( | {
@@ -2092,11 +2095,8 @@ otherwise:
             | 
             h: '
             http://%IP% {
-              redir https://%IP%{uri} permanent
-            }
-
-            %IP% {
-            '.
+              error * "Not authorised - try https" 403
+            }\n\n'.
             h: h replace: '%IP%' With: sys caddy hostname.
             h).
         } | ) 
@@ -2227,7 +2227,27 @@ otherwise:
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> () From: ( | {
          'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         renderConfig = ( |
+         renderConfigWrapping: str = ( |
+             h.
+            | 
+            h: '%IP% {\n'.
+            h: h replace: '%IP%' With: sys caddy hostname.
+            h: h, str, '\n\n}'. 
+
+            sys tailscale isUp ifTrue: [
+              h: h, '\n%HOST% {\n'.
+              h: h replace: '%HOST%' With: sys tailscale fullyQualifiedDomainNameIfFail: [
+                                                     log warn: 'Couldn\'t find Tailscale FQN'.
+                                                     'unknown.example.com'].
+              h: h, str, '\n}\n']. 
+
+            h).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> () From: ( | {
+         'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         renderCoreConfig = ( |
              ba.
              hp.
              s.
@@ -2280,7 +2300,7 @@ otherwise:
         
          toString = ( |
             | 
-            renderMeta, configHeader, renderConfig, configFooter).
+            renderMeta, configHeader, (renderConfigWrapping: renderCoreConfig), configFooter).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
@@ -3066,6 +3086,54 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
             sh: 'umount ', pwd, '/', n, '/dev' IfFail: [
               log error: 'Failed to unmount /dev in stopped jail named ', n].
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: tailscale\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         tailscale = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'tailscale' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche sys tailscale.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'tailscale' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         fullyQualifiedDomainNameIfFail: blk = ( |
+             end.
+             s.
+             start.
+            | 
+            s: (sys outputOfCommand: 'tailscale dns status'
+                    IfTimeout: (| stdout = ''. value = (self) |)) stdout.
+            start: s findSubstring: 'device at'
+                          IfPresent: [|:i | i + 'device at' size + 1]
+                          IfAbsent: [^ blk value].
+            end: s findSubstring: '\n'
+                      StartingAt: start
+                       IfPresent: [|:i | i - 1] "Chop off final ."
+                        IfAbsent: [^ blk value].
+            s copyFrom: start UpTo: end).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'tailscale' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         isUp = ( |
+            | (sys outputOfCommand: 'tailscale status' IfTimeout: false) wasSuccessful).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'tailscale' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'tailscale' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
