@@ -2020,13 +2020,18 @@ otherwise:
          'Category: network\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          startTailscaleWithKey: k = ( |
+             o.
             | 
             (k includesSubstring: 'tskey-auth-') ifFalse: [
               log error: 'Tailscale enabled but bad or no auth key'.
               ^ self].
-            sys sh: 'tailscaled onestart'.
-            sys sh: 'tailscale up --auth-key=', k.
-            log info: 'Started tailscale'.
+            sys sh: 'service tailscaled onestart'.
+            o: sys outputOfCommand: 'tailscale up --auth-key=', k
+                           Timeout: 30 * 1000 
+                         IfTimeout: [|:output| output].
+            o wasSuccessful
+              ifTrue: [log info: 'Started tailscale']
+               False: [log warn: o stderr].
             self).
         } | ) 
 
@@ -2549,6 +2554,12 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'commandOutput' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (false)'
+        
+         timedOut <- bootstrap stub -> 'globals' -> 'false' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'commandOutput' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          wasSuccessful = ( |
@@ -2878,7 +2889,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
                     o stdout: (readFileFrom: stdout IfFail: raiseError).
                     o stderr: (readFileFrom: stderr IfFail: raiseError).
                     o]
-                False: [fb value: 'Timed out'].
+                False: [fb value: commandOutput copy timedOut: true]. "Return with a blank commandOutput"
             ] onReturn: [
               os unlink: stdout    IfFail: [].
               os unlink: stderr    IfFail: [].
