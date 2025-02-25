@@ -128,6 +128,12 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         clearScreen = '\x1bc'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          config = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'config' -> () From: ( |
@@ -1755,7 +1761,7 @@ otherwise:
             conf developmentMachine = 'enabled'
                ifTrue: setupForDevelopment.
             worlds worldRecord runner ensureProperSetupOnBoot.
-            welcomeMessage print.
+            clearScreen print. welcomeMessage print.
             self).
         } | ) 
 
@@ -1776,9 +1782,10 @@ otherwise:
             startCaddy.
             preferences desktop backgroundColor: (paint named: 'azure').
             desktop isOpen 
-             ifTrue: [desktop restartSuppressedFlag: false. 
-                      desktop returnFromSnapshot]
+             ifTrue: [desktop returnFromSnapshot]
               False: [desktop open].
+            desktop suppressRestart. "Needed to ensure that the only opening path is here.
+                                      Sets desktop restartSuppressedFlag: true"
             self).
         } | ) 
 
@@ -2092,13 +2099,22 @@ otherwise:
         
          configHeader = ( |
              h.
+             ts.
             | 
             h: '
             http://%IP% {
               error * "Not authorised - try https" 403
             }\n\n'.
             h: h replace: '%IP%' With: sys caddy hostname.
-            h).
+
+            sys tailscale isUp ifTrue: [
+              ts: '\nhttp://%HOST% {\nerror * "Not authorised - try https" 403\n}\n'.
+              ts: ts replace: '%HOST%' With: sys tailscale fullyQualifiedDomainNameIfFail: [
+                                                     log warn: 'Couldn\'t find Tailscale FQN'.
+                                                     'unknown.example.com'].
+              ]. 
+
+            h, ts).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> 'caddyConfigPrototype' -> () From: ( | {
@@ -3416,7 +3432,7 @@ browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpres
         
          welcomeMessage = ( |
             | 
-            '\n\n\n\nW E L C O M E   T O   P S Y C H E\n\nVersion: ', version, '\n\n\n', 
+            '\nW E L C O M E   T O   P S Y C H E\n\nVersion: ', version, '\n\n\n', 
             'This is the console for the Control world.\n', desktopMessage).
         } | ) 
 
