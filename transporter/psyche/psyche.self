@@ -2420,7 +2420,8 @@ otherwise:
         
          hostname = ( |
             | 
-            'automatic' = rawHostname ifTrue:[^ sys local_ip4]. rawHostname).
+            'automatic' = rawHostname ifTrue:[
+               ^ sys ifconfig local_ip4_ifFail: '127.0.0.1']. rawHostname).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
@@ -2664,29 +2665,100 @@ otherwise:
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
          'Category: system\x7fCategory: ifconfig\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
+         ifconfig = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche sys ifconfig.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
+         'Category: prototypes\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         bridge = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> 'bridge' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche sys ifconfig bridge.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> 'bridge' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         asStringForIfConfig = ( |
+            | 'bridge', id asString).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> 'bridge' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         copyFromName: str IfInvalid: blk = ( |
+             n.
+             ns.
+             s.
+            | 
+            'bridge' = (str slice: 0 @ ('bridge' size)) ifFalse: [^ blk value: 'invalid bridge name'].
+            ns: str slice: ('bridge' size) @ infinity.
+            n: ns asIntegerIfFail: [^ blk value: 'invalid bridge name'].
+            copy id: n).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> 'bridge' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         id.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> 'bridge' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
+         'Category: create\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         createBridgeIfFail: blk = ( |
+            | 
+            sys shelloutCommand: 'ifconfig bridge create'
+                      IfTimeout: [blk value: 'Timed out']
+                        IfError: [blk value: 'Call to ifconfig failed']
+                      IfSuccess: [|:o. b |
+                         bridge copyFromName: o stdout shrinkwrapped IfInvalid: 'Invalid response from ifconfig']).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
+         'Category: query system\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
          local_interface = ( |
              lines.
              s.
             | 
-            s: outputOfCommand: 'ifconfig' IfTimeout: ''.
+            s: sys outputOfCommand: 'ifconfig' IfTimeout: ''.
             lines: s stdout splitOn: '\n'.
             [ todo ].
             'em0').
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
-         'Category: system\x7fCategory: ifconfig\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
+         'Category: query system\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         local_ip4 = ( |
-             s.
+         local_ip4_ifFail: blk = ( |
             | 
-            [
-              s: outputOfCommand: 'ifconfig ', local_interface, ' | grep -w inet | awk \'{print $2}\'' 
-                       IfTimeout: ''.
-              s: s stdout shrinkwrapped.
-              '' = s
-            ] whileTrue: [ log info: 'Cannot determine ip4 address. Retrying.'.].
-            s).
+            sys shelloutCommand: 'ifconfig ', local_interface, ' | grep -w inet | awk \'{print $2}\'' 
+                      IfTimeout: [blk value: 'Timed out']
+                        IfError: [blk value: 'Call to ifconfig failed']
+                      IfSuccess: [|:o| ^ o stdout shrinkwrapped]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
@@ -2884,11 +2956,63 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: support\x7fCategory: command with result 2\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         outputOfCommand: commandSource = ( |
+            | 
+             outputOfCommand: commandSource
+            Timeout: standardTimeout).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
          'Category: support\x7fCategory: command with result\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          outputOfCommand: commandSource IfTimeout: fb = ( |
             | outputOfCommand: commandSource
             Timeout: standardTimeout IfTimeout: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: support\x7fCategory: command with result 2\x7fComment: Attempts to run the os command commandSource
+in a separate OS-level process. Redirects the
+text output of the command into a temporary
+file, and returns the contents of that file
+after process has finished.\x7fModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
+        
+         outputOfCommand: commandSource Timeout: ms = ( |
+             endTime.
+             exitCode.
+             flag.
+             outputBase.
+             stderr.
+             stdout.
+            | 
+              outputBase: os_file temporaryFileName.
+              flag:     outputBase, '.flag'.
+              exitCode: outputBase, '.exit'.
+              stdout:   outputBase, '.stdout'.
+              stderr:   outputBase, '.stderr'.
+
+              " We don't timeout, if timeout is infinite in length "
+              ms = infinity ifFalse: [endTime: time current addMsec: ms].
+
+             [
+              os command: '( ', commandSource, ' > ', stdout, ' 2> ', stderr, ' ; echo $? > ', exitCode, ' ; echo finished > ', flag, ' ) & ' IfFail: [|:e| ^ fb value: e ].
+              [ ((ms != infinity) && [time current > endTime]) || (os_file exists: flag) ] whileFalse.
+              " Return output of command "
+              (os_file exists: flag) ifTrue: [| o |
+                    o: commandOutput copy.
+                    o exitCode: (readFileFrom: exitCode IfFail: raiseError) shrinkwrapped asInteger.
+                    o stdout: (readFileFrom: stdout IfFail: raiseError).
+                    o stderr: (readFileFrom: stderr IfFail: raiseError).
+                    o]
+                False: [commandOutput copy timedOut: true]. "Return with a blank commandOutput"
+            ] onReturn: [
+              os unlink: stdout    IfFail: [].
+              os unlink: stderr    IfFail: [].
+              os unlink: flag      IfFail: [].
+              os unlink: exitCode  IfFail: [].
+            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
@@ -2921,6 +3045,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
               " Return output of command "
               (os_file exists: flag) ifTrue: [| o |
                     o: commandOutput copy.
+                    o timedOut: false.
                     o exitCode: (readFileFrom: exitCode IfFail: raiseError) shrinkwrapped asInteger.
                     o stdout: (readFileFrom: stdout IfFail: raiseError).
                     o stderr: (readFileFrom: stderr IfFail: raiseError).
@@ -3043,6 +3168,26 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
             r:  os command: cmd.
             r = 0 ifFalse: [^ blk value: r].
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: support\x7fCategory: command with result 2\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         shelloutCommand: cmd IfTimeout: timeoutBlk IfError: errorBlk IfSuccess: successBlk = ( |
+            | 
+            shelloutCommand: cmd Timeout: standardTimeout IfTimeout: timeoutBlk IfError: errorBlk IfSuccess: successBlk).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: support\x7fCategory: command with result 2\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         shelloutCommand: cmd Timeout: ms IfTimeout: timeoutBlk IfError: errorBlk IfSuccess: successBlk = ( |
+             o.
+            | 
+            o: outputOfCommand: cmd Timeout: ms.
+            o timedOut ifTrue: [^ timeoutBlk value: o].
+            o wasSuccessful ifFalse: [^ errorBlk value: o].
+            successBlk value: o).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
