@@ -2726,9 +2726,9 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
-         'Category: query system\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: query system\x7fComment: NOTE: PLACEHOLDER ONLY, DOESN\'T REALLY WORK\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         local_interface = ( |
+         localInterface = ( |
              lines.
              s.
             | 
@@ -2743,7 +2743,7 @@ otherwise:
         
          local_ip4_ifFail: blk = ( |
             | 
-            sys shelloutCommand: 'ifconfig ', local_interface, ' | grep -w inet | awk \'{print $2}\'' 
+            sys shelloutCommand: 'ifconfig ', localInterface, ' | grep -w inet | awk \'{print $2}\'' 
                       IfTimeout: [blk value: 'Timed out']
                         IfError: [blk value: 'Call to ifconfig failed']
                       IfSuccess: [|:o| ^ o stdout shrinkwrapped]).
