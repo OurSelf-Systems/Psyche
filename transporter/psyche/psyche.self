@@ -2726,6 +2726,59 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
+         'Category: prototypes\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         epair = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> 'epair' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche sys ifconfig epair.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> 'epair' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         asStringForIfConfig = ( |
+            | 
+            'epair', id asString, side asString).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> 'epair' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         copyFromName: str IfInvalid: blk = ( |
+             err.
+             n.
+             ns.
+             s.
+             sd.
+            | 
+            err: [^ blk value: 'invalid epair name'].
+            'epair' = (str slice: 0 @ ('epair' size)) ifFalse: err.
+            ns: str slice: ('epair' size) @ infinity.
+            sd: ns last. ('a' = sd) || ('b' = sd) ifFalse: err.
+            n: (ns slice: 0 @ -1) asIntegerIfFail: err.
+            (copy id: n) side: sd).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> 'epair' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         id.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> 'epair' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> 'epair' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
+        
+         side <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
          'Category: query system\x7fComment: NOTE: PLACEHOLDER ONLY, DOESN\'T REALLY WORK\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          localInterface = ( |
