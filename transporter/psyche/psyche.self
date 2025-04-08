@@ -322,6 +322,12 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         consoleLogFile = '/var/log/console.log'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: daemons\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          daemons = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> () From: ( |
@@ -2003,7 +2009,7 @@ otherwise:
          startNoVNC = ( |
             | 
             os command: 'chmod a+x /opt/noVNC/utils/novnc_proxy'.
-            os command: 'daemon -f /opt/noVNC/utils/novnc_proxy --listen 6080 --vnc :5901'.
+            os command: 'daemon -o ', consoleLogFile, ' -f /opt/noVNC/utils/novnc_proxy --listen 6080 --vnc :5901'.
             self).
         } | ) 
 
@@ -2022,7 +2028,8 @@ otherwise:
          'Category: desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          startRatpoison = ( |
-            | os command: 'DISPLAY=:1 daemon /usr/local/bin/ratpoison'. self).
+            | 
+            os command: 'DISPLAY=:1 daemon -o', consoleLogFile, ' /usr/local/bin/ratpoison'. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -2049,11 +2056,11 @@ otherwise:
         
          startX = ( |
             | 
-            os command: 'daemon /usr/local/bin/Xvnc :1 -geometry ', systemDesktopSize, ' -depth 24 -SecurityTypes None,TLSNone'.
+            os command: 'daemon -o ', consoleLogFile, ' /usr/local/bin/Xvnc :1 -geometry ', systemDesktopSize, ' -depth 24 -SecurityTypes None,TLSNone'.
             "Pause until Xvnc has started "
             [ 0 = (os command: 'ls /tmp/.X11-unix/X1 >/dev/null 2>&1 ')] whileFalse.
-            os command: 'daemon /usr/local/bin/vncconfig -display :1 -nowin'.
-            os command: 'daemon autocutsel'.
+            os command: 'daemon -o ', consoleLogFile, ' /usr/local/bin/vncconfig -display :1 -nowin'.
+            os command: 'daemon -o ', consoleLogFile, ' autocutsel'.
             [process this sleep: 2000].
             startRatpoison.
             setFontPath.
@@ -2107,6 +2114,7 @@ otherwise:
             }\n\n'.
             h: h replace: '%IP%' With: sys caddy hostname.
 
+            ts: ''.
             sys tailscale isUp ifTrue: [
               ts: '\nhttp://%HOST% {\nerror * "Not authorised - try https" 403\n}\n'.
               ts: ts replace: '%HOST%' With: sys tailscale fullyQualifiedDomainNameIfFail: [
@@ -5370,7 +5378,7 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
             ensureTtydDirectories.
             dtach: 'dtach -a ', baseDirectory, dtachSocket, ' '.
             ttyd: 'ttyd -W -i ', ttydSock, ' '.
-            daemon: 'daemon -f -p ', ttydPid, ' '.
+            daemon: 'daemon -o ', psyche consoleLogFile, ' -f -p ', ttydPid, ' '.
             cmd: daemon, ttyd, dtach.
             sys sh: cmd.
             self).
