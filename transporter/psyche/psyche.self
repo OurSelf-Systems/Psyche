@@ -2787,16 +2787,15 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
-         'Category: query system\x7fComment: NOTE: PLACEHOLDER ONLY, DOESN\'T REALLY WORK\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: query system\x7fComment: Just returns first active\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          localInterface = ( |
              lines.
              s.
             | 
-            s: sys outputOfCommand: 'ifconfig' IfTimeout: ''.
+            s: sys outputOfCommand: 'pciconf -lv | grep ethernet -B4 | grep class= | cut -d@ -f1' IfTimeout: ''.
             lines: s stdout splitOn: '\n'.
-            [ todo ].
-            'em0').
+            lines first).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
