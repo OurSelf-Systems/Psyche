@@ -2787,15 +2787,17 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
-         'Category: query system\x7fComment: Just returns first active\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: query system\x7fComment: Just returns first active that isn\'t loopback\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          localInterface = ( |
-             lines.
+             i.
              s.
             | 
-            s: sys outputOfCommand: 'pciconf -lv | grep ethernet -B4 | grep class= | cut -d@ -f1' IfTimeout: ''.
-            lines: s stdout splitOn: '\n'.
-            lines first).
+            s: sys outputOfCommand: 'ifconfig -l' IfTimeout: ''.
+            i: s stdout splitOn: ' '.
+            "Filter out loopbacks"
+            i: i filterBy: [|:x| (x slice: 0@2) != 'lo'].
+            i first).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
