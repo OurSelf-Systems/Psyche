@@ -8,6 +8,38 @@ See the LICENSE,d file for license information.
 
  '-- Module body'
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'log' -> 'prototypeHandlers' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         allToFile = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'log' -> 'prototypeHandlers' -> 'allToFile' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals log prototypeHandlers allToFile.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'log' -> 'prototypeHandlers' -> 'allToFile' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         handle: e = ( |
+             cleanError.
+            | 
+            cleanError: (e copy ansiString replace: '\n' With: ' ').
+            psyche sys sh: 'echo "', cleanError, '" >> ',  psyche consoleLogFile.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'log' -> 'prototypeHandlers' -> 'allToFile' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         name = 'allToFile'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'log' -> 'prototypeHandlers' -> 'allToFile' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         p* = bootstrap stub -> 'globals' -> 'log' -> 'prototypeHandlers' -> 'baseHandler' -> ().
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
@@ -870,6 +902,11 @@ SlotsToOmit: parent.
               (((ui2Button copy label: 'Open Unix Terminal')
                  scriptBlock: [event sourceHand attach:
                                   terminalEmulator terminalMorph copy])
+                 target: self).
+            mb addMorphLast:
+              (((ui2Button copy label: 'System Logs')
+                 scriptBlock: [event sourceHand attach:
+                                  terminalEmulator terminalMorph copyOnShell: '/bin/sh -i -c "tail -f ', psyche consoleLogFile, '"'])
                  target: self).
             mb addMorphLast: transparentSpacerMorph copyH: 6.
             mb addMorphLast:
@@ -1767,7 +1804,9 @@ otherwise:
             conf developmentMachine = 'enabled'
                ifTrue: setupForDevelopment.
             worlds worldRecord runner ensureProperSetupOnBoot.
+            setupLogging.
             clearScreen print. welcomeMessage print.
+            users owner displayHostName: sys caddy hostname.
             self).
         } | ) 
 
@@ -1988,6 +2027,13 @@ otherwise:
         
          value = ( |
             | installSSHKeys. setGitDetails. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: boot\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         setupLogging = ( |
+            | log dispatcher removeAll. log dispatcher add: log prototypeHandlers allToFile. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
