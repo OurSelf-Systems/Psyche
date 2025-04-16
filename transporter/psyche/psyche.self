@@ -903,10 +903,11 @@ SlotsToOmit: parent.
                  scriptBlock: [event sourceHand attach:
                                   terminalEmulator terminalMorph copy])
                  target: self).
+            mb addMorphLast: transparentSpacerMorph copyH: 6.
             mb addMorphLast:
               (((ui2Button copy label: 'System Logs')
                  scriptBlock: [event sourceHand attach:
-                                  terminalEmulator terminalMorph copyOnShell: '/bin/sh -i -c "tail -f ', psyche consoleLogFile, '"'])
+                                  terminalEmulator terminalMorph copyOnShell: '/usr/bin/tail -f ', psyche consoleLogFile])
                  target: self).
             mb addMorphLast: transparentSpacerMorph copyH: 6.
             mb addMorphLast:
