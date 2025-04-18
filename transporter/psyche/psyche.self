@@ -2161,6 +2161,9 @@ otherwise:
              ts.
             | 
             h: '
+            {
+              grace_period 1ns
+            }
             http://%IP% {
               error * "Not authorised - try https" 403
             }\n\n'.
@@ -2614,7 +2617,8 @@ otherwise:
          'Category: config\x7fCategory: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          validateConfig = ( |
-            | sys sh: 'service caddy onereload --validate' IfFail: false. true).
+            | 
+            sys sh: 'service caddy onereload --validate' IfFail: [^ false]. true).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
@@ -4224,20 +4228,13 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
-         'Category: desktops\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: caddy\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         deregisterDesktopsWithCaddy = ( |
+         deregisterWithCaddy = ( |
             | 
-            psyche sys caddy deregisterPath: '/', id, '/desktop/'.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
-         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         deregisterTtydWithCaddy = ( |
-            | 
-            psyche sys caddy deregisterPath: '/', id, '/console/'.
+            psyche sys caddy changeConfig: [|:c|
+              c deregisterPath: '/', id, '/console/'.
+              c deregisterPath: '/', id, '/desktop/'].
             self).
         } | ) 
 
@@ -5294,26 +5291,18 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
-         'Category: desktops\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: caddy\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         registerDesktopsWithCaddy = ( |
+         registerWithCaddy = ( |
             | 
-            psyche sys caddy 
-               registerPath: '/', id, '/desktop/'
-                   ForProxy: 'unix/', baseDirectory, '/tmp/desktop.socket'.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
-         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         registerTtydWithCaddy = ( |
-            | 
-            psyche sys caddy 
-               registerPath: '/', id, '/console/'
+            "Register multiple changes in one reload"
+            psyche sys caddy changeConfig: [|:c|
+             c registerPath: '/', id, '/console/'
                    ForProxy: 'unix/', ttydSock
                    Username: 'console'
                PasswordHash: worldRecord consolePasswordHash.
+             c registerPath: '/', id, '/desktop/'
+                   ForProxy: 'unix/', baseDirectory, '/tmp/desktop.socket'].
             self).
         } | ) 
 
@@ -5366,11 +5355,16 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
         
          sleep = ( |
             | 
+            log debug: 'Starting to sleep world'.
+            log debug: 'Stopping jail'.
             stopJail. 
+            log debug: 'Destroying jail'.
             destroyJail. 
+            log debug: 'Stopping ttyd'.
             stopTtyd. 
-            deregisterTtydWithCaddy.
-            deregisterDesktopsWithCaddy.
+            log debug: 'Deregistering with caddy'.
+            "deregisterWithCaddy."
+            log debug: 'World is asleep'.
             self).
         } | ) 
 
@@ -5519,12 +5513,18 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
         
          wake = ( |
             | 
+            log debug: 'Starting to wake world'.
+            log debug: 'Ensure template'.
             ensureTemplate. 
+            log debug: 'Setup jail'.
             setupJail. 
+            log debug: 'Start jail'.
             startJail. 
+            log debug: 'Start ttyd'.
             startTtyd.
-            registerTtydWithCaddy.
-            registerDesktopsWithCaddy.
+            log debug: 'Register with caddy'.
+            "registerWithCaddy."
+            log debug: 'World is awake'.
             self).
         } | ) 
 
