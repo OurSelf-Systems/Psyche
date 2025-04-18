@@ -1,4 +1,4 @@
- '2025.02.12.01'
+ '2025.04.17.01'
  '
 Copyright 2022-2024 OurSelf-Systems.
 See the LICENSE,d file for license information.
@@ -111,9 +111,9 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2025.02.12.01\')\x7fVisibility: public'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'2025.04.17.01\')\x7fVisibility: public'
         
-         revision <- '2025.02.12.01'.
+         revision <- '2025.04.17.01'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'psyche' -> () From: ( | {
@@ -890,6 +890,11 @@ SlotsToOmit: parent.
             mb addMorphLast:
               (((ui2Button copy label: 'Refresh')
                  scriptBlock: [target refresh])
+                 target: self).
+            mb addMorphLast: transparentSpacerMorph copyH: 6.
+            mb addMorphLast:
+              (((ui2Button copy label: 'New Empty')
+                 scriptBlock: [psyche worlds worldRecord duplicateEmpty. target refresh])
                  target: self).
             mb addMorphLast: transparentSpacerMorph copyH: 6.
             mb addMorphLast:
