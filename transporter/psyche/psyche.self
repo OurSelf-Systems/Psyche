@@ -2414,6 +2414,12 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
+         'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         configFile = '/usr/local/etc/caddy/Caddyfile'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
          'Category: config\x7fCategory: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          configFilename = '/usr/local/etc/caddy/Caddyfile'.
@@ -2500,9 +2506,9 @@ otherwise:
          isRunningIfFail: fb = ( |
              r.
             | 
-            " Sometimes this takes a while"
-            r: sys outputOfCommand: 'service caddy onestatus' IfTimeout: [^ fb value: 'Check for running Caddy failed.'].
-            r stdout shrinkwrapped != 'caddy is not running.').
+            " This is just a place holder "
+            r: sys outputOfCommand: 'ps x' IfTimeout: [^ fb value: 'Check for running Caddy failed.'].
+            r stdout matchesPattern: '*caddy*').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
@@ -2551,7 +2557,7 @@ otherwise:
         
          reloadConfigIfFail: fb = ( |
             | 
-            sys sh: 'service caddy onereload' IfFail: [^ fb value: 'Reloading caddy config failed.']. self).
+            sys sh: 'caddy reload --config ', configFile. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
@@ -2575,7 +2581,8 @@ otherwise:
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          startIfFail: fb = ( |
-            | sys sh: 'service caddy onestart' IfFail: [^ fb value: 'Starting Caddy failed.']. self).
+            | 
+            sys sh: 'daemon -o /var/log/caddy.log -f caddy run --config ', configFile. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
@@ -2583,7 +2590,7 @@ otherwise:
         
          stopIfFail: fb = ( |
             | 
-            sys sh: 'service caddy onestop' IfFail: [^ fb value: 'Stopping caddy failed.']. self).
+            sys sh: 'caddy stop' IfFail: [^ fb value: 'Stopping caddy failed.']. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
@@ -2618,6 +2625,7 @@ otherwise:
         
          validateConfig = ( |
             | 
+            [^ true ] value.
             sys sh: 'service caddy onereload --validate' IfFail: [^ false]. true).
         } | ) 
 
@@ -2736,6 +2744,42 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
+         'Category: For Jail VNET (NOT WORKING)\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         addEpair: p ToVNETJail: j IfFail: blk = ( |
+            | 
+            sys shelloutCommand: 'ifconfig ', (p copy side: 'b') asStringForIfConfig, ' vnet ', j
+                      IfTimeout: [blk value: 'Timed out']
+                        IfError: [blk value: 'Call to ifconfig failed']
+                      IfSuccess: [|:o. b |
+                         bridge copyFromName: o stdout shrinkwrapped IfInvalid: 'Invalid response from ifconfig']).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
+         'Category: For Jail VNET (NOT WORKING)\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         addPair: p ToBridge: b = ( |
+            | 
+            sys shelloutCommand: 'ifconfig ', b asStringForIfConfig, ' addm ', p asStringForIfConfig
+                      IfTimeout: [blk value: 'Timed out']
+                        IfError: [blk value: 'Call to ifconfig failed']
+                      IfSuccess: [|:o. b |
+                         bridge copyFromName: o stdout shrinkwrapped IfInvalid: 'Invalid response from ifconfig']).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
+         'Category: For Jail VNET (NOT WORKING)\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         addPysicalInterface: p ToBridge: b IfFail: blk = ( |
+            | 
+            sys shelloutCommand: 'ifconfig ', b asStringForIfConfig, ' addm ', p asString
+                      IfTimeout: [blk value: 'Timed out']
+                        IfError: [blk value: 'Call to ifconfig failed']
+                      IfSuccess: [|:o. b |
+                         bridge copyFromName: o stdout shrinkwrapped IfInvalid: 'Invalid response from ifconfig']).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
          'Category: prototypes\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          bridge = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> 'bridge' -> () From: ( |
@@ -2778,7 +2822,24 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
-         'Category: create\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: For Jail VNET (NOT WORKING)\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         bringUpEpair: p OnIP: ip InJail: j HostIP: hip IfFail: blk = ( |
+            | 
+            sys shelloutCommand: 'jexec ', j, ' ifconfig ', (p copy side: 'b') asStringForIfConfig, ' inet ', ip, ' up'
+                      IfTimeout: [blk value: 'Timed out']
+                        IfError: [blk value: 'Call to ifconfig failed']
+                      IfSuccess: [|:o. b |
+                         bridge copyFromName: o stdout shrinkwrapped IfInvalid: 'Invalid response from ifconfig']
+            sys shelloutCommand: 'jexec ', j, ' route add default ', hip
+                      IfTimeout: [blk value: 'Timed out']
+                        IfError: [blk value: 'Call to ifconfig failed']
+                      IfSuccess: [|:o. b |
+                         bridge copyFromName: o stdout shrinkwrapped IfInvalid: 'Invalid response from ifconfig']).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
+         'Category: For Jail VNET (NOT WORKING)\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          createBridgeIfFail: blk = ( |
             | 
@@ -2787,6 +2848,18 @@ otherwise:
                         IfError: [blk value: 'Call to ifconfig failed']
                       IfSuccess: [|:o. b |
                          bridge copyFromName: o stdout shrinkwrapped IfInvalid: 'Invalid response from ifconfig']).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
+         'Category: For Jail VNET (NOT WORKING)\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         createEpairIfFail: blk = ( |
+            | 
+            sys shelloutCommand: 'ifconfig epair create'
+                      IfTimeout: [blk value: 'Timed out']
+                        IfError: [blk value: 'Call to ifconfig failed']
+                      IfSuccess: [|:o. b |
+                         epair copyFromName: o stdout shrinkwrapped IfInvalid: 'Invalid response from ifconfig']).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
@@ -2877,6 +2950,48 @@ otherwise:
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
+         'Category: For Jail VNET (NOT WORKING)\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         test = ( |
+             b.
+             p.
+            | 
+            b: createBridgeIfFail: raiseError.
+            upBridge: b IfFail: raiseError.
+            addPhysicalInterface: localInterface ToBridge: b IfFail: raiseError.
+            p: createEpairIfFail: raiseError.
+            upEpair: p IfFail: raiseError.
+            addEpair: p ToBridge: b IfFail: raiseError.
+            addEpair: p ToVNETJail: raiseError IfFail: raiseError.
+            bringUpEpair: p OnIP: ip InJail: raiseError HostIP: raiseError IfFail: raiseError.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
+         'Category: For Jail VNET (NOT WORKING)\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         upBridge: b IfFail: blk = ( |
+            | 
+            sys shelloutCommand: 'ifconfig ', b asStringForIfConfig, ' up'
+                      IfTimeout: [blk value: 'Timed out']
+                        IfError: [blk value: 'Call to ifconfig failed']
+                      IfSuccess: [|:o. b |
+                         bridge copyFromName: o stdout shrinkwrapped IfInvalid: 'Invalid response from ifconfig']).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( | {
+         'Category: For Jail VNET (NOT WORKING)\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         upEpair: p IfFail: blk = ( |
+            | 
+            sys shelloutCommand: 'ifconfig ', p asStringForIfConfig, ' up'
+                      IfTimeout: [blk value: 'Timed out']
+                        IfError: [blk value: 'Call to ifconfig failed']
+                      IfSuccess: [|:o. b |
+                         bridge copyFromName: o stdout shrinkwrapped IfInvalid: 'Invalid response from ifconfig']).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
@@ -5295,7 +5410,7 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
         
          registerWithCaddy = ( |
             | 
-            "Register multiple changes in one reload"
+            "Register multiple changes in one reload" 
             psyche sys caddy changeConfig: [|:c|
              c registerPath: '/', id, '/console/'
                    ForProxy: 'unix/', ttydSock
@@ -5363,7 +5478,7 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
             log debug: 'Stopping ttyd'.
             stopTtyd. 
             log debug: 'Deregistering with caddy'.
-            "deregisterWithCaddy."
+            deregisterWithCaddy.
             log debug: 'World is asleep'.
             self).
         } | ) 
@@ -5390,7 +5505,7 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
-         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: jail\x7fComment: WARNING: For the moment, inherits the host network.\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          startJailWithSelfOptions: options = ( |
              d.
@@ -5405,7 +5520,7 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
             d: baseDirectory.
             s: dtachSocket.
             " Start jail "
-            sys sh: 'jail -cmr path=\'', d, '\' name=\'', n, '\' persist mount.devfs vnet devfs_ruleset=5 host.hostname=\'', n,  '\' exec.start="/bin/sh /etc/rc"'.
+            sys sh: 'jail -cmr path=\'', d, '\' name=\'', n, '\' persist mount.devfs vnet=inherit devfs_ruleset=5 host.hostname=\'', n,  '\' exec.start="/bin/sh /etc/rc"'.
             " Get jid "
             jid: ((sys stdoutOfCommand: 'jls -n -j ', n, ' jid') shrinkwrapped splitOn: '=') at: 1.
             " Start Self "
@@ -5523,7 +5638,7 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
             log debug: 'Start ttyd'.
             startTtyd.
             log debug: 'Register with caddy'.
-            "registerWithCaddy."
+            registerWithCaddy.
             log debug: 'World is awake'.
             self).
         } | ) 
