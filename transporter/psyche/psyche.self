@@ -354,6 +354,131 @@ See the LICENSE,d file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: console\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         console = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'console' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche console.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'console' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'console' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         pluggableShellBehavior = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'console' -> 'pluggableShellBehavior' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche console pluggableShellBehavior.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'console' -> 'pluggableShellBehavior' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         bash = ( |
+            | 
+            '(Control world will pause while in bash)' printLine.
+            os command: 'bash'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'console' -> 'pluggableShellBehavior' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         clear = ( |
+            | os command: 'clear').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'console' -> 'pluggableShellBehavior' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         help = '
+Console options set out in 
+  psyche console pluggableShellBehavior
+'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'console' -> 'pluggableShellBehavior' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'console' -> 'pluggableShellBehavior' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         reboot = ( |
+            | psyche sys reboot).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'console' -> 'pluggableShellBehavior' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         shutdown = ( |
+            | psyche sys shutdown).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'console' -> () From: ( | {
+         'Category: prompt\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         promptInfoLines = ( |
+             s.
+            | 
+            s: sequence copyRemoveAll.
+            s add: '"help" for help'.
+            s).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'console' -> () From: ( | {
+         'Category: prompt\x7fModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: private'
+        
+         promptPrefix = ( |
+             h.
+             l.
+             p.
+             r.
+             v.
+            | 
+            r: unicode_box_drawings_light_arc_down_and_right.
+            l: unicode_box_drawings_light_arc_up_and_right.
+            h: unicode_box_drawings_light_horizontal.
+            v: unicode_box_drawings_light_vertical.
+            p: '\n', r, h, h, ' Control world console (', users owner hostName, ')\n'. 
+            promptInfoLines do: [|:l| p: p, v, '   ', l, '\n'].
+            p: p, v, '\n', l, h, h, h, h.
+            p).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'console' -> () From: ( | {
+         'Category: prompt\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         unicode_box_drawings_light_arc_down_and_right = '\xe2\x95\xad'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'console' -> () From: ( | {
+         'Category: prompt\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         unicode_box_drawings_light_arc_up_and_right = '\xe2\x95\xb0'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'console' -> () From: ( | {
+         'Category: prompt\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         unicode_box_drawings_light_horizontal = '\xe2\x94\x80'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'console' -> () From: ( | {
+         'Category: prompt\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         unicode_box_drawings_light_vertical = '\xe2\x94\x82'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          consoleLogFile = '/var/log/console.log'.
@@ -4471,7 +4596,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'firmware' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\' \\\'0.0.8\\\'
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\' \\\'0.0.9\\\'
  \\\'
 Copyright 1992-2016 AUTHORS.
 See the legal/LICENSE file for license information and legal/AUTHORS for authors.
@@ -4725,6 +4850,12 @@ caddyConfigForUsers works.\\\\x7fModuleInfo: Module: firmware InitialContents: F
         
          startup = ( |
             | 
+            users owner passwordHash = \\\'\\\' ifTrue: [
+              \\\"We haven\\\'t set the owner password.
+               Use the console password until it is set.\\\"
+              metadata asDictionaryDo: [|:d|
+                users owner passwordHash: 
+                  (d at: \\\'consolePasswordHash\\\' IfAbsent: \\\'\\\')]].
             1 to: 5 Do: [|:n| startXvncOn: n].
             saveCaddyfile.
             startCaddy.
@@ -4786,9 +4917,9 @@ what you think it will.\\\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () From: ( | {
-         \\\'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'0.0.8\\\\\\\')\\\\x7fVisibility: public\\\'
+         \\\'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\\\\\'0.0.9\\\\\\\')\\\\x7fVisibility: public\\\'
         
-         revision <- \\\'0.0.8\\\'.
+         revision <- \\\'0.0.9\\\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \\\'globals\\\' -> \\\'modules\\\' -> \\\'firmware\\\' -> () From: ( | {
@@ -4918,7 +5049,7 @@ on that display.\\\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\
  globals modules firmware postFileIn
 \' copyMutable)'
         
-         rawString <- ' \'0.0.8\'
+         rawString <- ' \'0.0.9\'
  \'
 Copyright 1992-2016 AUTHORS.
 See the legal/LICENSE file for license information and legal/AUTHORS for authors.
@@ -5172,6 +5303,12 @@ caddyConfigForUsers works.\\x7fModuleInfo: Module: firmware InitialContents: Fol
         
          startup = ( |
             | 
+            users owner passwordHash = \'\' ifTrue: [
+              \"We haven\'t set the owner password.
+               Use the console password until it is set.\"
+              metadata asDictionaryDo: [|:d|
+                users owner passwordHash: 
+                  (d at: \'consolePasswordHash\' IfAbsent: \'\')]].
             1 to: 5 Do: [|:n| startXvncOn: n].
             saveCaddyfile.
             startCaddy.
@@ -5233,9 +5370,9 @@ what you think it will.\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
-         \'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'0.0.8\\\')\\x7fVisibility: public\'
+         \'ModuleInfo: Module: firmware InitialContents: InitializeToExpression: (\\\'0.0.9\\\')\\x7fVisibility: public\'
         
-         revision <- \'0.0.8\'.
+         revision <- \'0.0.9\'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> \'globals\' -> \'modules\' -> \'firmware\' -> () From: ( | {
@@ -5520,7 +5657,7 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
             d: baseDirectory.
             s: dtachSocket.
             " Start jail "
-            sys sh: 'jail -cmr path=\'', d, '\' name=\'', n, '\' persist mount.devfs vnet=inherit devfs_ruleset=5 host.hostname=\'', n,  '\' exec.start="/bin/sh /etc/rc"'.
+            sys sh: 'jail -cmr path=\'', d, '\' name=\'', n, '\' persist mount.devfs vnet devfs_ruleset=5 host.hostname=\'', n,  '\' exec.start="/bin/sh /etc/rc"'.
             " Get jid "
             jid: ((sys stdoutOfCommand: 'jls -n -j ', n, ' jid') shrinkwrapped splitOn: '=') at: 1.
             " Start Self "
@@ -6369,6 +6506,19 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
             self).
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'shell' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: public'
+        
+         help = ( |
+            | psyche console pluggableShellBehavior help).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'shell' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         psycheBehavior* = bootstrap stub -> 'globals' -> 'psyche' -> 'console' -> 'pluggableShellBehavior' -> ().
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'morph' -> () From: ( | {
          'Category: roles\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
@@ -6433,6 +6583,14 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
         
          roles = ( |
             | _AddSlots: (| roles |). roles: set copyRemoveAll. roles).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'prompt' -> () From: ( | {
+         'Category: promptPrinting\x7fModuleInfo: Module: psyche InitialContents: FollowSlot\x7fVisibility: private'
+        
+         promptPrefix = ( |
+            | 
+            psyche console promptPrefix).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'proxyMorph' -> () From: ( | {
