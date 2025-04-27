@@ -2288,6 +2288,9 @@ otherwise:
             h: '
             {
               grace_period 1ns
+              admin unix//var/run/caddy-admin.sock
+              renew_interval 12h
+              ocsp_stapling off
             }
             http://%IP% {
               error * "Not authorised - try https" 403
