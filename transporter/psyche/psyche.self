@@ -24,7 +24,7 @@ See the LICENSE,d file for license information.
              cleanError.
             | 
             cleanError: (e copy ansiString replace: '\n' With: ' ').
-            psyche sys sh: 'echo "', cleanError, '" >> ',  psyche consoleLogFile.
+            psyche sys sh: 'echo "', cleanError, '" >> ',  psyche paths consoleLog.
             self).
         } | ) 
 
@@ -476,12 +476,6 @@ Console options set out in
          'Category: prompt\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          unicode_box_drawings_light_vertical = '\xe2\x94\x82'.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         consoleLogFile = '/var/log/console.log'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -1037,7 +1031,7 @@ SlotsToOmit: parent.
             mb addMorphLast:
               (((ui2Button copy label: 'System Logs')
                  scriptBlock: [event sourceHand attach:
-                                  terminalEmulator terminalMorph copyOnShell: '/usr/bin/tail -f ', psyche consoleLogFile])
+                                  terminalEmulator terminalMorph copyOnShell: '/usr/bin/tail -f ', psyche paths consoleLog])
                  target: self).
             mb addMorphLast: transparentSpacerMorph copyH: 6.
             mb addMorphLast:
@@ -1925,6 +1919,7 @@ otherwise:
             config loadIfFail: installOS.
             conf: config current.
             handleAlternateObjectRoot withConf: conf.
+            paths ensurePaths.
             setHostname.
             setRootPassword: conf unixConsolePasswordHash.
             conf tailscale = 'enabled'
@@ -1969,6 +1964,63 @@ otherwise:
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         paths = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'paths' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche paths.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'paths' -> () From: ( | {
+         'Category: files\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         caddyConf = ( |
+            | runtime, 'caddyfile').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'paths' -> () From: ( | {
+         'Category: files\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         consoleLog = ( |
+            | runtime, '/console.log').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'paths' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         ensurePaths = ( |
+            | 
+            sys mkdir_p: runtime      IfFail: raiseError. 
+
+            (
+              caddyConf & 
+              consoleLog
+            ) asVector do: [|:f|
+              sys touch: f IfFail: raiseError].
+
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'paths' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'paths' -> () From: ( | {
+         'Category: directories\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         runtime = '/runtime'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'paths' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -2186,7 +2238,7 @@ otherwise:
          startNoVNC = ( |
             | 
             os command: 'chmod a+x /opt/noVNC/utils/novnc_proxy'.
-            os command: 'daemon -o ', consoleLogFile, ' -f /opt/noVNC/utils/novnc_proxy --listen 6080 --vnc :5901'.
+            os command: 'daemon -o ', paths consoleLog, ' -f /opt/noVNC/utils/novnc_proxy --listen 6080 --vnc :5901'.
             self).
         } | ) 
 
@@ -2206,7 +2258,7 @@ otherwise:
         
          startRatpoison = ( |
             | 
-            os command: 'DISPLAY=:1 daemon -o', consoleLogFile, ' /usr/local/bin/ratpoison'. self).
+            os command: 'DISPLAY=:1 daemon -o', paths consoleLog, ' /usr/local/bin/ratpoison'. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -2233,11 +2285,11 @@ otherwise:
         
          startX = ( |
             | 
-            os command: 'daemon -o ', consoleLogFile, ' /usr/local/bin/Xvnc :1 -geometry ', systemDesktopSize, ' -depth 24 -SecurityTypes None,TLSNone'.
+            os command: 'daemon -o ', paths consoleLog, ' /usr/local/bin/Xvnc :1 -geometry ', systemDesktopSize, ' -depth 24 -SecurityTypes None,TLSNone'.
             "Pause until Xvnc has started "
             [ 0 = (os command: 'ls /tmp/.X11-unix/X1 >/dev/null 2>&1 ')] whileFalse.
-            os command: 'daemon -o ', consoleLogFile, ' /usr/local/bin/vncconfig -display :1 -nowin'.
-            os command: 'daemon -o ', consoleLogFile, ' autocutsel'.
+            os command: 'daemon -o ', paths consoleLog, ' /usr/local/bin/vncconfig -display :1 -nowin'.
+            os command: 'daemon -o ', paths consoleLog, ' autocutsel'.
             [process this sleep: 2000].
             startRatpoison.
             setFontPath.
@@ -2544,7 +2596,8 @@ otherwise:
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
          'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         configFile = '/usr/local/etc/caddy/Caddyfile'.
+         configFile = ( |
+            | psyche paths caddyConf).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
@@ -3123,7 +3176,7 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
-         'Category: system\x7fCategory: mkdir\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: system\x7fCategory: files and directories\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          mkdir_p: dir IfFail: blk = ( |
             | sh: 'mkdir -p ', dir IfFail: blk).
@@ -5680,7 +5733,7 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
             ensureTtydDirectories.
             dtach: 'dtach -a ', baseDirectory, dtachSocket, ' '.
             ttyd: 'ttyd -W -i ', ttydSock, ' '.
-            daemon: 'daemon -o ', psyche consoleLogFile, ' -f -p ', ttydPid, ' '.
+            daemon: 'daemon -o ', psyche paths consoleLog, ' -f -p ', ttydPid, ' '.
             cmd: daemon, ttyd, dtach.
             sys sh: cmd.
             self).
