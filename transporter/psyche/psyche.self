@@ -1979,7 +1979,8 @@ otherwise:
          'Category: files\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          caddyConf = ( |
-            | runtime, 'caddyfile').
+            | 
+            runtime, '/caddyfile').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'paths' -> () From: ( | {
@@ -2591,16 +2592,10 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
-         'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         configFile = ( |
-            | psyche paths caddyConf).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
          'Category: config\x7fCategory: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         configFilename = '/usr/local/etc/caddy/Caddyfile'.
+         configFilename = ( |
+            | psyche paths caddyConf).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
@@ -2735,7 +2730,7 @@ otherwise:
         
          reloadConfigIfFail: fb = ( |
             | 
-            sys sh: 'caddy reload --config ', configFile. self).
+            sys sh: 'caddy reload --config ', configFilename. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
@@ -2760,7 +2755,7 @@ otherwise:
         
          startIfFail: fb = ( |
             | 
-            sys sh: 'daemon -o /var/log/caddy.log -f caddy run --config ', configFile. self).
+            sys sh: 'daemon -o /var/log/caddy.log -f caddy run --config ', configFilename. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( | {
