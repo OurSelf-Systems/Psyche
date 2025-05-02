@@ -479,176 +479,6 @@ Console options set out in
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: daemons\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         daemons = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche daemons.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         caddy = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche daemons caddy.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
-         'Category: loop manager\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         abortHandlingProcess = ( |
-            | running abortIfLive. running: deadProcess. self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
-         'Category: loop manager\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         deadProcess = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> 'deadProcess' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche daemons caddy deadProcess.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
-         'Category: loop manager\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         ensureRunning = ( |
-            | 
-            running isAlive ifFalse: [startRunning]. self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
-         'Category: loop manager\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         handleLoop = ( |
-            | 
-            [process this sleep: 1000.
-            ] loop).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
-         'Category: loop manager\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         hup = ( |
-            | abortHandlingProcess ensureRunning).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'prototype' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'prototype' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche daemons prototype parent.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
-         'Category: shared\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         parent* = bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'prototype' -> 'parent' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         reload = ( |
-            | stop. start. self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
-         'Category: loop manager\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (log dispatcher deadProcess)'
-        
-         running <- bootstrap stub -> 'globals' -> 'log' -> 'dispatcher' -> 'deadProcess' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         start = ( |
-            | 
-            ensureRunning.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
-         'Category: loop manager\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         startRunning = ( |
-            | 
-            running: (
-              process copySend: (message copy receiver: self Selector: 'handleLoop')
-                  CauseOfBirth: 'caddy daemon') resume. 
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         stop = ( |
-            | abortHandlingProcess. self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         transactor = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'transactor' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche traits transactor.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
-         'Category: shared\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         sync* = bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'transactor' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'caddy' -> () From: ( | {
-         'Category: shared\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> () From: ( | {
-         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         prototype = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'prototype' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche daemons prototype.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'prototype' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'prototype' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         reload = ( |
-            | self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'prototype' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         start = ( |
-            | self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'daemons' -> 'prototype' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         stop = ( |
-            | self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: development support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          deprecated = ( |
@@ -696,7 +526,7 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
          desktopMessage = ( |
             | 
             'You can access the desktop for this world at:
-                https://', sys caddy hostname, '/control/
+                https://', sys haproxy hostname, '/control/
             ',
             (sys tailscale isUp ifTrue: ['or\n    https://', (sys tailscale fullyQualifiedDomainNameIfFail: [
                                                      log warn: 'Couldn\'t find Tailscale FQN'.
@@ -734,6 +564,34 @@ DO NOT USE over the open internet!\x7fModuleInfo: Module: psyche InitialContents
             " Add system user "
             sys sh: 'pw useradd -n ', userName, ' -m -s /sbin/nologin ' IfFail: [logError: 'Cannot create user "', userName, '"'].
             " -s /sbin/nologin "
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         generateTLSCertificateForIP4IfNeeded = ( |
+             ip.
+             pem.
+            | 
+            " TODO : Check if not needed. "
+            ip: sys ifconfig local_ip4_ifFail: [log error: 'Could not find local ip.'. ^ self].
+            pem: sys openssl certificateForIP4: ip IfFail: [log error: 'Could not generate certificate for IP'. ^ self].
+            pem printOnFile: paths certificates, '/', ip, '.pem'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: network\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         generateTLSCertificateForTailscaleFQDNIfNeeded = ( |
+             fqdn.
+             pem.
+            | 
+            " TODO : Only generate if needed? "
+            fqdn: sys tailscale fullyQualifiedDomainNameIfFail: [log error: 'Could not determine Tailscale FQDN'. ^ self].
+            pem: sys tailscale certificateIfFail: [log error: 'Could not generate certificate for Tailscale FQDN'. ^ self].
+            pem printOnFile: paths certificates, '/', fqdn, '.pem'.
             self).
         } | ) 
 
@@ -1932,7 +1790,7 @@ otherwise:
             worlds worldRecord runner ensureProperSetupOnBoot.
             setupLogging.
             clearScreen print. welcomeMessage print.
-            users owner displayHostName: sys caddy hostname.
+            users owner displayHostName: sys haproxy hostname.
             self).
         } | ) 
 
@@ -1948,9 +1806,11 @@ otherwise:
         
          openDesktop = ( |
             | 
+            generateTLSCertificateForIP4IfNeeded.
             startX.
             startNoVNC.
-            startCaddy.
+            "startCaddy."
+            startHaproxy.
             preferences desktop backgroundColor: (paint named: 'azure').
             desktop isOpen 
              ifTrue: [desktop returnFromSnapshot]
@@ -1984,6 +1844,20 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'paths' -> () From: ( | {
+         'Category: directories\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         certificates = ( |
+            | config, '/tls').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'paths' -> () From: ( | {
+         'Category: directories\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         config = ( |
+            | worlds, '/psyche').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'paths' -> () From: ( | {
          'Category: files\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          consoleLog = ( |
@@ -2007,6 +1881,20 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'paths' -> () From: ( | {
+         'Category: files\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         haproxyConf = ( |
+            | runtime, '/haproxy.conf').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'paths' -> () From: ( | {
+         'Category: files\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         haproxyPid = ( |
+            | runtime, '/haproxy.pid').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'paths' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
@@ -2022,6 +1910,12 @@ otherwise:
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'paths' -> () From: ( | {
+         'Category: directories\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         worlds = '/worlds'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -2147,7 +2041,8 @@ otherwise:
          'Category: network\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          setHostname = ( |
-            | sys caddy hostname: config current hostname. self).
+            | 
+            sys haproxy hostname: config current hostname. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
@@ -2236,6 +2131,17 @@ otherwise:
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
          'Category: desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
+         startHaproxy = ( |
+             f.
+            | 
+            f = [log error: 'start Haproxy failed'. ^ self ].
+            sys haproxy startIfFail: f.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
+         'Category: desktop\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
          startNoVNC = ( |
             | 
             os command: 'chmod a+x /opt/noVNC/utils/novnc_proxy'.
@@ -2276,7 +2182,9 @@ otherwise:
                            Timeout: 30 * 1000 
                          IfTimeout: [|:output| output].
             o wasSuccessful
-              ifTrue: [log info: 'Started tailscale']
+              ifTrue: [
+                  log info: 'Started tailscale'.
+                  generateTLSCertificateForTailscaleFQDNIfNeeded]
                False: [log warn: 'tailscale: ', o stderr].
             self).
         } | ) 
@@ -2306,7 +2214,7 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
-         'Category: system\x7fCategory: caddy\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: system\x7fCategory: ingress\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          caddy = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'caddy' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals psyche sys caddy.
@@ -2908,6 +2816,354 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: ingress\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         haproxy = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche sys haproxy.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         changeConfig: blk = ( |
+            | changeConfig: blk IfFail: raiseError).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         changeConfig: changeBlock IfFail: blk = ( |
+             n.
+             o.
+            | 
+            o: configPrototype copyReadFrom: configFilename  IfFail: [^ blk value].
+            changeBlock value: o.
+            o writeTo: configFilename, '-temp'               IfFail: [^ blk value].
+            validateConfigAtPath: configFilename, '-temp'    IfFail: [^ blk value: 'Could not validate haproxy config'].
+            o writeTo: configFilename                        IfFail: [^ blk value].
+            reloadIfFail: [^ blk value].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> () From: ( | {
+         'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         configFilename = ( |
+            | psyche paths haproxyConf).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> () From: ( | {
+         'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         configPid = ( |
+            | psyche paths haproxyPid).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> () From: ( | {
+         'Category: config\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         configPrototype = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche sys haproxy configPrototype.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         configTemplate = ( |
+            | 
+            '
+            #meta
+
+            frontend main_ingress
+              bind *:443 ssl crt ', psyche paths certificates, '
+              mode http
+              use_backend control_backend if { path_beg /control/ }
+            #switch
+
+            #backends
+
+            backend control_backend
+              mode http
+              http-request replace-path /control(/)?(.*) /\\2
+              server localhost 127.0.0.1:6080
+
+            ').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         copy = ( |
+            | resend.copy proxies: proxies copy).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
+         'Category: reading\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         copyReadFrom: path IfFail: blk = ( |
+             c.
+            | 
+            c: sys readFileFrom: path IfFail: [^ blk value].
+            parseConfig: c).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         deregisterPath: path = ( |
+            | 
+            proxies removeKey: path IfAbsent: true.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
+         'Category: reading\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parseConfig: c = ( |
+             cc.
+            | 
+            cc: copy.
+            (c splitOn: '\n') do: [|:l|
+             (l isEmpty not && [l first = '#']) ifTrue: [|s|
+                s: l splitOn: ' '.
+                "We may not have username or passwordHash"
+                cc registerPath: (s at: 1)
+                       ForProxy: (s at: 2)
+                       Username: (s at: 3 IfAbsent: '')
+                   PasswordHash: (s at: 4 IfAbsent: '')]].
+            cc).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
+         'Category: proxy\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (set copyRemoveAll)'
+        
+         proxies <- set copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
+         'Category: proxy\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         proxyEntryPrototype = bootstrap setObjectAnnotationOf: ( [|d|
+	d: dictionary copyRemoveAll.
+] value) From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche sys haproxy configPrototype proxyEntryPrototype.
+
+CopyDowns:
+globals set. copy 
+SlotsToOmit: parent prototype.
+
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         registerPath: path ForProxy: proxy = ( |
+            | 
+            proxies at: path
+                   Put: (
+            (((proxyEntryPrototype copy
+                    path: path)
+                   proxy: proxy)
+                username: '')
+            passwordHash: '').
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         registerPath: path ForProxy: proxy Username: user PasswordHash: ph = ( |
+            | 
+            proxies at: path
+                   Put: (
+            (((proxyEntryPrototype copy
+                    path: path)
+                   proxy: proxy)
+                username: user)
+            passwordHash: ph).
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
+         'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         renderBackends = ( |
+             s.
+             t.
+            | 
+            t: ''.
+            s: ''.
+            proxies do: [|:p. c|
+              c: t copy.
+              c: c replace: '%PATH%' With: p path.
+              c: c replace: '%PROXY%' With: p proxy.
+              s: s, c].
+            s).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
+         'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         renderMeta = ( |
+             s.
+            | 
+            s: ''.
+            proxies do: [|:p|
+              s: s, '# ', p path, ' ', p proxy, ' ', p username, ' ', p passwordHash, '\n'].
+            s).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
+         'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         renderSwitch = ( |
+             s.
+             t.
+            | 
+            t: ''.
+            s: ''.
+            proxies do: [|:p. c|
+              c: t copy.
+              c: c replace: '%PATH%' With: p path.
+              c: c replace: '%PROXY%' With: p proxy.
+              s: s, c].
+            s).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
+         'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         toString = ( |
+             t.
+            | 
+            t: configTemplate copy.
+            t: t replace: '#meta' With: renderMeta.
+            t: t replace: '#switch' With: renderSwitch.
+            t: t replace: '#backends' With: renderBackends.
+            t).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
+         'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         writeTo: path IfFail: blk = ( |
+            | 
+            sys write: toString ToFile: path IfFail: [^ blk value].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> () From: ( | {
+         'Category: hostname\x7fComment: This should be one of three types:
+- localhost, ie 127.0.0.1 (assuming ip4)
+- local ip, eg 192.168.1.114 
+- global domain name set in psyche.conf\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         hostname = ( |
+            | 
+            'automatic' = rawHostname ifTrue:[
+               ^ sys ifconfig local_ip4_ifFail: '127.0.0.1']. rawHostname).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> () From: ( | {
+         'Category: hostname\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         hostname: hn = ( |
+            | rawHostname: hn. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> () From: ( | {
+         'Category: hostname\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         localhost = '127.0.0.1'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> () From: ( | {
+         'Category: hostname\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (psyche sys caddy localhost)'
+        
+         rawHostname <- psyche sys caddy localhost.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         reloadIfFail: blk = ( |
+            | 
+            sys sh: 'haproxy -D -f ', configFilename, ' -p ', configPid, ' -sf $(cat ', configPid, ')'. 
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         saveConfigIfFail: blk = ( |
+            | 
+            configPrototype writeTo: configFilename IfFail: [^ blk value].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> () From: ( | {
+         'Comment: Start Ingress from book - assume no jails running
+(TODO: revisit this)\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         startIfFail: fb = ( |
+            | 
+            saveConfigIfFail: [^ blk value].
+            sys sh: 'haproxy -D -f ', configFilename, ' -p ', configPid. 
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         stopIfFail: blk = ( |
+            | 
+            sys sh: 'kill -9 `cat ', configPid, '`'.
+            sys removeFile: configPid IfFail: [^ blk value].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         validateConfigAtPath: p IfFail: blk = ( |
+            | 
+            sys shelloutCommand: 'haproxy -c -f ', p
+                      IfTimeout: [blk value: 'Timed out']
+                        IfError: [blk value: 'Call to ifconfig failed']
+                      IfSuccess: [|:o | o exitCode = 0]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
          'Category: system\x7fCategory: ifconfig\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          ifconfig = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'ifconfig' -> () From: ( |
@@ -3362,6 +3618,90 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
+         'Category: system\x7fCategory: openssl\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         openssl = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'openssl' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche sys openssl.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'openssl' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         certificateForIP4: ip IfFail: blk = ( |
+             cert.
+             cmd.
+             conf.
+             d.
+             key.
+             tempDir.
+            | 
+            tempDir: '/tmp/', sys uuidgen.
+            sys mkdir_p: tempDir IfFail: [|:e| ^ blk value: 'Error creating tempDir ', tempDir, ' ', e asString]. 
+            (isValidIP4: ip asString) ifFalse: [^ blk value: 'Error: ', ip asString, ' is not valid IP4 address'].
+            conf: configTemplate copy replace: '{{IP}}' With: ip asString.
+            conf printOnFile: tempDir, '/san.cnf'.
+            cmd: 'openssl req -x509 -nodes -days 90 -newkey rsa:2048 -keyout ', tempDir, '/key.pem -out ', tempDir, '/cert.pem -config ', tempDir, '/san.cnf'.
+            sys shelloutCommand: cmd 
+                      IfTimeout: [^ blk value: 'Timed out']
+                        IfError: [|:o| ^ blk value: 'Call to openssl failed:', o stderr]
+                      IfSuccess: [|:o| self ].
+            (tempDir, '/cert.pem') asFileContents, (tempDir, '/key.pem') asFileContents).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'openssl' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         configTemplate = '
+[req]
+default_bits  = 2048
+distinguished_name = req_distinguished_name
+req_extensions = req_ext
+x509_extensions = v3_req
+prompt = no
+[req_distinguished_name]
+countryName = XX
+stateOrProvinceName = N/A
+localityName = N/A
+organizationName = Self-signed certificate
+commonName = Self-signed certificate
+[req_ext]
+subjectAltName = @alt_names
+[v3_req]
+subjectAltName = @alt_names
+[alt_names]
+IP.1 = {{IP}}
+'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'openssl' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         isValidIP4: aStr = ( |
+             ip.
+            | 
+            ip: aStr asString splitOn: '.'.
+            ip size = 4 ifFalse: [^ false].
+            ip do: [|:p|
+              p size <= 3 ifFalse: [^ false].
+              p asIntegerIfFail: [^ false]].
+            true).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'openssl' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'openssl' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
          'Category: support\x7fCategory: command with result 2\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          outputOfCommand: commandSource = ( |
@@ -3518,7 +3858,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
-         'Category: system\x7fCategory: shutdown\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: system\x7fCategory: reboot and shutdown\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          reboot = ( |
             | 
@@ -3597,7 +3937,7 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
-         'Category: system\x7fCategory: shutdown\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: system\x7fCategory: reboot and shutdown\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          shutdown = ( |
             | 
@@ -3667,21 +4007,46 @@ after process has finished.\x7fModuleInfo: Module: psyche InitialContents: Follo
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'tailscale' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         fullyQualifiedDomainNameIfFail: blk = ( |
-             end.
-             s.
-             start.
+         certificateIfFail: blk = ( |
+             cert.
+             cmd.
+             conf.
+             d.
+             key.
+             tailscaleDomain.
+             tempDir.
             | 
-            s: (sys outputOfCommand: 'tailscale dns status'
-                    IfTimeout: (| stdout = ''. value = (self) |)) stdout.
-            start: s findSubstring: 'device at'
-                          IfPresent: [|:i | i + 'device at' size + 1]
-                          IfAbsent: [^ blk value].
-            end: s findSubstring: '\n'
-                      StartingAt: start
-                       IfPresent: [|:i | i - 1] "Chop off final ."
-                        IfAbsent: [^ blk value].
-            s copyFrom: start UpTo: end).
+            tempDir: '/tmp/', sys uuidgen.
+            sys mkdir_p: tempDir IfFail: [|:e| ^ blk value: 'Error creating tempDir ', tempDir, ' ', e asString]. 
+            tailscaleDomain: fullyQualifiedDomainNameIfFail: [|:e| ^ blk value: 'Error finding tsailscale FQDN: ', e asString].
+            cmd: 'tailscale cert --cert-file ', tempDir, '/ts.cert --key-file ', tempDir, '/ts.key ', tailscaleDomain.
+            sys shelloutCommand: cmd 
+                      IfTimeout: [^ blk value: 'Timed out']
+                        IfError: [|:o| ^ blk value: 'Call to tailscale failed:', o stderr]
+                      IfSuccess: [|:o| self ].
+            (tempDir, '/ts.cert') asFileContents, (tempDir, '/ts.key') asFileContents).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'tailscale' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         fullyQualifiedDomainNameIfFail: blk = ( |
+             fqdn.
+             fullStatus.
+             nameLine.
+             nameLineSet.
+            | 
+            fullStatus: sys shelloutCommand: 'tailscale dns status' 
+                      IfTimeout: [blk value: 'Timed out']
+                        IfError: [|:o| blk value: 'Call to tailscale failed:', o stderr]
+                      IfSuccess: [|:o| o stdout ].
+            nameLineSet: (fullStatus splitOn: '\n') filterBy: [|:l| l matchesPattern: '*can reach this device at*'].
+            nameLineSet size != 1 ifTrue: [^ blk value: 'Unexpected output of tailscale dns status'].
+            nameLine: nameLineSet first.
+            fqdn: (nameLine splitOn: ' ') last.
+            "Check for, them remove final ."
+            fqdn last = '.' ifFalse: [^ blk value: 'Unexpected output of tailscale dns status'].
+            fqdn slice: 0 @ -1).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'tailscale' -> () From: ( | {
@@ -3950,6 +4315,15 @@ browser window\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpres
             self).
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         transactor = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'transactor' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals psyche traits transactor.
+'.
+            | ) .
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'traits' -> 'transactor' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
@@ -4147,7 +4521,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
         
          consoleURL = ( |
             | 
-            'https://', sys caddy hostname, '/', id, '/console/').
+            'https://', sys haproxy hostname, '/', id, '/console/').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
@@ -5849,551 +6223,6 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
-         'Category: connections\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         worlds = bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> () From: ( | {
-         'Category: internal\x7fCategory: running\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         runnerWithNetwork = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals psyche worlds worldRecord runnerWithNetwork.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: settings\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         baseDirectory = ( |
-            | 
-            jailsBaseDirectory, '/', id).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         buildTemplate = ( |
-             mkdir.
-            | 
-            mkdir: [|:dir| sys sh: 'mkdir -p ', templateDirectory, dir].
-
-            " Create directory "
-            mkdir value: '/'.
-
-            " Create structure "
-            ('/dev' & '/var' & '/var/run' & '/libexec' & '/lib' & '/etc' & '/tmp' & '/root' & '/objects' & '/firmware') asVector do: mkdir.
-
-            sharedDirs do: mkdir.
-
-            " resolv.conf "
-            sys sh: 'cp /etc/resolv.conf ', templateDirectory, '/etc/resolv.conf'.
-
-            copyInFirmware.
-            copyInCaddyfile.
-
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         caddyfile = '
-{ 
-  auto_https off
-}
-:80 {
-  bind unix//tmp/morphic.0.socket
-  reverse_proxy http://127.0.0.1:6080
-}
-'.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         cleanTemplate = ( |
-            | 
-            sys sh: 'rm -rf ', templateDirectory. self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         copyInBinary: path = ( |
-             s.
-            | 
-            sys sh: 'cp ', path, ' ', templateDirectory, '/bin'.
-            s: sys stdoutOfCommand: 'ldd ', path.
-            (s splitOn: '\n') do: [|:l. p|
-              p: (l splitOn: '=>').
-              p size > 1 ifTrue: [
-                p: ((l splitOn: '=>') at: 1) shrinkwrapped.
-                p: ((p splitOn: ' ') at: 0) shrinkwrapped.
-                sys sh: 'cp ', p, ' ', templateDirectory, '/lib']].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         copyInCaddyfile = ( |
-             f.
-            | 
-            f: os_file openForWriting: templateDirectory, '/firmware/caddyfile' IfFail: raiseError.
-            f write: caddyfile asString.
-            f close.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         copyInFirmware = ( |
-             f.
-            | 
-            f: os_file openForWriting: templateDirectory, '/firmware/firmware.self' IfFail: raiseError.
-            f write: firmware asString.
-            f close.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         copyOnWorldRecord: wr = ( |
-            | copy worldRecord: wr).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: worldRecord access\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         dataset = ( |
-            | worldRecord dataset).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: desktops\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         deregisterDesktopsWithCaddy = ( |
-            | 
-            psyche sys caddy deregisterPath: '/', id, '/desktop/'.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         deregisterTtydWithCaddy = ( |
-            | 
-            psyche sys caddy deregisterPath: '/', id, '/console/'.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         destroyJail = ( |
-             c.
-             fb.
-             ignore = bootstrap stub -> 'globals' -> 'true' -> ().
-             umount.
-             umountForced.
-            | 
-            fb: raiseError.
-            c: sys mounts current.
-            umount: [|:mp|
-             c findFirst: [|:e| 
-                       " /rw offset is caused by mfbsd "
-                       e mountpoint = ('/rw', baseDirectory, mp)]
-               IfPresent: [|:e| e umountIfFail: [
-                                "Try again"
-                                e umountForcedIfFail: fb]]
-                IfAbsent: ignore].
-
-            sharedDirs do: umount.
-            tmpDirs do: umount.
-            umount value: '/objects'.
-
-            " /dev was mounted by jail(8) "
-            umount value: '/dev'.
-
-            " Wait for all umounts to have effect "
-            [
-              sys mounts current
-                anySatisfy: [|:e| e mountpoint matchesPattern: '/rw', baseDirectory, '/*']
-            ] whileTrue.
-
-            " Wait until nothing is using the filesystem, "
-            [|o| 
-            o: sys stdoutOfCommand: 'fuser ', baseDirectory.
-            o shrinkwrapped isEmpty
-            ] whileFalse.
-
-            " Not / as needs to be matched in umount block with mountpoint"
-            umount value: ''.
-
-            (sys sh: 'ls ', baseDirectory, '/' IfFail: 0) = 0
-              ifFalse: [sys sh: 'rmdir ', baseDirectory, '/' IfFail: fb].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: settings\x7fComment: In jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         dtachSocket = ( |
-            | sockDirectory, '/', id, '.sock').
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         ensureDtachSocketDirectory = ( |
-            | 
-            sys sh: 'mkdir -p ', sockDirectory. self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Comment: I am sent on boot to ensure directories exist etc\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         ensureProperSetupOnBoot = ( |
-            | 
-            cleanTemplate.
-            ensureTemplate.
-            ensureDtachSocketDirectory.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         ensureTemplate = ( |
-            | 
-            (os_file exists: templateDirectory) ifFalse: [buildTemplate].
-            (os_file exists: templateDirectory) ifFalse: raiseError.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         ensureTtydDirectories = ( |
-            | 
-            sys sh: 'mkdir -p ', ttydPidDirectory.
-            sys sh: 'mkdir -p ', ttydSockDirectory.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         firmware = bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'firmware' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: settings\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         hostName = ( |
-            | id).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: worldRecord access\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         id = ( |
-            | worldRecord id).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         jailOptions = ( |
-             l.
-            | 
-            l: (sys stdoutOfCommand: 'ls ', baseDirectory, '/objects') splitOn: '\n'.
-            (l includes: 'snapshot') ifTrue: [^ '-s /objects/snapshot -f /firmware/firmware.self'].
-            (l includes: 'build.self') ifTrue: [^ '-f /objects/build.self -f2 /firmware/firmware.self'].
-            '').
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: worldRecord access\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         jailsBaseDirectory = ( |
-            | worldRecord jailsBaseDirectory).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: connections\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: desktops\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         registerDesktopsWithCaddy = ( |
-            | 
-            psyche sys caddy 
-               registerPath: '/', id, '/desktop/'
-                   ForProxy: 'unix/', baseDirectory, '/tmp/desktop.socket'.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         registerTtydWithCaddy = ( |
-            | 
-            psyche sys caddy 
-               registerPath: '/', id, '/console/'
-                   ForProxy: 'unix/', ttydSock
-                   Username: 'console'
-               PasswordHash: worldRecord consolePasswordHash.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         setupJail = ( |
-             m.
-            | 
-             " raiseError on errors - TODO - make proper handlers "
-            sys mkdir_p: baseDirectory IfFail: raiseError.
-            m: sys mounter copy.
-            m type: 'nullfs'. m options: 'ro'. m source: templateDirectory. m target: baseDirectory. 
-            m mount.
-
-            sharedDirs do: [|:d|
-              m type: 'nullfs'. m options: 'ro'. m source: d. m target: baseDirectory, d. 
-              m mount].
-
-            m options: ''. m source: worldDirectory. m target: baseDirectory, '/objects'.
-            m mount.
-
-            tmpDirs do: [|:d|
-              m type: 'tmpfs'. m options: ''. m source: 'tmpfs'. m target: baseDirectory, d.
-              m mount].
-
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         sharedDirs = ( |
-            | 
-            (
-            '/bin' & '/lib' & '/libexec' & '/sbin' &
-            '/usr/bin' & '/usr/sbin' & '/usr/lib' & '/usr/libexec' & '/usr/share' & '/usr/libdata' & 
-            '/usr/local/bin' & '/usr/local/sbin' & '/usr/local/lib' & '/usr/local/libexec' & '/usr/local/share' & '/usr/local/libdata' & '/usr/local/etc' & 
-            '/vm' & '/etc' & '/opt'
-            ) asVector).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         sleep = ( |
-            | 
-            stopJail. 
-            destroyJail. 
-            stopTtyd. 
-            deregisterTtydWithCaddy.
-            deregisterDesktopsWithCaddy.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: jail template\x7fComment: In jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         sockDirectory = '/tmp'.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         sockDirectoryOutside = ( |
-            | baseDirectory, sockDirectory).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         startJail = ( |
-            | 
-            startJailWithSelfOptions: jailOptions).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         startJailWithSelfOptions: options = ( |
-             d.
-             epair.
-             ip_a.
-             ip_b.
-             jid.
-             n.
-             s.
-            | 
-            n: hostName.    
-            d: baseDirectory.
-            s: dtachSocket.
-            [
-            " Create epair "
-            epair: (sys stdoutOfCommand: 'ifconfig epair create') shrinkwrapped slice: 0 @ -1. " Drop final 'a' "
-            " Start jail "
-            sys sh: 'jail -cmr path=\'', d, '\' name=\'', n, '\' persist mount.devfs vnet devfs_ruleset=5 host.hostname=\'', n,  '\' exec.start="/bin/sh /etc/rc"'.
-            " Get jid "
-            jid: ((sys stdoutOfCommand: 'jls -n -j ', n, ' jid') shrinkwrapped splitOn: '=') at: 1.
-            " Copy in epair "
-            sys sh: 'ifconfig ', epair, 'b vnet ', jid.
-            " Create ip based on jid"
-            " NOTE: ONLY 120 JAILS ALLOWED!!!!! "
-            ip_a: '10.0.0.', jid, '/8'.
-            ip_b: '10.0.1.', (jid asInteger + 128) asString, '/8'.
-            " Assign ip to jail"
-            sys sh: 'ifconfig ', epair, 'a ', ip_a, ' up'.
-            sys sh: 'jexec ', jid, ' ifconfig ', epair, 'b ', ip_b, ' up'.
-            ].
-            " Start Self "
-            sys sh: 'jexec ', n, ' /usr/local/bin/dtach -n \'', s, '\' /vm/Self ', options. 
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         startTtyd = ( |
-             cmd.
-             daemon.
-             dtach.
-             ttyd.
-            | 
-            ensureTtydDirectories.
-            dtach: 'dtach -a ', baseDirectory, dtachSocket, ' '.
-            ttyd: 'ttyd -W -i ', ttydSock, ' '.
-            daemon: 'daemon -f -p ', ttydPid, ' '.
-            cmd: daemon, ttyd, dtach.
-            sys sh: cmd.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         stopJail = ( |
-            | 
-            sys sh: 'jail -r ', hostName IfFail: true.
-            " Waiting until nothing is using the filesystem,
-              ie untl the jail has properly stopped.
-            "
-            [|o| 
-            o: sys stdoutOfCommand: 'fuser ', baseDirectory.
-            o shrinkwrapped isEmpty
-            ] whileFalse.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         stopTtyd = ( |
-             c.
-             f.
-            | 
-            f: ttydPid asInputFileIfError: [^ self].
-            c: f contents.
-            f close.
-            sys sh: 'kill ', c IfFail: false.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: connections\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: jail template\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         templateDirectory = '/jailTemplate'.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: jail\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         tmpDirs = ( |
-            | ('/tmp' & '/var' & '/root') asVector).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         ttydPid = ( |
-            | 
-            ttydPidDirectory, id, '.pid').
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         ttydPidDirectory = '/var/ttyd/pid/'.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         ttydSock = ( |
-            | 
-            ttydSockDirectory, id, '.sock').
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: ttyd\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         ttydSockDirectory = '/var/ttyd/sock/'.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         wake = ( |
-            | 
-            ensureTemplate. 
-            setupJail. 
-            startJail. 
-            startTtyd.
-            registerTtydWithCaddy.
-            registerDesktopsWithCaddy.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: settings\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         worldDataset = ( |
-            | dataset).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: settings\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         worldDirectory = ( |
-            | sys zfs mountpointOfDataset: worldDataset).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
-         'Category: worldRecord access\x7fComment: The world I will operate on.\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (psyche worlds worldRecord)'
-        
-         worldRecord <- bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runnerWithNetwork' -> () From: ( | {
          'Category: connections\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          worlds = bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> ().
