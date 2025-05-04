@@ -3618,7 +3618,7 @@ SlotsToOmit: parent prototype.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> () From: ( | {
-         'Category: system\x7fCategory: openssl\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: system\x7fCategory: passwords and certificates\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          openssl = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'openssl' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals psyche sys openssl.
@@ -3693,6 +3693,17 @@ IP.1 = {{IP}}
          'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'openssl' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sha256PasswordHash: p IfFail: blk = ( |
+            | 
+            sys shelloutCommand: 'openssl passwd -5 \'', p asString, '\''
+                      IfTimeout: [blk value: 'Timed out']
+                        IfError: [|:o| blk value: 'Call to openssl failed:', o stderr]
+                      IfSuccess: [|:o| o stdout asString shrinkwrapped ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'openssl' -> () From: ( | {
