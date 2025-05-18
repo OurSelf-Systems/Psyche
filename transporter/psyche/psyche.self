@@ -2878,6 +2878,11 @@ otherwise:
             '
             #meta
 
+            frontend http_ingress
+              bind *:80
+              mode http
+              http-request deny deny_status 403
+
             frontend main_ingress
               bind *:443 ssl crt ', psyche paths certificates, '
               mode http
@@ -2945,25 +2950,62 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
-         'Category: proxy\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (set copyRemoveAll)'
+         'Category: proxy\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (dictionary copyRemoveAll)'
         
-         proxies <- set copyRemoveAll.
+         proxies <- dictionary copyRemoveAll.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
          'Category: proxy\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
-         proxyEntryPrototype = bootstrap setObjectAnnotationOf: ( [|d|
-	d: dictionary copyRemoveAll.
-] value) From: ( |
+         proxyEntryPrototype = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> 'proxyEntryPrototype' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals psyche sys haproxy configPrototype proxyEntryPrototype.
-
-CopyDowns:
-globals set. copy 
-SlotsToOmit: parent prototype.
-
-\x7fIsComplete: '.
+'.
             | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> 'proxyEntryPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
+        
+         id <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> 'proxyEntryPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         isPasswordProtected = ( |
+            | 
+            '' != username).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> 'proxyEntryPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> 'proxyEntryPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         passwordHash <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> 'proxyEntryPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         path <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> 'proxyEntryPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         proxy <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> 'proxyEntryPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         username <- ''.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
@@ -3003,12 +3045,19 @@ SlotsToOmit: parent prototype.
              s.
              t.
             | 
-            t: ''.
+            t: '
+            backend %ID%_backend
+              mode http
+              http-request replace-path %PATH%?(.*) /\\2
+              server localhost %PROXY%
+
+            '.
             s: ''.
             proxies do: [|:p. c|
               c: t copy.
               c: c replace: '%PATH%' With: p path.
               c: c replace: '%PROXY%' With: p proxy.
+              c: c replace: '%ID%' With: p path hash hexPrintString.
               s: s, c].
             s).
         } | ) 
@@ -3032,12 +3081,12 @@ SlotsToOmit: parent prototype.
              s.
              t.
             | 
-            t: ''.
+            t: '  use_backend %ID%_backend if { path_beg %PATH% }\n'.
             s: ''.
             proxies do: [|:p. c|
               c: t copy.
               c: c replace: '%PATH%' With: p path.
-              c: c replace: '%PROXY%' With: p proxy.
+              c: c replace: '%ID%' With: p path hash hexPrintString.
               s: s, c].
             s).
         } | ) 
@@ -4901,11 +4950,22 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
-         'Category: caddy\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: ingress\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          deregisterWithCaddy = ( |
             | 
             psyche sys caddy changeConfig: [|:c|
+              c deregisterPath: '/', id, '/console/'.
+              c deregisterPath: '/', id, '/desktop/'].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'Category: ingress\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         deregisterWithHaproxy = ( |
+            | 
+            psyche sys haproxy changeConfig: [|:c|
               c deregisterPath: '/', id, '/console/'.
               c deregisterPath: '/', id, '/desktop/'].
             self).
@@ -5976,7 +6036,7 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
-         'Category: caddy\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: ingress\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          registerWithCaddy = ( |
             | 
@@ -5988,6 +6048,22 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
                PasswordHash: worldRecord consolePasswordHash.
              c registerPath: '/', id, '/desktop/'
                    ForProxy: 'unix/', baseDirectory, '/tmp/desktop.socket'].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> () From: ( | {
+         'Category: ingress\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         registerWithHaproxy = ( |
+            | 
+            "Register multiple changes in one reload" 
+            psyche sys haproxy changeConfig: [|:c|
+             c registerPath: '/', id, '/console/'
+                   ForProxy: ttydSock
+                   Username: 'console'
+               PasswordHash: worldRecord consolePasswordHash.
+             c registerPath: '/', id, '/desktop/'
+                   ForProxy: baseDirectory, '/tmp/desktop.socket'].
             self).
         } | ) 
 
@@ -6047,8 +6123,8 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
             destroyJail. 
             log debug: 'Stopping ttyd'.
             stopTtyd. 
-            log debug: 'Deregistering with caddy'.
-            deregisterWithCaddy.
+            log debug: 'Deregistering with haproxy'.
+            deregisterWithHaproxy.
             log debug: 'World is asleep'.
             self).
         } | ) 
@@ -6207,8 +6283,8 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
             startJail. 
             log debug: 'Start ttyd'.
             startTtyd.
-            log debug: 'Register with caddy'.
-            registerWithCaddy.
+            log debug: 'Register with Haproxy'.
+            registerWithHaproxy.
             log debug: 'World is awake'.
             self).
         } | ) 
