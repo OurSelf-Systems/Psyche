@@ -4982,6 +4982,9 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
              umountForced.
             | 
             fb: raiseError.
+
+            log debug: 'umounting'.
+
             c: sys mounts current.
             umount: [|:mp|
              c findFirst: [|:e| 
@@ -4999,17 +5002,21 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
             " /dev was mounted by jail(8) "
             umount value: '/dev'.
 
-            " Wait for all umounts to have effect "
+            log debug: 'wait for all umounts to have effect'.
+
             [
               sys mounts current
                 anySatisfy: [|:e| e mountpoint matchesPattern: '/rw', baseDirectory, '/*']
             ] whileTrue.
 
-            " Wait until nothing is using the filesystem, "
+            log debug: 'Wait until nothing is using the filesystem'.
+
             [|o| 
             o: sys stdoutOfCommand: 'fuser ', baseDirectory.
             o shrinkwrapped isEmpty
             ] whileFalse.
+
+            log debug: 'umount jail root'.
 
             " Not / as needs to be matched in umount block with mountpoint"
             umount value: ''.
@@ -6117,14 +6124,14 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
          sleep = ( |
             | 
             log debug: 'Starting to sleep world'.
+            log debug: 'Deregistering with haproxy'.
+            deregisterWithHaproxy.
+            log debug: 'Stopping ttyd'.
+            stopTtyd. 
             log debug: 'Stopping jail'.
             stopJail. 
             log debug: 'Destroying jail'.
             destroyJail. 
-            log debug: 'Stopping ttyd'.
-            stopTtyd. 
-            log debug: 'Deregistering with haproxy'.
-            deregisterWithHaproxy.
             log debug: 'World is asleep'.
             self).
         } | ) 
@@ -6204,7 +6211,7 @@ on that display.\\x7fModuleInfo: Module: firmware InitialContents: FollowSlot\'
             [|o| 
             o: sys stdoutOfCommand: 'fuser ', baseDirectory.
             o shrinkwrapped isEmpty
-            ] whileFalse.
+            ]. " whileFalse."
             self).
         } | ) 
 
