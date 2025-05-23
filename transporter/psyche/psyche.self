@@ -107,6 +107,7 @@ See the LICENSE,d file for license information.
               snapshotAction schedulerInitialMessages copyFilteredBy: [|:m|
                 'mainInputLoop' != m selector].
             psyche gui initializePrototypes.
+            psyche worlds worldRecord runner firmware loadCache.
             self).
         } | ) 
 
@@ -5093,6 +5094,26 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
         
          asString = ( |
             | '/worlds/psyche-dev/firmware.self' asFileContents).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'firmware' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: InitializeToExpression: (\'\')'
+        
+         cachedFirmwareModule <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'firmware' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         loadCache = ( |
+            | cachedFirmwareModule: 'firmware.self' asFileContents. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'firmware' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         loadCacheOnDev = ( |
+            | cachedFirmwareModule: '/worlds/psyche-dev/firmware.self' asFileContents. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'firmware' -> () From: ( | {
