@@ -2900,7 +2900,7 @@ otherwise:
               http-request replace-path /control(/)?(.*) /\\2
               server localhost 127.0.0.1:6080
 
-            ').
+            ', '\n\n\n\n').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
