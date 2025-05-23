@@ -486,11 +486,14 @@ Console options set out in
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> () From: ( | {
-         'Category: desktop\x7fComment: This punches a hole in the firewall at port 443 to
-allow for HTTPS access to system and worlds.\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+         'Category: desktop\x7fComment: This punches a hole in the firewall at ports 80 and  443 to
+allow for HTTPS access to system and worlds.
+
+Port 80 should be error message or redirect to HTTPS\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          desktopFirewallHTTPS = ( |
             | 
+            sys pfOpenPort: 80.
             sys pfOpenPort: 443.
             self).
         } | ) 
