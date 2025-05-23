@@ -5093,7 +5093,8 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          asString = ( |
-            | '/worlds/psyche-dev/firmware.self' asFileContents).
+            | 
+            cachedFirmwareModule).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'worlds' -> 'worldRecord' -> 'runner' -> 'firmware' -> () From: ( | {
