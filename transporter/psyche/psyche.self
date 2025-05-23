@@ -1869,7 +1869,11 @@ otherwise:
         
          ensurePaths = ( |
             | 
-            sys mkdir_p: runtime      IfFail: raiseError. 
+            (
+              config &
+              certificates &
+              runtime 
+            ) asVector do: [|:d| sys mkdir_p: d IfFail: raiseError].
 
             (
               caddyConf & 
