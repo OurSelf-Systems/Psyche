@@ -2144,6 +2144,12 @@ otherwise:
             | 
             f = [log error: 'start Haproxy failed'. ^ self ].
             sys haproxy startIfFail: f.
+            sys haproxy changeConfig: [|:c|
+                c registerPath: '/control'
+                      ForProxy: '127.0.0.1:6080'
+                      Username: 'control'
+                  PasswordHash: config current passwordHash.
+            ] IfFail: f.
             self).
         } | ) 
 
@@ -2851,6 +2857,7 @@ otherwise:
             o writeTo: configFilename, '-temp'               IfFail: [^ blk value].
             validateConfigAtPath: configFilename, '-temp'    IfFail: [^ blk value: 'Could not validate haproxy config'].
             o writeTo: configFilename                        IfFail: [^ blk value].
+            o writeTo: '/runtime/hp', time current msec0 asString IfFail: [ 'hp failed' printLine. ].
             reloadIfFail: [^ blk value].
             self).
         } | ) 
@@ -2883,8 +2890,7 @@ otherwise:
         
          configTemplate = ( |
             | 
-            '
-            #meta
+            '#meta
 
             frontend http_ingress
               bind *:80
@@ -3056,12 +3062,14 @@ otherwise:
             t: '
             backend %ID%_backend
               mode http
-              http-request replace-path %PATH%?(.*) /\\2
+              http-request replace-path %PATH%(/)?(.*) /\\2
               server localhost %PROXY%
 
             '.
             s: ''.
+            log debug: 'Enumerating proxies for haproxy.conf'.
             proxies do: [|:p. c|
+              log debug: '  - ', p path.
               c: t copy.
               c: c replace: '%PATH%' With: p path.
               c: c replace: '%PROXY%' With: p proxy.
@@ -3089,7 +3097,7 @@ otherwise:
              s.
              t.
             | 
-            t: '  use_backend %ID%_backend if { path_beg %PATH% }\n'.
+            t: '  use_backend %ID%_backend if { path_beg %PATH%/ }\n'.
             s: ''.
             proxies do: [|:p. c|
               c: t copy.
@@ -3174,21 +3182,12 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> () From: ( | {
-         'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
-        
-         saveConfigIfFail: blk = ( |
-            | 
-            configPrototype writeTo: configFilename IfFail: [^ blk value].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> () From: ( | {
          'Comment: Start Ingress from book - assume no jails running
 (TODO: revisit this)\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          startIfFail: fb = ( |
             | 
-            saveConfigIfFail: [^ blk value].
+            configPrototype writeTo: configFilename IfFail: [^ blk value].
             sys sh: 'haproxy -D -f ', configFilename, ' -p ', configPid. 
             self).
         } | ) 
