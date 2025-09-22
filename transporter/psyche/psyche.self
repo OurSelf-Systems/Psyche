@@ -2900,14 +2900,14 @@ otherwise:
             frontend main_ingress
               bind *:443 ssl crt ', psyche paths certificates, '
               mode http
-              use_backend control_backend if { path_beg /control/ }
+              use_backend backdoor_backend if { path_beg /backdoor/ }
             #switch
 
             #backends
 
-            backend control_backend
+            backend backdoor_backend
               mode http
-              http-request replace-path /control(/)?(.*) /\\2
+              http-request replace-path /backdoor(/)?(.*) /\\2
               server localhost 127.0.0.1:6080
 
             ', '\n\n\n\n').
