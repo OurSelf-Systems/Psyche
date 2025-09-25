@@ -2892,6 +2892,8 @@ otherwise:
             | 
             '#meta
 
+            #users
+
             frontend http_ingress
               bind *:80
               mode http
@@ -2952,7 +2954,8 @@ otherwise:
              cc.
             | 
             cc: copy.
-            (c splitOn: '\n') do: [|:l|
+            (c splitOn: '\n') do: [|:rl. l|
+             l: rl shrinkwrapped.
              (l isEmpty not && [l first = '#']) ifTrue: [|s|
                 s: l splitOn: ' '.
                 "We may not have username or passwordHash"
@@ -3014,6 +3017,14 @@ otherwise:
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          proxy <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> 'proxyEntryPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         safePath = ( |
+            | 
+            path copy replace: '/' With: '_').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> 'proxyEntryPrototype' -> () From: ( | {
@@ -3097,12 +3108,33 @@ otherwise:
              s.
              t.
             | 
-            t: '  use_backend %ID%_backend if { path_beg %PATH%/ }\n'.
+            t: '  use_backend %ID%_backend if { path_beg %PATH%/ } %AUTH%\n'.
             s: ''.
             proxies do: [|:p. c|
               c: t copy.
               c: c replace: '%PATH%' With: p path.
               c: c replace: '%ID%' With: p path hash hexPrintString.
+              "If there is a password, respect it"
+              p passwordHash = '' 
+                 ifTrue: [c: c replace: '%AUTH%' With: '']
+                  False: [c: c replace: '%AUTH%' With: '{ http_auth(', p safePath,  ') }'].
+              s: s, c].
+            s).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
+         'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         renderUsers = ( |
+             s.
+            | 
+            s: ''.
+            proxies do: [|:p. c|
+              "Only create userlists for proxies with passwords attaached (ie not desktops, which are handled
+               by the running world itself "
+              p passwordHash != '' 
+                ifTrue: [c: '\nuserlist ', p safePath, '\n   user ', p username, '  password   ', p passwordHash, '\n']
+                 False: [c: ''].
               s: s, c].
             s).
         } | ) 
@@ -3121,6 +3153,7 @@ otherwise:
             | 
             t: configTemplate copy.
             t: t replace: '#meta' With: renderMeta.
+            t: t replace: '#users' With: renderUsers.
             t: t replace: '#switch' With: renderSwitch.
             t: t replace: '#backends' With: renderBackends.
             t).
