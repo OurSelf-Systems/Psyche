@@ -2902,6 +2902,9 @@ otherwise:
             frontend main_ingress
               bind *:443 ssl crt ', psyche paths certificates, '
               mode http
+            #pathacl
+            #authacl
+              http-request auth unless is_auth  
               use_backend backdoor_backend if { path_beg /backdoor/ }
             #switch
 
@@ -3066,6 +3069,34 @@ otherwise:
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
          'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
+         renderAuthACL = ( |
+             acl.
+             prox.
+             pstr.
+            | 
+            acl: '  acl is_auth always_true\n'.
+
+
+            proxies do: [|:p |
+              acl: acl, '  http-request auth if is', p safePath asString, '_path !{ http_auth(', p safePath, ') }\n'].
+
+
+
+            proxies do: [|:p |
+              acl: acl, '  acl is', p safePath asString, ' always_true\n'].
+
+            prox: set copyRemoveAll.
+            proxies do: [| :p |
+              prox add: ' { http_auth(', p safePath asString, ') }' ].
+            pstr: (prox asVector) joinUsing: ' || '.
+            "acl: acl, '# acl is_auth ', pstr, '\n'."
+
+            acl).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
+         'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
          renderBackends = ( |
              s.
              t.
@@ -3104,15 +3135,31 @@ otherwise:
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
          'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
+         renderPathACL = ( |
+             acl.
+             prox.
+             pstr.
+            | 
+            acl: '\n'.
+
+            proxies do: [|:p |
+              acl: acl, '  acl is', p safePath asString, '_path path_beg ', p path, '\n'].
+
+            acl).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
+         'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
          renderSwitch = ( |
              s.
              t.
             | 
-            t: '  use_backend %ID%_backend if { path_beg %PATH%/ } %AUTH%\n'.
+            t: '  use_backend %ID%_backend if %PATHACL% %AUTH%\n'.
             s: ''.
             proxies do: [|:p. c|
               c: t copy.
-              c: c replace: '%PATH%' With: p path.
+              c: c replace: '%PATHACL%' With: 'is', p safePath, '_path'.
               c: c replace: '%ID%' With: p path hash hexPrintString.
               "If there is a password, respect it"
               p passwordHash = '' 
@@ -3154,6 +3201,8 @@ otherwise:
             t: configTemplate copy.
             t: t replace: '#meta' With: renderMeta.
             t: t replace: '#users' With: renderUsers.
+            t: t replace: '#pathacl' With: renderPathACL.
+            t: t replace: '#authacl' With: renderAuthACL.
             t: t replace: '#switch' With: renderSwitch.
             t: t replace: '#backends' With: renderBackends.
             t).
