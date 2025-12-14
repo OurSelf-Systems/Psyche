@@ -2904,7 +2904,6 @@ otherwise:
               mode http
             #pathacl
             #authacl
-              http-request auth unless is_auth  
               use_backend backdoor_backend if { path_beg /backdoor/ }
             #switch
 
@@ -3074,22 +3073,10 @@ otherwise:
              prox.
              pstr.
             | 
-            acl: '  acl is_auth always_true\n'.
-
+            acl: '\n'.
 
             proxies do: [|:p |
               acl: acl, '  http-request auth if is', p safePath asString, '_path !{ http_auth(', p safePath, ') }\n'].
-
-
-
-            proxies do: [|:p |
-              acl: acl, '  acl is', p safePath asString, ' always_true\n'].
-
-            prox: set copyRemoveAll.
-            proxies do: [| :p |
-              prox add: ' { http_auth(', p safePath asString, ') }' ].
-            pstr: (prox asVector) joinUsing: ' || '.
-            "acl: acl, '# acl is_auth ', pstr, '\n'."
 
             acl).
         } | ) 
