@@ -2145,7 +2145,7 @@ otherwise:
             f = [log error: 'start Haproxy failed'. ^ self ].
             sys haproxy startIfFail: f.
             sys haproxy changeConfig: [|:c|
-                c registerPath: '/control'
+                c registerPath: '/control/'
                       ForProxy: '127.0.0.1:6080'
                       Username: 'control'
                   PasswordHash: config current passwordHash.
@@ -2948,8 +2948,17 @@ otherwise:
         
          deregisterPath: path = ( |
             | 
-            proxies removeKey: path IfAbsent: true.
+            proxies removeKey: (dropSlash: path) IfAbsent: true.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         dropSlash: path = ( |
+            | 
+            (path size > 1) && [ path last == '/' ] ifTrue: [
+              path slice: 0 @ -1 ] False: [ path ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
@@ -3057,10 +3066,10 @@ pass through to world to handle
         
          registerPath: path ForProxy: proxy = ( |
             | 
-            proxies at: path
+            proxies at: (dropSlash: path)
                    Put: (
             (((proxyEntryPrototype copy
-                    path: path)
+                    path: (dropSlash: path))
                    proxy: proxy)
                 username: '')
             passwordHash: '').
@@ -3072,10 +3081,10 @@ pass through to world to handle
         
          registerPath: path ForProxy: proxy Username: user PasswordHash: ph = ( |
             | 
-            proxies at: path
+            proxies at: (dropSlash: path)
                    Put: (
             (((proxyEntryPrototype copy
-                    path: path)
+                    path: (dropSlash: path))
                    proxy: proxy)
                 username: user)
             passwordHash: ph).
@@ -3087,10 +3096,10 @@ pass through to world to handle
         
          registerPath: path ForSecurityPassthroughProxy: proxy = ( |
             | 
-            proxies at: path
+            proxies at: (dropSlash: path)
                    Put: (
             ((((proxyEntryPrototype copy
-                    path: path)
+                    path: (dropSlash: path))
                    proxy: proxy)
                 username: '')
             passwordHash: '')
