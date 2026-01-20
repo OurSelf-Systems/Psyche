@@ -3868,6 +3868,17 @@ IP.1 = {{IP}}
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'openssl' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         sha512PasswordHash: p IfFail: blk = ( |
+            | 
+            sys shelloutCommand: 'openssl passwd -6 \'', p asString, '\''
+                      IfTimeout: [blk value: 'Timed out']
+                        IfError: [|:o| blk value: 'Call to openssl failed:', o stderr]
+                      IfSuccess: [|:o| o stdout asString shrinkwrapped ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'openssl' -> () From: ( | {
          'Category: support\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          sys = bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> ().
