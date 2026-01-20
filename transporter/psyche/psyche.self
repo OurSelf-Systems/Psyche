@@ -3109,7 +3109,8 @@ pass through to world to handle
             acl: ''.
 
             proxies do: [|:p |
-              acl: acl, '  http-request auth if is', p safePath asString, '_path  !is', p safePath, '_auth\n'].
+              p isSecurityPassthrough ifFalse: [
+                acl: acl, '  http-request auth if is', p safePath asString, '_path  !is', p safePath, '_auth\n']].
 
             acl).
         } | ) 
@@ -3164,7 +3165,8 @@ pass through to world to handle
 
             proxies do: [|:p |
               acl: acl, '  acl is', p safePath asString, '_path path_beg ', p path, '/\n'.
-              acl: acl, '  acl is', p safePath asString, '_auth http_auth(', p safePath, ')\n'].
+              p isSecurityPassthrough ifFalse: [
+                acl: acl, '  acl is', p safePath asString, '_auth http_auth(', p safePath, ')\n']].
 
             acl).
         } | ) 
@@ -3183,7 +3185,7 @@ pass through to world to handle
               c: c replace: '%PATHACL%' With: 'is', p safePath, '_path'.
               c: c replace: '%ID%' With: p path hash hexPrintString.
               "If there is a password, respect it"
-              p passwordHash = '' 
+              p isSecurityPassthrough
                  ifTrue: [c: c replace: '%AUTH%' With: '']
                   False: [c: c replace: '%AUTH%' With: 'is', p safePath,  '_auth'].
               s: s, c].
