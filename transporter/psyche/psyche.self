@@ -304,10 +304,10 @@ See the LICENSE,d file for license information.
              p.
             | 
             p: askForSlotName: 'password' Default: 'pass123'.
-            c passwordHash: sys caddy hashPassword: p IfFail: raiseError.
-            c unixConsolePasswordHash: 
-                (sys outputOfCommand: 'echo -n \'', p, '\' | openssl passwd -6 -stdin' 
+            h:  (sys outputOfCommand: 'echo -n \'', p, '\' | openssl passwd -6 -stdin' 
                            IfTimeout: raiseError) stdout shrinkwrapped.
+            c passwordHash: h.
+            c unixConsolePasswordHash: h.
             self).
         } | ) 
 
@@ -2571,7 +2571,9 @@ otherwise:
          hashPassword: p IfFail: blk = ( |
             | 
             " 1 minute timeout for slow (eg emulated) systems "
-            (sys outputOfCommand: 'caddy hash-password -p ', p 
+            " Cost needs to be reduced to 10 or below otherwise the check at 
+              runtime is too slow"
+            (sys outputOfCommand: 'caddy hash-password --cost 10 -p ', p 
                        IfTimeout: [^ blk value: 'timeout']
             ) stdout shrinkwrapped).
         } | ) 
@@ -2892,6 +2894,13 @@ otherwise:
             | 
             '#meta
 
+            defaults
+              timeout connect 5s
+              timeout client 30s
+              timeout server 30s
+              timeout http-request 10s
+              timeout http-keep-alive 5s
+
             #users
 
             frontend http_ingress
@@ -2998,6 +3007,14 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> 'proxyEntryPrototype' -> () From: ( | {
+         'Comment: do we handle security in root or
+pass through to world to handle 
+(ie for desktop)\x7fModuleInfo: Module: psyche InitialContents: InitializeToExpression: (false)'
+        
+         isSecurityPassthrough <- bootstrap stub -> 'globals' -> 'false' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> 'proxyEntryPrototype' -> () From: ( | {
          'ModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
@@ -3066,6 +3083,22 @@ otherwise:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
+         'ModuleInfo: Module: psyche InitialContents: FollowSlot'
+        
+         registerPath: path ForSecurityPassthroughProxy: proxy = ( |
+            | 
+            proxies at: path
+                   Put: (
+            ((((proxyEntryPrototype copy
+                    path: path)
+                   proxy: proxy)
+                username: '')
+            passwordHash: '')
+            isSecurityPassthrough: true).
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'psyche' -> 'sys' -> 'haproxy' -> 'configPrototype' -> () From: ( | {
          'Category: writing\x7fModuleInfo: Module: psyche InitialContents: FollowSlot'
         
          renderAuthACL = ( |
@@ -3073,10 +3106,10 @@ otherwise:
              prox.
              pstr.
             | 
-            acl: '\n'.
+            acl: ''.
 
             proxies do: [|:p |
-              acl: acl, '  http-request auth if is', p safePath asString, '_path !{ http_auth(', p safePath, ') }\n'].
+              acl: acl, '  http-request auth if is', p safePath asString, '_path  !is', p safePath, '_auth\n'].
 
             acl).
         } | ) 
@@ -3127,10 +3160,11 @@ otherwise:
              prox.
              pstr.
             | 
-            acl: '\n'.
+            acl: ''.
 
             proxies do: [|:p |
-              acl: acl, '  acl is', p safePath asString, '_path path_beg ', p path, '\n'].
+              acl: acl, '  acl is', p safePath asString, '_path path_beg ', p path, '/\n'.
+              acl: acl, '  acl is', p safePath asString, '_auth http_auth(', p safePath, ')\n'].
 
             acl).
         } | ) 
@@ -3151,7 +3185,7 @@ otherwise:
               "If there is a password, respect it"
               p passwordHash = '' 
                  ifTrue: [c: c replace: '%AUTH%' With: '']
-                  False: [c: c replace: '%AUTH%' With: '{ http_auth(', p safePath,  ') }'].
+                  False: [c: c replace: '%AUTH%' With: 'is', p safePath,  '_auth'].
               s: s, c].
             s).
         } | ) 
@@ -5263,7 +5297,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
                    Username: 'console'
                PasswordHash: worldRecord consolePasswordHash.
              c registerPath: '/', id, '/desktop/'
-                   ForProxy: baseDirectory, '/tmp/desktop.socket'].
+                   ForSecurityPassthroughProxy: baseDirectory, '/tmp/desktop.socket'].
             self).
         } | ) 
 
