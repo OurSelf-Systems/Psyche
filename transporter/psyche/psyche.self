@@ -4902,7 +4902,7 @@ have changed then `update` me.\x7fModuleInfo: Creator: globals psyche worlds sys
          password: p = ( |
              h.
             | 
-            h: sys caddy hashPassword: p IfFail: raiseError.
+            h: sys openssl sha512PasswordHash: p IfFail: raiseError.
             rawMetadata consolePasswordHash: h.
             rawMetadata writeTo: metadataFilename IfFail: raiseError.
             copy update).
