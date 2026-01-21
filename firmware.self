@@ -206,7 +206,7 @@ caddyConfigForUsers works.\x7fModuleInfo: Module: firmware InitialContents: Foll
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'firmware' -> () From: ( | {
-         'ModuleInfo: Module: firmware InitialContents: FollowSlot'
+         'Category: caddyfile\x7fModuleInfo: Module: firmware InitialContents: FollowSlot'
         
          reloadCaddy = ( |
             | 
@@ -226,10 +226,24 @@ caddyConfigForUsers works.\x7fModuleInfo: Module: firmware InitialContents: Foll
  bootstrap addSlotsTo: bootstrap stub -> 'firmware' -> () From: ( | {
          'ModuleInfo: Module: firmware InitialContents: FollowSlot'
         
+         saveIngressConfig = ( |
+            | saveCaddyfile).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'firmware' -> () From: ( | {
+         'Category: caddyfile\x7fModuleInfo: Module: firmware InitialContents: FollowSlot'
+        
          startCaddy = ( |
             | 
             os command: 'daemon caddy run --config ', caddyFilename, ' --adapter caddyfile'.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'firmware' -> () From: ( | {
+         'ModuleInfo: Module: firmware InitialContents: FollowSlot'
+        
+         startIngressDaemon = ( |
+            | startCaddy).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'firmware' -> () From: ( | {
@@ -259,8 +273,8 @@ caddyConfigForUsers works.\x7fModuleInfo: Module: firmware InitialContents: Foll
                 users owner passwordHash: 
                   (d at: 'consolePasswordHash' IfAbsent: '')]].
             1 to: 5 Do: [|:n| startXvncOn: n].
-            saveCaddyfile.
-            startCaddy.
+            saveIngressConfig.
+            startIngressDaemon.
             self).
         } | ) 
 
@@ -449,4 +463,3 @@ on that display.\x7fModuleInfo: Module: firmware InitialContents: FollowSlot'
  '-- Side effects'
 
  globals modules firmware postFileIn
-
